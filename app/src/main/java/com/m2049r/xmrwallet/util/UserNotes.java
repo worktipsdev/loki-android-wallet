@@ -70,7 +70,7 @@ public class UserNotes {
     }
 
     private String buildTxNote() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         if (xmrtoKey != null) {
             if ((xmrtoAmount == null) || (xmrtoDestination == null))
                 throw new IllegalArgumentException("Broken notes");

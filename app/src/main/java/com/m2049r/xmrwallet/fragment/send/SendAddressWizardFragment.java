@@ -310,9 +310,9 @@ public class SendAddressWizardFragment extends SendWizardFragment {
                 etAddress.getEditText().getText().clear();
                 etAddress.setError(null);
             }
-            String scannedPaymenId = data.paymentId;
-            if (scannedPaymenId != null) {
-                etPaymentId.getEditText().setText(scannedPaymenId);
+            String scannedPaymentId = data.paymentId;
+            if (scannedPaymentId != null) {
+                etPaymentId.getEditText().setText(scannedPaymentId);
                 checkPaymentId();
             } else {
                 etPaymentId.getEditText().getText().clear();

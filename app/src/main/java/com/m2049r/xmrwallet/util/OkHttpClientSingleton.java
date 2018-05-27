@@ -23,7 +23,7 @@ public class OkHttpClientSingleton {
 
     static public final OkHttpClient getOkHttpClient() {
         if (Singleton == null) {
-            synchronized (com.m2049r.xmrwallet.util.OkHttpClientSingleton.class) {
+            synchronized (OkHttpClientSingleton.class) {
                 if (Singleton == null) {
                     Singleton = new OkHttpClient();
                 }

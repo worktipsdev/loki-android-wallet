@@ -42,11 +42,9 @@ import com.m2049r.xmrwallet.data.BarcodeData;
 import com.m2049r.xmrwallet.data.PendingTx;
 import com.m2049r.xmrwallet.data.TxData;
 import com.m2049r.xmrwallet.data.TxDataBtc;
-import com.m2049r.xmrwallet.dialog.HelpFragment;
 import com.m2049r.xmrwallet.layout.SpendViewPager;
 import com.m2049r.xmrwallet.model.PendingTransaction;
 import com.m2049r.xmrwallet.util.Helper;
-import com.m2049r.xmrwallet.util.NodeList;
 import com.m2049r.xmrwallet.util.Notice;
 import com.m2049r.xmrwallet.util.UserNotes;
 import com.m2049r.xmrwallet.widget.DotBar;
@@ -238,7 +236,7 @@ public class SendFragment extends Fragment
 
     @Override
     public boolean onBackPressed() {
-        if (isComitted()) return true; // no going back
+        if (isCommitted()) return true; // no going back
         if (spendViewPager.getCurrentItem() == 0) {
             return false;
         } else {
@@ -421,7 +419,7 @@ public class SendFragment extends Fragment
         return data;
     }
 
-    boolean isComitted() {
+    boolean isCommitted() {
         return committedTx != null;
     }
 

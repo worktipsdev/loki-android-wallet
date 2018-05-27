@@ -35,10 +35,10 @@ public class BitcoinAddressValidator {
                 WalletManager.getInstance().getNetworkType() != NetworkType.NetworkType_Mainnet);
     }
 
-    public static boolean validate(String addrress, boolean testnet) {
-        if (addrress.length() < 26 || addrress.length() > 35)
+    public static boolean validate(String address, boolean testnet) {
+        if (address.length() < 26 || address.length() > 35)
             return false;
-        byte[] decoded = decodeBase58To25Bytes(addrress);
+        byte[] decoded = decodeBase58To25Bytes(address);
         if (decoded == null)
             return false;
 

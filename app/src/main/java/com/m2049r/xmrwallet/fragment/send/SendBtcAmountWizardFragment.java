@@ -44,7 +44,6 @@ import com.m2049r.xmrwallet.xmrto.network.XmrToApiImpl;
 import java.text.NumberFormat;
 import java.util.Locale;
 
-import okhttp3.HttpUrl;
 import timber.log.Timber;
 
 public class SendBtcAmountWizardFragment extends SendWizardFragment {
@@ -152,7 +151,7 @@ public class SendBtcAmountWizardFragment extends SendWizardFragment {
 
     private QueryOrderParameters orderParameters = null;
 
-    private void processOrderParms(final QueryOrderParameters orderParameters) {
+    private void processOrderParams(final QueryOrderParameters orderParameters) {
         this.orderParameters = orderParameters;
         getView().post(new Runnable() {
             @Override
@@ -189,7 +188,7 @@ public class SendBtcAmountWizardFragment extends SendWizardFragment {
         });
     }
 
-    private void processOrderParmsError(final Exception ex) {
+    private void processOrderParamsError(final Exception ex) {
         evAmount.setRate(0);
         orderParameters = null;
         maxBtc = 0;
@@ -235,12 +234,12 @@ public class SendBtcAmountWizardFragment extends SendWizardFragment {
         getXmrToApi().queryOrderParameters(new XmrToCallback<QueryOrderParameters>() {
             @Override
             public void onSuccess(final QueryOrderParameters orderParameters) {
-                processOrderParms(orderParameters);
+                processOrderParams(orderParameters);
             }
 
             @Override
             public void onError(final Exception e) {
-                processOrderParmsError(e);
+                processOrderParamsError(e);
             }
         });
     }
