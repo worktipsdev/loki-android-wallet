@@ -21,9 +21,9 @@ sudo chown $LOGNAME /opt/android
 ## Install Android NDK
 ```Shell
 cd /opt/android
-wget https://dl.google.com/android/repository/android-ndk-r16b-linux-x86_64.zip
-unzip android-ndk-r16b-linux-x86_64.zip
-ln -s android-ndk-r16b ndk
+wget https://dl.google.com/android/repository/android-ndk-r17-linux-x86_64.zip
+unzip android-ndk-r17-linux-x86_64.zip
+ln -s android-ndk-r17 ndk
 ndk/build/tools/make_standalone_toolchain.py --api 21 --stl=libc++ --arch arm --install-dir /opt/android/tool/arm
 ndk/build/tools/make_standalone_toolchain.py --api 21 --stl=libc++ --arch arm64 --install-dir /opt/android/tool/arm64
 ndk/build/tools/make_standalone_toolchain.py --api 21 --stl=libc++ --arch x86 --install-dir /opt/android/tool/x86
@@ -101,9 +101,11 @@ ln -sf ../include /opt/android/build/boost/x86_64
 ## And finally: Build Monero
 ```Shell
 cd /opt/android
-git clone https://github.com/m2049r/monero.git
+git clone https://github.com/crtlib/loki.git
 
-cd /opt/android/monero/build
+cd /opt/android/loki/build
+git checkout monerujo
+
 ./build-all-arch.sh
 ```
 
