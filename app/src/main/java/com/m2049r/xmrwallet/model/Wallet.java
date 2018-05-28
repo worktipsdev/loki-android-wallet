@@ -21,6 +21,9 @@ import com.m2049r.xmrwallet.data.TxData;
 import java.io.File;
 
 public class Wallet {
+
+    public static final long SMALLEST_UNITS_IN_LOK = 1000000000L;
+
     static {
         System.loadLibrary("monerujo");
     }
