@@ -134,7 +134,7 @@ public class XmrToApiQueryOrderTest {
         final double xmrPriceBtc = 0.0154703;
         final String xmrReceivingAddress = "44TVPcCSHebEQp4LnapPkhb2pondb2Ed7GJJLc6TkKwtSyumUnQ6QzkCCkojZycH2MRfLcujCM7QR1gdnRULRraV4UpB5n4";
         final String xmrReceivingIntegratedAddress = "4EAAQR1vtv7EQp4LnapPkhb2pondb2Ed7GJJLc6TkKwtSyumUnQ6QzkCCkojZycH2MRfLcujCM7QR1gdnRULRraV6B5rRtHLeXGQSECXy9";
-        final int xmrRecommendedMixin = 5;
+        final int xmrRecommendedMixin = 9;
         final double xmrRequiredAmount = 6.464;
         final String xmrRequiredPaymentIdLong = "56beabc3ca6d52a78c9a44cefebeb870054d8b367cc7065bff1bdb553caca85c";
         final String xmrRequiredPaymentIdShort = "eeb6086436b267cf";

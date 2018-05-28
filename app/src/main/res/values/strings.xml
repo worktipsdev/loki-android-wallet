@@ -304,7 +304,6 @@
     <string name="archive_alert_no">No thanks!</string>
 
     <string-array name="mixin" translatable="false">
-        <item>Ringsize 7</item>
         <item>Ringsize 10</item>
         <item>Ringsize 13</item>
         <item>Ringsize 26</item>
