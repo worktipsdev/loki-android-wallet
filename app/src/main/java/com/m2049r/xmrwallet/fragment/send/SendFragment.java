@@ -41,7 +41,6 @@ import com.m2049r.xmrwallet.R;
 import com.m2049r.xmrwallet.data.BarcodeData;
 import com.m2049r.xmrwallet.data.PendingTx;
 import com.m2049r.xmrwallet.data.TxData;
-import com.m2049r.xmrwallet.data.TxDataBtc;
 import com.m2049r.xmrwallet.layout.SpendViewPager;
 import com.m2049r.xmrwallet.model.PendingTransaction;
 import com.m2049r.xmrwallet.util.Helper;
@@ -245,41 +244,6 @@ public class SendFragment extends Fragment
         }
     }
 
-    enum Mode {
-        XMR, BTC
-    }
-
-    Mode mode = Mode.XMR;
-
-    @Override
-    public void setMode(Mode aMode) {
-        if (mode != aMode) {
-            mode = aMode;
-            switch (aMode) {
-                case XMR:
-                    txData = new TxData();
-                    break;
-                case BTC:
-                    txData = new TxDataBtc();
-                    break;
-                default:
-                    throw new IllegalArgumentException("Mode " + String.valueOf(aMode) + " unknown!");
-            }
-            getView().post(new Runnable() {
-                @Override
-                public void run() {
-                    pagerAdapter.notifyDataSetChanged();
-                }
-            });
-            Timber.d("New Mode = %s", mode.toString());
-        }
-    }
-
-    @Override
-    public Mode getMode() {
-        return mode;
-    }
-
     public class SpendPagerAdapter extends FragmentStatePagerAdapter {
         private static final int POS_ADDRESS = 0;
         private static final int POS_AMOUNT = 1;
@@ -330,39 +294,19 @@ public class SendFragment extends Fragment
         @Override
         public SendWizardFragment getItem(int position) {
             Timber.d("getItem(%d) CREATE", position);
-            Timber.d("Mode=%s", mode.toString());
-            if (mode == Mode.XMR) {
-                switch (position) {
-                    case POS_ADDRESS:
-                        return SendAddressWizardFragment.newInstance(SendFragment.this);
-                    case POS_AMOUNT:
-                        return SendAmountWizardFragment.newInstance(SendFragment.this);
-                    case POS_SETTINGS:
-                        return SendSettingsWizardFragment.newInstance(SendFragment.this);
-                    case POS_CONFIRM:
-                        return SendConfirmWizardFragment.newInstance(SendFragment.this);
-                    case POS_SUCCESS:
-                        return SendSuccessWizardFragment.newInstance(SendFragment.this);
-                    default:
-                        throw new IllegalArgumentException("no such send position(" + position + ")");
-                }
-            } else if (mode == Mode.BTC) {
-                switch (position) {
-                    case POS_ADDRESS:
-                        return SendAddressWizardFragment.newInstance(SendFragment.this);
-                    case POS_AMOUNT:
-                        return SendBtcAmountWizardFragment.newInstance(SendFragment.this);
-                    case POS_SETTINGS:
-                        return SendSettingsWizardFragment.newInstance(SendFragment.this);
-                    case POS_CONFIRM:
-                        return SendBtcConfirmWizardFragment.newInstance(SendFragment.this);
-                    case POS_SUCCESS:
-                        return SendBtcSuccessWizardFragment.newInstance(SendFragment.this);
-                    default:
-                        throw new IllegalArgumentException("no such send position(" + position + ")");
-                }
-            } else {
-                throw new IllegalStateException("Unknown mode!");
+            switch (position) {
+                case POS_ADDRESS:
+                    return SendAddressWizardFragment.newInstance(SendFragment.this);
+                case POS_AMOUNT:
+                    return SendAmountWizardFragment.newInstance(SendFragment.this);
+                case POS_SETTINGS:
+                    return SendSettingsWizardFragment.newInstance(SendFragment.this);
+                case POS_CONFIRM:
+                    return SendConfirmWizardFragment.newInstance(SendFragment.this);
+                case POS_SUCCESS:
+                    return SendSuccessWizardFragment.newInstance(SendFragment.this);
+                default:
+                    throw new IllegalArgumentException("no such send position(" + position + ")");
             }
         }
 

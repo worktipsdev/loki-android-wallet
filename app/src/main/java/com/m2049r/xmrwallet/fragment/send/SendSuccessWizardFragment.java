@@ -52,8 +52,6 @@ public class SendSuccessWizardFragment extends SendWizardFragment {
         PendingTx getCommittedTx();
 
         void enableDone();
-
-        SendFragment.Mode getMode();
     }
 
     ImageButton bCopyTxId;

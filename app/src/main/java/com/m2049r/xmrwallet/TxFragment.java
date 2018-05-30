@@ -71,22 +71,11 @@ public class TxFragment extends Fragment {
     private TextView etTxNotes;
     private Button bTxNotes;
 
-    // XMRTO stuff
-    private View cvXmrTo;
-    private TextView tvTxXmrToKey;
-    private TextView tvDestinationBtc;
-    private TextView tvTxAmountBtc;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_tx_info, container, false);
-
-        cvXmrTo = view.findViewById(R.id.cvXmrTo);
-        tvTxXmrToKey = (TextView) view.findViewById(R.id.tvTxXmrToKey);
-        tvDestinationBtc = (TextView) view.findViewById(R.id.tvDestinationBtc);
-        tvTxAmountBtc = (TextView) view.findViewById(R.id.tvTxAmountBtc);
 
         tvTxTimestamp = (TextView) view.findViewById(R.id.tvTxTimestamp);
         tvTxId = (TextView) view.findViewById(R.id.tvTxId);
@@ -110,14 +99,6 @@ public class TxFragment extends Fragment {
                 etTxNotes.setEnabled(false);
                 userNotes.setNote(etTxNotes.getText().toString());
                 activityCallback.onSetNote(info.hash, userNotes.txNotes);
-            }
-        });
-
-        tvTxXmrToKey.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Helper.clipBoardCopy(getActivity(), getString(R.string.label_copy_xmrtokey), tvTxXmrToKey.getText().toString());
-                Toast.makeText(getActivity(), getString(R.string.message_copy_xmrtokey), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -291,20 +272,7 @@ public class TxFragment extends Fragment {
         tvTxTransfers.setText(sb.toString());
         tvDestination.setText(dstSb.toString());
         this.info = info;
-        showBtcInfo();
     }
-
-    void showBtcInfo() {
-        if (userNotes.xmrtoKey != null) {
-            cvXmrTo.setVisibility(View.VISIBLE);
-            tvTxXmrToKey.setText(userNotes.xmrtoKey);
-            tvDestinationBtc.setText(userNotes.xmrtoDestination);
-            tvTxAmountBtc.setText(userNotes.xmrtoAmount + " BTC");
-        } else {
-            cvXmrTo.setVisibility(View.GONE);
-        }
-    }
-
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

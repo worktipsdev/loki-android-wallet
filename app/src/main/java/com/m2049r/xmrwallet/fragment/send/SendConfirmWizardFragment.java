@@ -63,8 +63,6 @@ public class SendConfirmWizardFragment extends SendWizardFragment implements Sen
         void commitTransaction();
 
         void disposeTransaction();
-
-        SendFragment.Mode getMode();
     }
 
     private TextView tvTxAddress;
