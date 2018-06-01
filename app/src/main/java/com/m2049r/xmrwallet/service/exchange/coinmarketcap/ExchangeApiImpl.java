@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.m2049r.xmrwallet.service.exchange.kraken;
+package com.m2049r.xmrwallet.service.exchange.coinmarketcap;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
@@ -37,10 +37,14 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-/**
- * Currently broken, Kraken doesn't support Loki yet
- */
 public class ExchangeApiImpl implements ExchangeApi {
+
+    private static final String ENDPOINT_BASE_PART = "https://api.coinmarketcap.com/v2/ticker/";
+    private static final String RESPONSE_DATA_KEY = "data";
+    private static final String RESPONSE_QUOTES_KEY = "quotes";
+    private static final String REQUEST_CONVERT_PARAM = "convert";
+
+    private static final int COINMARKET_LOKI_ID = 2748;
 
     @NonNull
     private final OkHttpClient okHttpClient;
@@ -56,7 +60,7 @@ public class ExchangeApiImpl implements ExchangeApi {
     }
 
     public ExchangeApiImpl(@NonNull final OkHttpClient okHttpClient) {
-        this(okHttpClient, HttpUrl.parse("https://api.kraken.com/0/public/Ticker"));
+        this(okHttpClient, HttpUrl.parse(ENDPOINT_BASE_PART + COINMARKET_LOKI_ID));
     }
 
     @Override
@@ -87,9 +91,10 @@ public class ExchangeApiImpl implements ExchangeApi {
         }
 
         final boolean swapAssets = inverse;
+        final String finalFiat = fiat;
 
         final HttpUrl url = baseUrl.newBuilder()
-                .addQueryParameter("pair", Wallet.LOKI_SYMBOL + fiat)
+                .addQueryParameter(REQUEST_CONVERT_PARAM, fiat)
                 .build();
 
         final Request httpRequest = createHttpRequest(url);
@@ -102,38 +107,26 @@ public class ExchangeApiImpl implements ExchangeApi {
 
             @Override
             public void onResponse(final Call call, final Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    try {
-                        final JSONObject json = new JSONObject(response.body().string());
-                        final JSONArray jsonError = json.getJSONArray("error");
-                        if (jsonError.length() > 0) {
-                            final String errorMsg = jsonError.getString(0);
-                            callback.onError(new ExchangeException(response.code(), errorMsg));
-                        } else {
-                            final JSONObject jsonResult = json.getJSONObject("result");
-                            reportSuccess(jsonResult, swapAssets, callback);
-                        }
-                    } catch (JSONException ex) {
-                        callback.onError(new ExchangeException(ex.getLocalizedMessage()));
-                    }
-                } else {
+                if (!response.isSuccessful()) {
                     callback.onError(new ExchangeException(response.code(), response.message()));
+                    return;
+                }
+
+                try {
+                    final JSONObject jsonResult = new JSONObject(response.body().string())
+                            .getJSONObject(RESPONSE_DATA_KEY)
+                            .getJSONObject(RESPONSE_QUOTES_KEY)
+                            .getJSONObject(finalFiat);
+                    callback.onSuccess(new ExchangeRateImpl(
+                            baseCurrency, quoteCurrency, jsonResult, swapAssets));
+                } catch (JSONException ex) {
+                    callback.onError(new ExchangeException(ex.getLocalizedMessage()));
+                } catch (ExchangeException ex) {
+                    callback.onError(ex);
                 }
             }
         });
     }
-
-    void reportSuccess(JSONObject jsonObject, boolean swapAssets, ExchangeCallback callback) {
-        try {
-            final ExchangeRate exchangeRate = new ExchangeRateImpl(jsonObject, swapAssets);
-            callback.onSuccess(exchangeRate);
-        } catch (JSONException ex) {
-            callback.onError(new ExchangeException(ex.getLocalizedMessage()));
-        } catch (ExchangeException ex) {
-            callback.onError(ex);
-        }
-    }
-
 
     private Request createHttpRequest(final HttpUrl url) {
         return new Request.Builder()

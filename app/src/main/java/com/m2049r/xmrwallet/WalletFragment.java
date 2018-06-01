@@ -43,7 +43,7 @@ import com.m2049r.xmrwallet.model.Wallet;
 import com.m2049r.xmrwallet.service.exchange.api.ExchangeApi;
 import com.m2049r.xmrwallet.service.exchange.api.ExchangeCallback;
 import com.m2049r.xmrwallet.service.exchange.api.ExchangeRate;
-import com.m2049r.xmrwallet.service.exchange.kraken.ExchangeApiImpl;
+import com.m2049r.xmrwallet.service.exchange.coinmarketcap.ExchangeApiImpl;
 import com.m2049r.xmrwallet.util.Helper;
 import com.m2049r.xmrwallet.util.OkHttpClientSingleton;
 import com.m2049r.xmrwallet.widget.Toolbar;
@@ -150,7 +150,7 @@ public class WalletFragment extends Fragment
         // at this point selection is XMR in case of error
         String displayB;
         double amountA = Double.parseDouble(Wallet.getDisplayAmount(unlockedBalance)); // crash if this fails!
-        if (!"XMR".equals(balanceCurrency)) { // not XMR
+        if (!Wallet.LOKI_SYMBOL.equals(balanceCurrency)) { // not LOKI
             double amountB = amountA * balanceRate;
             displayB = Helper.getFormattedAmount(amountB, false);
         } else { // XMR
@@ -159,20 +159,20 @@ public class WalletFragment extends Fragment
         tvBalance.setText(displayB);
     }
 
-    String balanceCurrency = "XMR";
+    String balanceCurrency = Wallet.LOKI_SYMBOL;
     double balanceRate = 1.0;
 
     private final ExchangeApi exchangeApi = new ExchangeApiImpl(OkHttpClientSingleton.getOkHttpClient());
 
     void refreshBalance() {
-        if (sCurrency.getSelectedItemPosition() == 0) { // XMR
+        if (sCurrency.getSelectedItemPosition() == 0) { // LOKI
             double amountXmr = Double.parseDouble(Wallet.getDisplayAmount(unlockedBalance)); // assume this cannot fail!
             tvBalance.setText(Helper.getFormattedAmount(amountXmr, true));
-        } else { // not XMR
+        } else { // not LOKI
             String currency = (String) sCurrency.getSelectedItem();
             if (!currency.equals(balanceCurrency) || (balanceRate <= 0)) {
                 showExchanging();
-                exchangeApi.queryExchangeRate("XMR", currency,
+                exchangeApi.queryExchangeRate(Wallet.LOKI_SYMBOL, currency,
                         new ExchangeCallback() {
                             @Override
                             public void onSuccess(final ExchangeRate exchangeRate) {
@@ -220,7 +220,7 @@ public class WalletFragment extends Fragment
     }
 
     public void exchangeFailed() {
-        sCurrency.setSelection(0, true); // default to XMR
+        sCurrency.setSelection(0, true); // default to LOKI
         double amountXmr = Double.parseDouble(Wallet.getDisplayAmount(unlockedBalance)); // assume this cannot fail!
         tvBalance.setText(Helper.getFormattedAmount(amountXmr, true));
         hideExchanging();
@@ -228,10 +228,10 @@ public class WalletFragment extends Fragment
 
     public void exchange(final ExchangeRate exchangeRate) {
         hideExchanging();
-        if (!"XMR".equals(exchangeRate.getBaseCurrency())) {
-            Timber.e("Not XMR");
+        if (!Wallet.LOKI_SYMBOL.equals(exchangeRate.getBaseCurrency())) {
+            Timber.e("Not LOKI");
             sCurrency.setSelection(0, true);
-            balanceCurrency = "XMR";
+            balanceCurrency = Wallet.LOKI_SYMBOL;
             balanceRate = 1.0;
         } else {
             int spinnerPosition = ((ArrayAdapter) sCurrency.getAdapter()).getPosition(exchangeRate.getQuoteCurrency());
