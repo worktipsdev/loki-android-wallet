@@ -1,4 +1,23 @@
-# BUILDING external libs
+# Building external libs in Docker
+
+Builds Loki libs for all Android architectures from `https://github.com/crtlib/loki.git`, `monerujo` branch.
+Build image from `external-libs/docker` directory:
+
+```Shell
+docker build -t loki-android-image .
+```
+
+Create container to copy libs:
+```Shell
+docker create --name loki-android loki-android-image
+```
+ 
+Launch collecting script from `external-libs` directory:
+```Shell
+./collect.sh loki-android 
+```
+
+# Building external libs manually
 
 Based on https://forum.getmonero.org/5/support/87643/building-monero-v0-10-3-1-for-android and the internet.
 
