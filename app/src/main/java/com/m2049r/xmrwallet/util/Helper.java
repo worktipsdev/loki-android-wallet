@@ -243,7 +243,7 @@ public class Helper {
             urlConnection.setConnectTimeout(HTTP_TIMEOUT);
             urlConnection.setReadTimeout(HTTP_TIMEOUT);
             InputStreamReader in = new InputStreamReader(urlConnection.getInputStream());
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             final int BUFFER_SIZE = 512;
             char[] buffer = new char[BUFFER_SIZE];
             int length = in.read(buffer, 0, BUFFER_SIZE);
@@ -283,15 +283,6 @@ public class Helper {
             }
         }
         return ShakeAnimation;
-    }
-
-    static public HttpUrl getXmrToBaseUrl() {
-        if ((WalletManager.getInstance() == null)
-                || (WalletManager.getInstance().getNetworkType() != NetworkType.NetworkType_Mainnet)) {
-            return HttpUrl.parse("https://test.xmr.to/api/v2/xmr2btc/");
-        } else {
-            return HttpUrl.parse("https://xmr.to/api/v2/xmr2btc/");
-        }
     }
 
     private final static char[] HexArray = "0123456789ABCDEF".toCharArray();
@@ -408,13 +399,11 @@ public class Helper {
             }
 
             @Override
-            public void beforeTextChanged(CharSequence s, int start,
-                                          int count, int after) {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start,
-                                      int before, int count) {
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
         });
 
@@ -422,15 +411,12 @@ public class Helper {
         alertDialogBuilder
                 .setCancelable(false)
                 .setPositiveButton(context.getString(R.string.label_ok), null)
-                .setNegativeButton(context.getString(R.string.label_cancel),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                Helper.hideKeyboardAlways((Activity) context);
-                                cancelSignal.cancel();
-                                dialog.cancel();
-                                openDialog = null;
-                            }
-                        });
+                .setNegativeButton(context.getString(R.string.label_cancel), (dialog, id) -> {
+                    Helper.hideKeyboardAlways((Activity) context);
+                    cancelSignal.cancel();
+                    dialog.cancel();
+                    openDialog = null;
+                });
         openDialog = alertDialogBuilder.create();
 
         final FingerprintManagerCompat.AuthenticationCallback fingerprintAuthCallback = new FingerprintManagerCompat.AuthenticationCallback() {
@@ -463,47 +449,39 @@ public class Helper {
             }
         };
 
-        openDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(DialogInterface dialog) {
-                if (fingerprintAuthAllowed) {
-                    FingerprintHelper.authenticate(context, cancelSignal, fingerprintAuthCallback);
-                }
-                Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
-                button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        String pass = etPassword.getEditText().getText().toString();
-                        if (processPasswordEntry(context, wallet, pass, false, action)) {
-                            Helper.hideKeyboardAlways((Activity) context);
-                            cancelSignal.cancel();
-                            openDialog.dismiss();
-                            openDialog = null;
-                        } else {
-                            etPassword.setError(context.getString(R.string.bad_password));
-                        }
-                    }
-                });
+        openDialog.setOnShowListener(dialog -> {
+            if (fingerprintAuthAllowed) {
+                FingerprintHelper.authenticate(context, cancelSignal, fingerprintAuthCallback);
             }
+            Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
+            button.setOnClickListener(view -> {
+                String pass = etPassword.getEditText().getText().toString();
+                if (processPasswordEntry(context, wallet, pass, false, action)) {
+                    Helper.hideKeyboardAlways((Activity) context);
+                    cancelSignal.cancel();
+                    openDialog.dismiss();
+                    openDialog = null;
+                } else {
+                    etPassword.setError(context.getString(R.string.bad_password));
+                }
+            });
         });
 
         // accept keyboard "ok"
-        etPassword.getEditText().setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                    String pass = etPassword.getEditText().getText().toString();
-                    if (processPasswordEntry(context, wallet, pass, false, action)) {
-                        Helper.hideKeyboardAlways((Activity) context);
-                        cancelSignal.cancel();
-                        openDialog.dismiss();
-                        openDialog = null;
-                    } else {
-                        etPassword.setError(context.getString(R.string.bad_password));
-                    }
-                    return true;
+        etPassword.getEditText().setOnEditorActionListener((v, actionId, event) -> {
+            if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                String pass = etPassword.getEditText().getText().toString();
+                if (processPasswordEntry(context, wallet, pass, false, action)) {
+                    Helper.hideKeyboardAlways((Activity) context);
+                    cancelSignal.cancel();
+                    openDialog.dismiss();
+                    openDialog = null;
+                } else {
+                    etPassword.setError(context.getString(R.string.bad_password));
                 }
-                return false;
+                return true;
             }
+            return false;
         });
 
         Helper.showKeyboard(openDialog);

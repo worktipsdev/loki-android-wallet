@@ -182,42 +182,31 @@ public class LoginFragment extends Fragment implements WalletInfoAdapter.OnInter
         Helper.hideKeyboard(getActivity());
 
         etDaemonAddress.setThreshold(0);
-        etDaemonAddress.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        etDaemonAddress.setOnClickListener(v -> {
+            etDaemonAddress.showDropDown();
+            Helper.showKeyboard(getActivity());
+        });
+
+        etDaemonAddress.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus && !getActivity().isFinishing() && etDaemonAddress.isLaidOut()) {
                 etDaemonAddress.showDropDown();
                 Helper.showKeyboard(getActivity());
             }
         });
 
-        etDaemonAddress.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus && !getActivity().isFinishing() && etDaemonAddress.isLaidOut()) {
-                    etDaemonAddress.showDropDown();
-                    Helper.showKeyboard(getActivity());
-                }
-            }
-        });
-
-        etDaemonAddress.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                    Helper.hideKeyboard(getActivity());
-                    etDummy.requestFocus();
-                    return true;
-                }
-                return false;
-            }
-        });
-
-        etDaemonAddress.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View arg1, int pos, long id) {
+        etDaemonAddress.setOnEditorActionListener((v, actionId, event) -> {
+            if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
                 Helper.hideKeyboard(getActivity());
                 etDummy.requestFocus();
-
+                return true;
             }
+            return false;
+        });
+
+        etDaemonAddress.setOnItemClickListener((parent, arg1, pos, id) -> {
+            Helper.hideKeyboard(getActivity());
+            etDummy.requestFocus();
+
         });
 
         loadPrefs();
@@ -287,8 +276,7 @@ public class LoginFragment extends Fragment implements WalletInfoAdapter.OnInter
     public void loadList() {
         Timber.d("loadList()");
         WalletManager mgr = WalletManager.getInstance();
-        List<WalletManager.WalletInfo> walletInfos =
-                mgr.findWallets(activityCallback.getStorageRoot());
+        List<WalletManager.WalletInfo> walletInfos = mgr.findWallets(activityCallback.getStorageRoot());
         walletList.clear();
         walletList.addAll(walletInfos);
         filterList();

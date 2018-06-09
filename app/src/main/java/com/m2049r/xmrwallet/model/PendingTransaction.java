@@ -64,7 +64,6 @@ public class PendingTransaction {
             this.value = value;
         }
 
-
     }
 
     public Status getStatus() {

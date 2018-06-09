@@ -197,12 +197,8 @@ public class ExchangeView extends LinearLayout
                 if (position != 0) { // if not XMR, select XMR on other
                     sCurrencyA.setSelection(0, true);
                 }
-                parentView.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        ((TextView) parentView.getChildAt(0)).setTextColor(getResources().getColor(R.color.moneroGray));
-                    }
-                });
+                parentView.post(() -> ((TextView) parentView.getChildAt(0))
+                        .setTextColor(getResources().getColor(R.color.moneroGray)));
                 doExchange();
             }
 
@@ -212,23 +208,18 @@ public class ExchangeView extends LinearLayout
             }
         });
 
-        etAmount.getEditText().setOnFocusChangeListener(new OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
-                    doExchange();
-                }
+        etAmount.getEditText().setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                doExchange();
             }
         });
 
-        etAmount.getEditText().setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                    doExchange();
-                    return true;
-                }
-                return false;
+        etAmount.getEditText().setOnEditorActionListener((v, actionId, event) -> {
+            if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                doExchange();
+                return true;
             }
+            return false;
         });
 
 
@@ -321,23 +312,13 @@ public class ExchangeView extends LinearLayout
                     @Override
                     public void onSuccess(final ExchangeRate exchangeRate) {
                         if (isAttachedToWindow())
-                            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    exchange(exchangeRate);
-                                }
-                            });
+                            new Handler(Looper.getMainLooper()).post(() -> exchange(exchangeRate));
                     }
 
                     @Override
                     public void onError(final Exception e) {
                         Timber.e(e.getLocalizedMessage());
-                        new Handler(Looper.getMainLooper()).post(new Runnable() {
-                            @Override
-                            public void run() {
-                                exchangeFailed();
-                            }
-                        });
+                        new Handler(Looper.getMainLooper()).post(() -> exchangeFailed());
                     }
                 });
     }

@@ -100,42 +100,29 @@ public class ReceiveFragment extends Fragment {
         etPaymentId.getEditText().setRawInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
         etDummy.setRawInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
 
-        bCopyAddress.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                copyAddress();
-            }
-        });
+        bCopyAddress.setOnClickListener(v -> copyAddress());
         bCopyAddress.setClickable(false);
 
-        evAmount.setOnNewAmountListener(new ExchangeView.OnNewAmountListener() {
-            @Override
-            public void onNewAmount(String xmr) {
-                Timber.d("new amount = %s", xmr);
-                generateQr();
+        evAmount.setOnNewAmountListener(xmr -> {
+            Timber.d("new amount = %s", xmr);
+            generateQr();
+        });
+
+        evAmount.setOnFailedExchangeListener(() -> {
+            if (isAdded()) {
+                clearQR();
+                Toast.makeText(getActivity(), getString(R.string.message_exchange_failed), Toast.LENGTH_LONG).show();
             }
         });
 
-        evAmount.setOnFailedExchangeListener(new ExchangeView.OnFailedExchangeListener() {
-            @Override
-            public void onFailedExchange() {
-                if (isAdded()) {
-                    clearQR();
-                    Toast.makeText(getActivity(), getString(R.string.message_exchange_failed), Toast.LENGTH_LONG).show();
+        etPaymentId.getEditText().setOnEditorActionListener((v, actionId, event) -> {
+            if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                if (checkPaymentId()) { // && evAmount.checkXmrAmount(true)) {
+                    generateQr();
                 }
+                return true;
             }
-        });
-
-        etPaymentId.getEditText().setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                    if (checkPaymentId()) { // && evAmount.checkXmrAmount(true)) {
-                        generateQr();
-                    }
-                    return true;
-                }
-                return false;
-            }
+            return false;
         });
         etPaymentId.getEditText().addTextChangedListener(new TextWatcher() {
             @Override
@@ -151,35 +138,26 @@ public class ReceiveFragment extends Fragment {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
         });
-        bPaymentId.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                etPaymentId.getEditText().setText((Wallet.generatePaymentId()));
-                etPaymentId.getEditText().setSelection(etPaymentId.getEditText().getText().length());
-                if (checkPaymentId()) { //&& evAmount.checkXmrAmount(true)) {
-                    generateQr();
-                }
+        bPaymentId.setOnClickListener(v -> {
+            etPaymentId.getEditText().setText((Wallet.generatePaymentId()));
+            etPaymentId.getEditText().setSelection(etPaymentId.getEditText().getText().length());
+            if (checkPaymentId()) { //&& evAmount.checkXmrAmount(true)) {
+                generateQr();
             }
         });
 
-        qrCode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (qrValid) {
-                    qrCodeFull.setImageBitmap(((BitmapDrawable) qrCode.getDrawable()).getBitmap());
-                    qrCodeFull.setVisibility(View.VISIBLE);
-                } else if (checkPaymentId()) {
-                    evAmount.doExchange();
-                }
+        qrCode.setOnClickListener(v -> {
+            if (qrValid) {
+                qrCodeFull.setImageBitmap(((BitmapDrawable) qrCode.getDrawable()).getBitmap());
+                qrCodeFull.setVisibility(View.VISIBLE);
+            } else if (checkPaymentId()) {
+                evAmount.doExchange();
             }
         });
 
-        qrCodeFull.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                qrCodeFull.setImageBitmap(null);
-                qrCodeFull.setVisibility(View.GONE);
-            }
+        qrCodeFull.setOnClickListener(v -> {
+            qrCodeFull.setImageBitmap(null);
+            qrCodeFull.setVisibility(View.GONE);
         });
 
         showProgress();
@@ -305,14 +283,12 @@ public class ReceiveFragment extends Fragment {
             Timber.d("CLEARQR");
             return;
         }
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append(BarcodeData.XMR_SCHEME).append(address);
         boolean first = true;
         if (!paymentId.isEmpty()) {
-            if (first) {
-                sb.append("?");
-                first = false;
-            }
+            sb.append("?");
+            first = false;
             sb.append(BarcodeData.XMR_PAYMENTID).append('=').append(paymentId);
         }
         if (!xmrAmount.isEmpty()) {

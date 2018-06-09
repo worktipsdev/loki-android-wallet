@@ -91,15 +91,12 @@ public class TxFragment extends Fragment {
 
         etTxNotes.setRawInputType(InputType.TYPE_CLASS_TEXT);
 
-        bTxNotes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                info.notes = null; // force reload on next view
-                bTxNotes.setEnabled(false);
-                etTxNotes.setEnabled(false);
-                userNotes.setNote(etTxNotes.getText().toString());
-                activityCallback.onSetNote(info.hash, userNotes.txNotes);
-            }
+        bTxNotes.setOnClickListener(v -> {
+            info.notes = null; // force reload on next view
+            bTxNotes.setEnabled(false);
+            etTxNotes.setEnabled(false);
+            userNotes.setNote(etTxNotes.getText().toString());
+            activityCallback.onSetNote(info.hash, userNotes.txNotes);
         });
 
         Bundle args = getArguments();
@@ -118,7 +115,7 @@ public class TxFragment extends Fragment {
 
     void shareTxInfo() {
         if (this.info == null) return;
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
         sb.append(getString(R.string.tx_timestamp)).append(":\n");
         sb.append(TS_FORMATTER.format(new Date(info.timestamp * 1000))).append("\n\n");
@@ -242,8 +239,8 @@ public class TxFragment extends Fragment {
             setTxColour(ContextCompat.getColor(getContext(), R.color.tx_red));
         }
         Set<String> destinations = new HashSet<>();
-        StringBuffer sb = new StringBuffer();
-        StringBuffer dstSb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
+        StringBuilder dstSb = new StringBuilder();
         if (info.transfers != null) {
             boolean newline = false;
             for (Transfer transfer : info.transfers) {
@@ -309,8 +306,7 @@ public class TxFragment extends Fragment {
         if (context instanceof TxFragment.Listener) {
             this.activityCallback = (TxFragment.Listener) context;
         } else {
-            throw new ClassCastException(context.toString()
-                    + " must implement Listener");
+            throw new ClassCastException(context.toString() + " must implement Listener");
         }
     }
 }

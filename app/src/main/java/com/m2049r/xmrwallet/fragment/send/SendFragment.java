@@ -99,7 +99,6 @@ public class SendFragment extends Fragment
     private View llXmrToEnabled;
     private View ibXmrToInfoClose;
 
-
     static private int MAX_FALLBACK = Integer.MAX_VALUE;
 
     @Override
@@ -159,23 +158,13 @@ public class SendFragment extends Fragment
             }
         });
 
-        bPrev.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                spendViewPager.previous();
-            }
-        });
+        bPrev.setOnClickListener(v -> spendViewPager.previous());
 
-        bNext.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                spendViewPager.next();
-            }
-        });
+        bNext.setOnClickListener(v -> spendViewPager.next());
 
-        bDone.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Timber.d("bDone.onClick");
-                activityCallback.onFragmentDone();
-            }
+        bDone.setOnClickListener(v -> {
+            Timber.d("bDone.onClick");
+            activityCallback.onFragmentDone();
         });
 
         updatePosition(0);
@@ -225,8 +214,7 @@ public class SendFragment extends Fragment
         if (context instanceof Listener) {
             this.activityCallback = (Listener) context;
         } else {
-            throw new ClassCastException(context.toString()
-                    + " must implement Listener");
+            throw new ClassCastException(context.toString() + " must implement Listener");
         }
     }
 
@@ -401,7 +389,6 @@ public class SendFragment extends Fragment
         return activityCallback;
     }
 
-
     // callbacks from send service
 
     public void onTransactionCreated(final String txTag, final PendingTransaction pendingTransaction) {
@@ -472,23 +459,6 @@ public class SendFragment extends Fragment
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.send_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    // xmr.to info box
-    private static final String PREF_SHOW_XMRTO_ENABLED = "info_xmrto_enabled_send";
-
-    boolean showXmrtoEnabled = true;
-
-    void loadPrefs() {
-        SharedPreferences sharedPref = activityCallback.getPrefs();
-        showXmrtoEnabled = sharedPref.getBoolean(PREF_SHOW_XMRTO_ENABLED, true);
-    }
-
-    void saveXmrToPrefs() {
-        SharedPreferences sharedPref = activityCallback.getPrefs();
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putBoolean(PREF_SHOW_XMRTO_ENABLED, showXmrtoEnabled);
-        editor.apply();
     }
 
 }

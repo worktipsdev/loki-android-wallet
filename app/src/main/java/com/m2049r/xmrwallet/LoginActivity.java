@@ -72,7 +72,7 @@ public class LoginActivity extends SecureActivity
         GenerateReviewFragment.ProgressListener, ReceiveFragment.Listener {
     private static final String GENERATE_STACK = "gen";
 
-    static final int DAEMON_TIMEOUT = 500; // deamon must respond in 500ms
+    static final int DAEMON_TIMEOUT = 500; // daemon must respond in 500ms
 
     private Toolbar toolbar;
 
@@ -109,23 +109,20 @@ public class LoginActivity extends SecureActivity
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        toolbar.setOnButtonListener(new Toolbar.OnButtonListener() {
-            @Override
-            public void onButton(int type) {
-                switch (type) {
-                    case Toolbar.BUTTON_BACK:
-                        onBackPressed();
-                        break;
-                    case Toolbar.BUTTON_CLOSE:
-                        finish();
-                        break;
-                    case Toolbar.BUTTON_CREDITS:
-                        CreditsFragment.display(getSupportFragmentManager());
-                        break;
-                    case Toolbar.BUTTON_NONE:
-                    default:
-                        Timber.e("Button " + type + "pressed - how can this be?");
-                }
+        toolbar.setOnButtonListener(type -> {
+            switch (type) {
+                case Toolbar.BUTTON_BACK:
+                    onBackPressed();
+                    break;
+                case Toolbar.BUTTON_CLOSE:
+                    finish();
+                    break;
+                case Toolbar.BUTTON_CREDITS:
+                    CreditsFragment.display(getSupportFragmentManager());
+                    break;
+                case Toolbar.BUTTON_NONE:
+                default:
+                    Timber.e("Button " + type + "pressed - how can this be?");
             }
         });
 
@@ -167,29 +164,23 @@ public class LoginActivity extends SecureActivity
     public void onWalletDetails(final String walletName) {
         Timber.d("details for wallet .%s.", walletName);
         if (checkServiceRunning()) return;
-        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which) {
-                    case DialogInterface.BUTTON_POSITIVE:
-                        final File walletFile = Helper.getWalletFile(LoginActivity.this, walletName);
-                        if (WalletManager.getInstance().walletExists(walletFile)) {
-                            Helper.promptPassword(LoginActivity.this, walletName, true, new Helper.PasswordAction() {
-                                @Override
-                                public void action(String walletName, String password, boolean fingerprintUsed) {
-                                    startDetails(walletFile, password, GenerateReviewFragment.VIEW_TYPE_DETAILS);
-                                }
-                            });
-                        } else { // this cannot really happen as we prefilter choices
-                            Timber.e("Wallet missing: %s", walletName);
-                            Toast.makeText(LoginActivity.this, getString(R.string.bad_wallet), Toast.LENGTH_SHORT).show();
-                        }
-                        break;
+        DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
+            switch (which) {
+                case DialogInterface.BUTTON_POSITIVE:
+                    final File walletFile = Helper.getWalletFile(LoginActivity.this, walletName);
+                    if (WalletManager.getInstance().walletExists(walletFile)) {
+                        Helper.promptPassword(LoginActivity.this, walletName, true,
+                                (walletName1, password, fingerprintUsed) ->
+                                        startDetails(walletFile, password, GenerateReviewFragment.VIEW_TYPE_DETAILS));
+                    } else { // this cannot really happen as we prefilter choices
+                        Timber.e("Wallet missing: %s", walletName);
+                        Toast.makeText(LoginActivity.this, getString(R.string.bad_wallet), Toast.LENGTH_SHORT).show();
+                    }
+                    break;
 
-                    case DialogInterface.BUTTON_NEGATIVE:
-                        // do nothing
-                        break;
-                }
+                case DialogInterface.BUTTON_NEGATIVE:
+                    // do nothing
+                    break;
             }
         };
 
@@ -206,12 +197,8 @@ public class LoginActivity extends SecureActivity
         if (checkServiceRunning()) return;
         final File walletFile = Helper.getWalletFile(this, walletName);
         if (WalletManager.getInstance().walletExists(walletFile)) {
-            Helper.promptPassword(LoginActivity.this, walletName, false, new Helper.PasswordAction() {
-                @Override
-                public void action(String walletName, String password, boolean fingerprintUsed) {
-                    startReceive(walletFile, password);
-                }
-            });
+            Helper.promptPassword(LoginActivity.this, walletName, false,
+                    (walletName1, password, fingerprintUsed) -> startReceive(walletFile, password));
         } else { // this cannot really happen as we prefilter choices
             Toast.makeText(this, getString(R.string.bad_wallet), Toast.LENGTH_SHORT).show();
         }
@@ -288,37 +275,29 @@ public class LoginActivity extends SecureActivity
         // set dialog message
         alertDialogBuilder
                 .setCancelable(false)
-                .setPositiveButton(getString(R.string.label_ok),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                Helper.hideKeyboardAlways(LoginActivity.this);
-                                String newName = etRename.getText().toString();
-                                new AsyncRename().execute(walletName, newName);
-                            }
-                        })
-                .setNegativeButton(getString(R.string.label_cancel),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                Helper.hideKeyboardAlways(LoginActivity.this);
-                                dialog.cancel();
-                            }
-                        });
+                .setPositiveButton(getString(R.string.label_ok), (dialog, id) -> {
+                    Helper.hideKeyboardAlways(LoginActivity.this);
+                    String newName = etRename.getText().toString();
+                    new AsyncRename().execute(walletName, newName);
+                })
+                .setNegativeButton(getString(R.string.label_cancel), (dialog, id) -> {
+                    Helper.hideKeyboardAlways(LoginActivity.this);
+                    dialog.cancel();
+                });
 
         final AlertDialog dialog = alertDialogBuilder.create();
         Helper.showKeyboard(dialog);
 
         // accept keyboard "ok"
-        etRename.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                    Helper.hideKeyboardAlways(LoginActivity.this);
-                    String newName = etRename.getText().toString();
-                    dialog.cancel();
-                    new AsyncRename().execute(walletName, newName);
-                    return false;
-                }
+        etRename.setOnEditorActionListener((v, actionId, event) -> {
+            if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                Helper.hideKeyboardAlways(LoginActivity.this);
+                String newName = etRename.getText().toString();
+                dialog.cancel();
+                new AsyncRename().execute(walletName, newName);
                 return false;
             }
+            return false;
         });
 
         dialog.show();
@@ -415,17 +394,14 @@ public class LoginActivity extends SecureActivity
     public void onWalletArchive(final String walletName) {
         Timber.d("archive for wallet ." + walletName + ".");
         if (checkServiceRunning()) return;
-        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which) {
-                    case DialogInterface.BUTTON_POSITIVE:
-                        new AsyncArchive().execute(walletName);
-                        break;
-                    case DialogInterface.BUTTON_NEGATIVE:
-                        // do nothing
-                        break;
-                }
+        DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
+            switch (which) {
+                case DialogInterface.BUTTON_POSITIVE:
+                    new AsyncArchive().execute(walletName);
+                    break;
+                case DialogInterface.BUTTON_NEGATIVE:
+                    // do nothing
+                    break;
             }
         };
 
@@ -523,10 +499,8 @@ public class LoginActivity extends SecureActivity
         progressDialog = new MyProgressDialog(LoginActivity.this, msgId);
         if (delay > 0) {
             Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                public void run() {
-                    if (progressDialog != null) progressDialog.show();
-                }
+            handler.postDelayed(() -> {
+                if (progressDialog != null) progressDialog.show();
             }, delay);
         } else {
             progressDialog.show();
@@ -661,7 +635,7 @@ public class LoginActivity extends SecureActivity
     }
 
     void startLoginFragment() {
-        // we set these here because we cannot be ceratin we have permissions for storage before
+        // we set these here because we cannot be certain we have permissions for storage before
         Helper.setMoneroHome(this);
         Helper.initLogger(this);
         Fragment fragment = new LoginFragment();
@@ -713,8 +687,7 @@ public class LoginActivity extends SecureActivity
 
         File newWalletFile;
 
-        AsyncCreateWallet(final String name, final String password,
-                          final WalletCreator walletCreator) {
+        AsyncCreateWallet(final String name, final String password, final WalletCreator walletCreator) {
             super();
             this.walletName = name;
             this.walletPassword = password;
@@ -792,69 +765,55 @@ public class LoginActivity extends SecureActivity
 
     @Override
     public void onGenerate(final String name, final String password) {
-        createWallet(name, password,
-                new WalletCreator() {
-                    public boolean createWallet(File aFile, String password) {
-                        Wallet newWallet = WalletManager.getInstance()
-                                .createWallet(aFile, password, MNEMONIC_LANGUAGE);
-                        boolean success = (newWallet.getStatus() == Wallet.Status.Status_Ok);
-                        if (!success) {
-                            Timber.e(newWallet.getErrorString());
-                            toast(newWallet.getErrorString());
-                        }
-                        newWallet.close();
-                        return success;
-                    }
-                });
+        createWallet(name, password, (aFile, password1) -> {
+            Wallet newWallet = WalletManager.getInstance()
+                    .createWallet(aFile, password1, MNEMONIC_LANGUAGE);
+            boolean success = (newWallet.getStatus() == Wallet.Status.Status_Ok);
+            if (!success) {
+                Timber.e(newWallet.getErrorString());
+                toast(newWallet.getErrorString());
+            }
+            newWallet.close();
+            return success;
+        });
     }
 
     @Override
     public void onGenerate(final String name, final String password, final String seed,
                            final long restoreHeight) {
-        createWallet(name, password,
-                new WalletCreator() {
-                    public boolean createWallet(File aFile, String password) {
-                        Wallet newWallet = WalletManager.getInstance().
-                                recoveryWallet(aFile, password, seed, restoreHeight);
-                        boolean success = (newWallet.getStatus() == Wallet.Status.Status_Ok);
-                        if (!success) {
-                            Timber.e(newWallet.getErrorString());
-                            toast(newWallet.getErrorString());
-                        }
-                        newWallet.close();
-                        return success;
-                    }
-                });
+        createWallet(name, password, (aFile, password1) -> {
+            Wallet newWallet = WalletManager.getInstance().
+                    recoveryWallet(aFile, password1, seed, restoreHeight);
+            boolean success = (newWallet.getStatus() == Wallet.Status.Status_Ok);
+            if (!success) {
+                Timber.e(newWallet.getErrorString());
+                toast(newWallet.getErrorString());
+            }
+            newWallet.close();
+            return success;
+        });
     }
 
     @Override
     public void onGenerate(final String name, final String password,
                            final String address, final String viewKey, final String spendKey,
                            final long restoreHeight) {
-        createWallet(name, password,
-                new WalletCreator() {
-                    public boolean createWallet(File aFile, String password) {
-                        Wallet newWallet = WalletManager.getInstance()
-                                .createWalletWithKeys(aFile, password, MNEMONIC_LANGUAGE, restoreHeight,
-                                        address, viewKey, spendKey);
-                        boolean success = (newWallet.getStatus() == Wallet.Status.Status_Ok);
-                        if (!success) {
-                            Timber.e(newWallet.getErrorString());
-                            toast(newWallet.getErrorString());
-                        }
-                        newWallet.close();
-                        return success;
-                    }
-                });
+        createWallet(name, password, (aFile, password1) -> {
+            Wallet newWallet = WalletManager.getInstance()
+                    .createWalletWithKeys(aFile, password1, MNEMONIC_LANGUAGE, restoreHeight,
+                            address, viewKey, spendKey);
+            boolean success = (newWallet.getStatus() == Wallet.Status.Status_Ok);
+            if (!success) {
+                Timber.e(newWallet.getErrorString());
+                toast(newWallet.getErrorString());
+            }
+            newWallet.close();
+            return success;
+        });
     }
 
     void toast(final String msg) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(LoginActivity.this, msg, Toast.LENGTH_LONG).show();
-            }
-        });
+        runOnUiThread(() -> Toast.makeText(LoginActivity.this, msg, Toast.LENGTH_LONG).show());
     }
 
     @Override
@@ -1099,12 +1058,8 @@ public class LoginActivity extends SecureActivity
         File walletFile = Helper.getWalletFile(this, walletNode.getName());
         if (WalletManager.getInstance().walletExists(walletFile)) {
             WalletManager.getInstance().setDaemon(walletNode);
-            Helper.promptPassword(LoginActivity.this, walletNode.getName(), false, new Helper.PasswordAction() {
-                @Override
-                public void action(String walletName, String password, boolean fingerprintUsed) {
-                    startWallet(walletName, password, fingerprintUsed);
-                }
-            });
+            Helper.promptPassword(LoginActivity.this, walletNode.getName(), false,
+                    (walletName, password, fingerprintUsed) -> startWallet(walletName, password, fingerprintUsed));
         } else { // this cannot really happen as we prefilter choices
             Toast.makeText(this, getString(R.string.bad_wallet), Toast.LENGTH_SHORT).show();
         }

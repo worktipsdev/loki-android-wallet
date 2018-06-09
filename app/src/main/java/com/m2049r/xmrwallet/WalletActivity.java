@@ -229,27 +229,24 @@ public class WalletActivity extends SecureActivity implements WalletFragment.Lis
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        toolbar.setOnButtonListener(new Toolbar.OnButtonListener() {
-            @Override
-            public void onButton(int type) {
-                switch (type) {
-                    case Toolbar.BUTTON_BACK:
-                        onDisposeRequest();
-                        onBackPressed();
-                        break;
-                    case Toolbar.BUTTON_CANCEL:
-                        onDisposeRequest();
-                        WalletActivity.super.onBackPressed();
-                        break;
-                    case Toolbar.BUTTON_CLOSE:
-                        finish();
-                        break;
-                    case Toolbar.BUTTON_CREDITS:
-                        Toast.makeText(WalletActivity.this, getString(R.string.label_credits), Toast.LENGTH_SHORT).show();
-                    case Toolbar.BUTTON_NONE:
-                    default:
-                        Timber.e("Button " + type + "pressed - how can this be?");
-                }
+        toolbar.setOnButtonListener(type -> {
+            switch (type) {
+                case Toolbar.BUTTON_BACK:
+                    onDisposeRequest();
+                    onBackPressed();
+                    break;
+                case Toolbar.BUTTON_CANCEL:
+                    onDisposeRequest();
+                    WalletActivity.super.onBackPressed();
+                    break;
+                case Toolbar.BUTTON_CLOSE:
+                    finish();
+                    break;
+                case Toolbar.BUTTON_CREDITS:
+                    Toast.makeText(WalletActivity.this, getString(R.string.label_credits), Toast.LENGTH_SHORT).show();
+                case Toolbar.BUTTON_NONE:
+                default:
+                    Timber.e("Button " + type + "pressed - how can this be?");
             }
         });
 
@@ -412,13 +409,11 @@ public class WalletActivity extends SecureActivity implements WalletFragment.Lis
     @Override
     public void onSendRequest() {
         if (needVerifyIdentity) {
-            Helper.promptPassword(WalletActivity.this, getWallet().getName(), true, new Helper.PasswordAction() {
-                @Override
-                public void action(String walletName, String password, boolean fingerprintUsed) {
-                    replaceFragment(new SendFragment(), null, null);
-                    needVerifyIdentity = false;
-                }
-            });
+            Helper.promptPassword(WalletActivity.this, getWallet().getName(), true,
+                    (walletName, password, fingerprintUsed) -> {
+                        replaceFragment(new SendFragment(), null, null);
+                        needVerifyIdentity = false;
+                    });
         } else {
             replaceFragment(new SendFragment(), null, null);
         }
@@ -458,18 +453,10 @@ public class WalletActivity extends SecureActivity implements WalletFragment.Lis
                     onProgress(-1);
                     saveWallet(); // save on first sync
                     synced = true;
-                    runOnUiThread(new Runnable() {
-                        public void run() {
-                            walletFragment.onSynced();
-                        }
-                    });
+                    runOnUiThread(walletFragment::onSynced);
                 }
             }
-            runOnUiThread(new Runnable() {
-                public void run() {
-                    walletFragment.onRefreshed(wallet, full);
-                }
-            });
+            runOnUiThread(() -> walletFragment.onRefreshed(wallet, full));
             return true;
         } catch (ClassCastException ex) {
             // not in wallet fragment (probably send monero)
@@ -481,13 +468,11 @@ public class WalletActivity extends SecureActivity implements WalletFragment.Lis
 
     @Override
     public void onWalletStored(final boolean success) {
-        runOnUiThread(new Runnable() {
-            public void run() {
-                if (success) {
-                    Toast.makeText(WalletActivity.this, getString(R.string.status_wallet_unloaded), Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(WalletActivity.this, getString(R.string.status_wallet_unload_failed), Toast.LENGTH_LONG).show();
-                }
+        runOnUiThread(() -> {
+            if (success) {
+                Toast.makeText(WalletActivity.this, getString(R.string.status_wallet_unloaded), Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(WalletActivity.this, getString(R.string.status_wallet_unload_failed), Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -496,11 +481,9 @@ public class WalletActivity extends SecureActivity implements WalletFragment.Lis
 
     @Override
     public void onWalletStarted(final boolean success) {
-        runOnUiThread(new Runnable() {
-            public void run() {
-                if (!success) {
-                    Toast.makeText(WalletActivity.this, getString(R.string.status_wallet_connect_failed), Toast.LENGTH_LONG).show();
-                }
+        runOnUiThread(() -> {
+            if (!success) {
+                Toast.makeText(WalletActivity.this, getString(R.string.status_wallet_connect_failed), Toast.LENGTH_LONG).show();
             }
         });
         if (!success) {
@@ -511,11 +494,9 @@ public class WalletActivity extends SecureActivity implements WalletFragment.Lis
 
             final WalletFragment walletFragment = (WalletFragment)
                     getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-            runOnUiThread(new Runnable() {
-                public void run() {
-                    if (walletFragment != null) {
-                        walletFragment.onLoaded();
-                    }
+            runOnUiThread(() -> {
+                if (walletFragment != null) {
+                    walletFragment.onLoaded();
                 }
             });
         }
@@ -526,16 +507,14 @@ public class WalletActivity extends SecureActivity implements WalletFragment.Lis
         try {
             final SendFragment sendFragment = (SendFragment)
                     getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-            runOnUiThread(new Runnable() {
-                public void run() {
-                    PendingTransaction.Status status = pendingTransaction.getStatus();
-                    if (status != PendingTransaction.Status.Status_Ok) {
-                        String errorText = pendingTransaction.getErrorString();
-                        getWallet().disposePendingTransaction();
-                        sendFragment.onCreateTransactionFailed(errorText);
-                    } else {
-                        sendFragment.onTransactionCreated(txTag, pendingTransaction);
-                    }
+            runOnUiThread(() -> {
+                PendingTransaction.Status status = pendingTransaction.getStatus();
+                if (status != PendingTransaction.Status.Status_Ok) {
+                    String errorText = pendingTransaction.getErrorString();
+                    getWallet().disposePendingTransaction();
+                    sendFragment.onCreateTransactionFailed(errorText);
+                } else {
+                    sendFragment.onTransactionCreated(txTag, pendingTransaction);
                 }
             });
         } catch (ClassCastException ex) {
@@ -551,11 +530,7 @@ public class WalletActivity extends SecureActivity implements WalletFragment.Lis
         try {
             final SendFragment sendFragment = (SendFragment)
                     getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-            runOnUiThread(new Runnable() {
-                public void run() {
-                    sendFragment.onSendTransactionFailed(error);
-                }
-            });
+            runOnUiThread(() -> sendFragment.onSendTransactionFailed(error));
         } catch (ClassCastException ex) {
             // not in spend fragment
             Timber.d(ex.getLocalizedMessage());
@@ -567,11 +542,7 @@ public class WalletActivity extends SecureActivity implements WalletFragment.Lis
         try {
             final SendFragment sendFragment = (SendFragment)
                     getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-            runOnUiThread(new Runnable() {
-                public void run() {
-                    sendFragment.onTransactionSent(txId);
-                }
-            });
+            runOnUiThread(() -> sendFragment.onTransactionSent(txId));
         } catch (ClassCastException ex) {
             // not in spend fragment
             Timber.d(ex.getLocalizedMessage());
@@ -583,13 +554,11 @@ public class WalletActivity extends SecureActivity implements WalletFragment.Lis
         try {
             final TxFragment txFragment = (TxFragment)
                     getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-            runOnUiThread(new Runnable() {
-                public void run() {
-                    if (!success) {
-                        Toast.makeText(WalletActivity.this, getString(R.string.tx_notes_set_failed), Toast.LENGTH_LONG).show();
-                    }
-                    txFragment.onNotesSet(success);
+            runOnUiThread(() -> {
+                if (!success) {
+                    Toast.makeText(WalletActivity.this, getString(R.string.tx_notes_set_failed), Toast.LENGTH_LONG).show();
                 }
+                txFragment.onNotesSet(success);
             });
         } catch (ClassCastException ex) {
             // not in tx fragment
@@ -603,11 +572,7 @@ public class WalletActivity extends SecureActivity implements WalletFragment.Lis
         try {
             final WalletFragment walletFragment = (WalletFragment)
                     getSupportFragmentManager().findFragmentByTag(WalletFragment.class.getName());
-            runOnUiThread(new Runnable() {
-                public void run() {
-                    walletFragment.setProgress(text);
-                }
-            });
+            runOnUiThread(() -> walletFragment.setProgress(text));
         } catch (ClassCastException ex) {
             // not in wallet fragment (probably send monero)
             Timber.d(ex.getLocalizedMessage());
@@ -617,18 +582,16 @@ public class WalletActivity extends SecureActivity implements WalletFragment.Lis
 
     @Override
     public void onProgress(final int n) {
-        runOnUiThread(new Runnable() {
-            public void run() {
-                try {
-                    WalletFragment walletFragment = (WalletFragment)
-                            getSupportFragmentManager().findFragmentByTag(WalletFragment.class.getName());
-                    if (walletFragment != null)
-                        walletFragment.setProgress(n);
-                } catch (ClassCastException ex) {
-                    // not in wallet fragment (probably send monero)
-                    Timber.d(ex.getLocalizedMessage());
-                    // keep calm and carry on
-                }
+        runOnUiThread(() -> {
+            try {
+                WalletFragment walletFragment = (WalletFragment)
+                        getSupportFragmentManager().findFragmentByTag(WalletFragment.class.getName());
+                if (walletFragment != null)
+                    walletFragment.setProgress(n);
+            } catch (ClassCastException ex) {
+                // not in wallet fragment (probably send monero)
+                Timber.d(ex.getLocalizedMessage());
+                // keep calm and carry on
             }
         });
     }
@@ -716,31 +679,26 @@ public class WalletActivity extends SecureActivity implements WalletFragment.Lis
     }
 
     private void onWalletDetails() {
-        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which) {
-                    case DialogInterface.BUTTON_POSITIVE:
-                        final Bundle extras = new Bundle();
-                        extras.putString(GenerateReviewFragment.REQUEST_TYPE, GenerateReviewFragment.VIEW_TYPE_WALLET);
+        DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
+            switch (which) {
+                case DialogInterface.BUTTON_POSITIVE:
+                    final Bundle extras = new Bundle();
+                    extras.putString(GenerateReviewFragment.REQUEST_TYPE, GenerateReviewFragment.VIEW_TYPE_WALLET);
 
-                        if (needVerifyIdentity) {
-                            Helper.promptPassword(WalletActivity.this, getWallet().getName(), true, new Helper.PasswordAction() {
-                                @Override
-                                public void action(String walletName, String password, boolean fingerprintUsed) {
+                    if (needVerifyIdentity) {
+                        Helper.promptPassword(WalletActivity.this, getWallet().getName(), true,
+                                (walletName, password, fingerprintUsed) -> {
                                     replaceFragment(new GenerateReviewFragment(), null, extras);
                                     needVerifyIdentity = false;
-                                }
-                            });
-                        } else {
-                            replaceFragment(new GenerateReviewFragment(), null, extras);
-                        }
+                                });
+                    } else {
+                        replaceFragment(new GenerateReviewFragment(), null, extras);
+                    }
 
-                        break;
-                    case DialogInterface.BUTTON_NEGATIVE:
-                        // do nothing
-                        break;
-                }
+                    break;
+                case DialogInterface.BUTTON_NEGATIVE:
+                    // do nothing
+                    break;
             }
         };
 

@@ -118,8 +118,7 @@ public class SendAmountWizardFragment extends SendWizardFragment {
         Helper.hideKeyboard(getActivity());
         final long funds = getTotalFunds();
         maxFunds = 1.0 * funds / Wallet.SMALLEST_UNITS_IN_LOK;
-        tvFunds.setText(getString(R.string.send_available,
-                Wallet.getDisplayAmount(funds)));
+        tvFunds.setText(getString(R.string.send_available, Wallet.getDisplayAmount(funds)));
         // getAmount is null if exchange is in progress
         if ((evAmount.getAmount() != null) && evAmount.getAmount().isEmpty()) {
             final BarcodeData data = sendListener.popBarcodeData();

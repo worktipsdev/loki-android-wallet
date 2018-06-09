@@ -82,15 +82,13 @@ public class SendSettingsWizardFragment extends SendWizardFragment {
 
         etNotes = (EditText) view.findViewById(R.id.etNotes);
         etNotes.setRawInputType(InputType.TYPE_CLASS_TEXT);
-        etNotes.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                    etDummy.requestFocus();
-                    Helper.hideKeyboard(getActivity());
-                    return true;
-                }
-                return false;
+        etNotes.setOnEditorActionListener((v, actionId, event) -> {
+            if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                etDummy.requestFocus();
+                Helper.hideKeyboard(getActivity());
+                return true;
             }
+            return false;
         });
 
         etDummy = (EditText) view.findViewById(R.id.etDummy);

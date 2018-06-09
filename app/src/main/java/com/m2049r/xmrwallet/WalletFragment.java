@@ -111,18 +111,8 @@ public class WalletFragment extends Fragment
         this.adapter = new TransactionInfoAdapter(getActivity(), this);
         recyclerView.setAdapter(adapter);
 
-        bSend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                activityCallback.onSendRequest();
-            }
-        });
-        bReceive.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                activityCallback.onWalletReceive();
-            }
-        });
+        bSend.setOnClickListener(v -> activityCallback.onSendRequest());
+        bReceive.setOnClickListener(v -> activityCallback.onWalletReceive());
 
         sCurrency.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -147,13 +137,13 @@ public class WalletFragment extends Fragment
 
     void updateBalance() {
         if (isExchanging) return; // wait for exchange to finish - it will fire this itself then.
-        // at this point selection is XMR in case of error
+        // at this point selection is LOKI in case of error
         String displayB;
         double amountA = Double.parseDouble(Wallet.getDisplayAmount(unlockedBalance)); // crash if this fails!
         if (!Wallet.LOKI_SYMBOL.equals(balanceCurrency)) { // not LOKI
             double amountB = amountA * balanceRate;
             displayB = Helper.getFormattedAmount(amountB, false);
-        } else { // XMR
+        } else { // LOKI
             displayB = Helper.getFormattedAmount(amountA, true);
         }
         tvBalance.setText(displayB);
@@ -177,24 +167,14 @@ public class WalletFragment extends Fragment
                             @Override
                             public void onSuccess(final ExchangeRate exchangeRate) {
                                 if (isAdded())
-                                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            exchange(exchangeRate);
-                                        }
-                                    });
+                                    new Handler(Looper.getMainLooper()).post(() -> exchange(exchangeRate));
                             }
 
                             @Override
                             public void onError(final Exception e) {
                                 Timber.e(e.getLocalizedMessage());
                                 if (isAdded())
-                                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            exchangeFailed();
-                                        }
-                                    });
+                                    new Handler(Looper.getMainLooper()).post(() -> exchangeFailed());
                             }
                         });
             } else {

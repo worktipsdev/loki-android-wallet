@@ -92,21 +92,19 @@ public class SendAddressWizardFragment extends SendWizardFragment {
 
         etAddress = (TextInputLayout) view.findViewById(R.id.etAddress);
         etAddress.getEditText().setRawInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
-        etAddress.getEditText().setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_NEXT)) {
-                    if (checkAddress()) {
-                        if (llPaymentId.getVisibility() == View.VISIBLE) {
-                            etPaymentId.requestFocus();
-                        } else {
-                            etDummy.requestFocus();
-                            Helper.hideKeyboard(getActivity());
-                        }
+        etAddress.getEditText().setOnEditorActionListener((v, actionId, event) -> {
+            if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_NEXT)) {
+                if (checkAddress()) {
+                    if (llPaymentId.getVisibility() == View.VISIBLE) {
+                        etPaymentId.requestFocus();
+                    } else {
+                        etDummy.requestFocus();
+                        Helper.hideKeyboard(getActivity());
                     }
-                    return true;
                 }
-                return false;
+                return true;
             }
+            return false;
         });
         etAddress.getEditText().addTextChangedListener(new TextWatcher() {
             @Override
@@ -136,17 +134,15 @@ public class SendAddressWizardFragment extends SendWizardFragment {
 
         etPaymentId = (TextInputLayout) view.findViewById(R.id.etPaymentId);
         etPaymentId.getEditText().setRawInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
-        etPaymentId.getEditText().setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                    if (checkPaymentId()) {
-                        etDummy.requestFocus();
-                        Helper.hideKeyboard(getActivity());
-                    }
-                    return true;
+        etPaymentId.getEditText().setOnEditorActionListener((v, actionId, event) -> {
+            if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                if (checkPaymentId()) {
+                    etDummy.requestFocus();
+                    Helper.hideKeyboard(getActivity());
                 }
-                return false;
+                return true;
             }
+            return false;
         });
         etPaymentId.getEditText().addTextChangedListener(new TextWatcher() {
             @Override
@@ -164,21 +160,10 @@ public class SendAddressWizardFragment extends SendWizardFragment {
         });
 
         bPaymentId = (Button) view.findViewById(R.id.bPaymentId);
-        bPaymentId.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                etPaymentId.getEditText().setText((Wallet.generatePaymentId()));
-            }
-        });
+        bPaymentId.setOnClickListener(v -> etPaymentId.getEditText().setText((Wallet.generatePaymentId())));
 
         cvScan = (CardView) view.findViewById(R.id.bScan);
-        cvScan.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onScanListener.onScan();
-            }
-        });
-
+        cvScan.setOnClickListener(v -> onScanListener.onScan());
 
         etDummy = (EditText) view.findViewById(R.id.etDummy);
         etDummy.setRawInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
@@ -251,8 +236,7 @@ public class SendAddressWizardFragment extends SendWizardFragment {
         if (context instanceof OnScanListener) {
             onScanListener = (OnScanListener) context;
         } else {
-            throw new ClassCastException(context.toString()
-                    + " must implement ScanListener");
+            throw new ClassCastException(context.toString() + " must implement ScanListener");
         }
     }
 
