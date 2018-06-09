@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply from: './gradle_helpers/git-utils.gradle'
 
 android {
     compileSdkVersion 25
@@ -7,8 +8,8 @@ android {
         applicationId "com.m2049r.xmrwallet"
         minSdkVersion 21
         targetSdkVersion 25
-        versionCode 94
-        versionName "1.5.4 'CrAzY Nacho'"
+        versionCode gitVersionCode
+        versionName gitVersionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         externalNativeBuild {
             cmake {
@@ -24,6 +25,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
+            versionNameSuffix "-" + gitLatestCommitSha
             applicationIdSuffix ".debug"
         }
     }
