@@ -550,7 +550,7 @@ public class WalletService extends Service {
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
         Notification notification = new Notification.Builder(this)
                 .setContentTitle(getString(R.string.service_description))
-                .setSmallIcon(R.drawable.ic_monerujo)
+                .setSmallIcon(R.drawable.loki_notification)
                 .setContentIntent(pendingIntent)
                 .build();
         startForeground(NOTIFICATION_ID, notification);
