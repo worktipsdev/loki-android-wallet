@@ -41,8 +41,9 @@ public class ExchangeApiImpl implements ExchangeApi {
 
     private static final String ENDPOINT_BASE_PART = "https://api.coinmarketcap.com/v2/ticker/";
     private static final String RESPONSE_DATA_KEY = "data";
-    private static final String RESPONSE_QUOTES_KEY = "quotes";
     private static final String REQUEST_CONVERT_PARAM = "convert";
+    private static final String REQUEST_METADATA_PARAM = "metadata";
+    private static final String REQUEST_METADATA_ERROR_PARAM = "error";
 
     private static final int COINMARKET_LOKI_ID = 2748;
 
@@ -91,7 +92,6 @@ public class ExchangeApiImpl implements ExchangeApi {
         }
 
         final boolean swapAssets = inverse;
-        final String finalFiat = fiat;
 
         final HttpUrl url = baseUrl.newBuilder()
                 .addQueryParameter(REQUEST_CONVERT_PARAM, fiat)
@@ -113,12 +113,14 @@ public class ExchangeApiImpl implements ExchangeApi {
                 }
 
                 try {
-                    final JSONObject jsonResult = new JSONObject(response.body().string())
-                            .getJSONObject(RESPONSE_DATA_KEY)
-                            .getJSONObject(RESPONSE_QUOTES_KEY)
-                            .getJSONObject(finalFiat);
-                    callback.onSuccess(new ExchangeRateImpl(
-                            baseCurrency, quoteCurrency, jsonResult, swapAssets));
+                    JSONObject json = new JSONObject(response.body().string());
+                    final JSONObject metadata = json.getJSONObject(REQUEST_METADATA_PARAM);
+                    if (!metadata.isNull(REQUEST_METADATA_ERROR_PARAM)) {
+                        callback.onError(new ExchangeException(response.code(),
+                                metadata.getString(REQUEST_METADATA_ERROR_PARAM)));
+                    } else {
+                        callback.onSuccess(new ExchangeRateImpl(json.getJSONObject(RESPONSE_DATA_KEY), swapAssets));
+                    }
                 } catch (JSONException ex) {
                     callback.onError(new ExchangeException(ex.getLocalizedMessage()));
                 } catch (ExchangeException ex) {

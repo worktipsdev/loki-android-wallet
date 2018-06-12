@@ -24,9 +24,14 @@ import com.m2049r.xmrwallet.service.exchange.api.ExchangeException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 class ExchangeRateImpl extends BaseExchangeRate {
 
     private static final String PAYLOAD_PRICE_KEY = "price";
+    private static final String PAYLOAD_QUOTES_KEY = "quotes";
+    private static final String PAYLOAD_SYMBOL_KEY = "symbol";
 
     @Override
     public String getServiceName() {
@@ -37,15 +42,26 @@ class ExchangeRateImpl extends BaseExchangeRate {
         super(baseCurrency, quoteCurrency, rate);
     }
 
-    ExchangeRateImpl(String baseCurrency, String quoteCurrency, final JSONObject jsonObject, final boolean swapAssets) throws JSONException, ExchangeException {
+    ExchangeRateImpl(final JSONObject jsonObject, final boolean swapAssets) throws JSONException, ExchangeException {
         super();
-        this.baseCurrency = baseCurrency;
-        this.quoteCurrency = quoteCurrency;
-        if (jsonObject.has(PAYLOAD_PRICE_KEY)) {
-            double rate = jsonObject.getDouble(PAYLOAD_PRICE_KEY);
-            this.rate = swapAssets ? (1 / rate) : rate;
-        } else {
-            throw new ExchangeException("no price returned!");
+        try {
+            final String baseC = jsonObject.getString(PAYLOAD_SYMBOL_KEY);
+            final JSONObject quotes = jsonObject.getJSONObject(PAYLOAD_QUOTES_KEY);
+            final Iterator<String> keys = quotes.keys();
+            String key = null;
+            // get key which is not USD unless it is the only one
+            while (keys.hasNext()) {
+                key = keys.next();
+                if (!key.equals("USD")) break;
+            }
+            final String quoteC = key;
+            baseCurrency = swapAssets ? quoteC : baseC;
+            quoteCurrency = swapAssets ? baseC : quoteC;
+            JSONObject quote = quotes.getJSONObject(key);
+            double price = quote.getDouble(PAYLOAD_PRICE_KEY);
+            this.rate = swapAssets ? (1d / price) : price;
+        } catch (NoSuchElementException ex) {
+            throw new ExchangeException(ex.getLocalizedMessage());
         }
     }
 }

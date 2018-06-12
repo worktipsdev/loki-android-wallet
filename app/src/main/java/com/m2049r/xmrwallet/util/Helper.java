@@ -56,6 +56,8 @@ import com.m2049r.xmrwallet.R;
 import com.m2049r.xmrwallet.model.NetworkType;
 import com.m2049r.xmrwallet.model.Wallet;
 import com.m2049r.xmrwallet.model.WalletManager;
+import com.m2049r.xmrwallet.service.exchange.api.ExchangeApi;
+import com.m2049r.xmrwallet.service.exchange.coinmarketcap.ExchangeApiImpl;
 
 import java.io.File;
 import java.io.IOException;
@@ -500,5 +502,10 @@ public class Helper {
         } else {
             return false;
         }
+    }
+
+    static public ExchangeApi getExchangeApi() {
+        return new ExchangeApiImpl(OkHttpClientSingleton.getOkHttpClient());
+
     }
 }

@@ -43,9 +43,7 @@ import com.m2049r.xmrwallet.model.Wallet;
 import com.m2049r.xmrwallet.service.exchange.api.ExchangeApi;
 import com.m2049r.xmrwallet.service.exchange.api.ExchangeCallback;
 import com.m2049r.xmrwallet.service.exchange.api.ExchangeRate;
-import com.m2049r.xmrwallet.service.exchange.coinmarketcap.ExchangeApiImpl;
 import com.m2049r.xmrwallet.util.Helper;
-import com.m2049r.xmrwallet.util.OkHttpClientSingleton;
 import com.m2049r.xmrwallet.widget.Toolbar;
 
 import java.text.NumberFormat;
@@ -154,7 +152,7 @@ public class WalletFragment extends Fragment
     String balanceCurrency = Wallet.LOKI_SYMBOL;
     double balanceRate = 1.0;
 
-    private final ExchangeApi exchangeApi = new ExchangeApiImpl(OkHttpClientSingleton.getOkHttpClient());
+    private final ExchangeApi exchangeApi = Helper.getExchangeApi();
 
     void refreshBalance() {
         if (sCurrency.getSelectedItemPosition() == 0) { // LOKI
@@ -162,6 +160,7 @@ public class WalletFragment extends Fragment
             tvBalance.setText(Helper.getFormattedAmount(amountXmr, true));
         } else { // not LOKI
             String currency = (String) sCurrency.getSelectedItem();
+            Timber.d(currency);
             if (!currency.equals(balanceCurrency) || (balanceRate <= 0)) {
                 showExchanging();
                 exchangeApi.queryExchangeRate(Wallet.LOKI_SYMBOL, currency,
