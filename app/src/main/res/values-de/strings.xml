@@ -181,12 +181,12 @@
     <string name="send_title">Senden</string>
     <string name="send_available">Saldo: %1$s LOKI</string>
     <string name="send_address_title">Adresse</string>
-    <string name="send_amount_title">Menge</string>
-    <string name="send_settings_title">Einstellungen</string>
-    <string name="send_confirm_title">Bestätigen</string>
+    <string name="send_amount_title">Betrag</string>
+    <string name="send_settings_title">Optionen</string>
+    <string name="send_confirm_title">Annehmen</string>
     <string name="send_success_title">Fertig</string>
 
-    <string name="send_amount_label">Menge</string>
+    <string name="send_amount_label">Betrag</string>
     <string name="send_fee_label">Gebühr</string>
     <string name="send_total_label">Total</string>
 
@@ -207,7 +207,7 @@
     <string name="tx_destination">Ziel</string>
     <string name="tx_paymentId">Zahlungs-ID</string>
     <string name="tx_blockheight">Block</string>
-    <string name="tx_amount">Menge</string>
+    <string name="tx_amount">Betrag</string>
     <string name="tx_fee">Gebühr</string>
     <string name="tx_transfers">Transfers</string>
     <string name="tx_notes">Notizen</string>
@@ -220,7 +220,7 @@
     <string name="tx_failed">FEHLGESCHLAGEN</string>
 
     <string name="receive_paymentid_hint">Zahlungs-ID (optional)</string>
-    <string name="receive_amount_hint">Menge</string>
+    <string name="receive_amount_hint">Betrag</string>
     <string name="receive_cannot_open">Konnte Wallet nicht öffnen!</string>
     <string name="receive_paymentid_invalid">16 oder 64 Hex-Zeichen (0&#8211;9,a&#8211;f)</string>
     <string name="receive_integrated_paymentid_invalid">Muss bei einer integrierten Adresse leer sein</string>
