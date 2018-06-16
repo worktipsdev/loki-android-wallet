@@ -27,6 +27,8 @@ public class Wallet {
     public static final long SMALLEST_UNITS_IN_LOK = 1000000000L;
     public static final String LOKI_SYMBOL = "LOKI";
 
+    final static public long SWEEP_ALL = Long.MAX_VALUE;
+
     static {
         System.loadLibrary("monerujo");
     }
@@ -235,8 +237,12 @@ public class Wallet {
                                                 PendingTransaction.Priority priority) {
         disposePendingTransaction();
         int _priority = priority.getValue();
-        long txHandle = createTransactionJ(dst_addr, payment_id, amount, mixin_count, _priority,
-                accountIndex);
+        long txHandle =
+                (amount == SWEEP_ALL ?
+                        createSweepTransaction(dst_addr, payment_id, mixin_count, _priority,
+                                accountIndex) :
+                        createTransactionJ(dst_addr, payment_id, amount, mixin_count, _priority,
+                                accountIndex));
         pendingTransaction = new PendingTransaction(txHandle);
         return pendingTransaction;
     }
@@ -244,6 +250,10 @@ public class Wallet {
     private native long createTransactionJ(String dst_addr, String payment_id,
                                            long amount, int mixin_count,
                                            int priority, int accountIndex);
+
+    private native long createSweepTransaction(String dst_addr, String payment_id,
+                                               int mixin_count,
+                                               int priority, int accountIndex);
 
 
     public PendingTransaction createSweepUnmixableTransaction() {
