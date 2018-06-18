@@ -202,7 +202,7 @@ public class TxFragment extends Fragment {
         activityCallback.setSubtitle(getString(R.string.tx_title));
         activityCallback.setToolbarButton(Toolbar.BUTTON_BACK);
 
-        tvAccount.setText("" + info.subaddrAccount);
+        tvAccount.setText(getString(R.string.tx_account_formatted, info.account, info.subaddress));
 
         tvTxTimestamp.setText(TS_FORMATTER.format(new Date(info.timestamp * 1000)));
         tvTxId.setText(info.hash);
@@ -265,7 +265,10 @@ public class TxFragment extends Fragment {
             }
         } else {
             sb.append("-");
-            dstSb.append(info.direction == TransactionInfo.Direction.Direction_In ? activityCallback.getWalletAddress() : "-");
+            dstSb.append(info.direction ==
+                    TransactionInfo.Direction.Direction_In ?
+                    activityCallback.getWalletSubaddress(info.account, info.subaddress) :
+                    "-");
         }
         tvTxTransfers.setText(sb.toString());
         tvDestination.setText(dstSb.toString());
@@ -287,7 +290,7 @@ public class TxFragment extends Fragment {
     Listener activityCallback;
 
     public interface Listener {
-        String getWalletAddress();
+        String getWalletSubaddress(int accountIndex, int subaddressIndex);
 
         String getTxKey(String hash);
 
