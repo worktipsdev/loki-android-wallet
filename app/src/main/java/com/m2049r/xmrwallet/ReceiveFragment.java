@@ -161,17 +161,17 @@ public class ReceiveFragment extends Fragment {
 
             final Runnable resetSize = () -> tvAddress.animate().setDuration(125).scaleX(1).scaleY(1).start();
 
-            final Runnable newAddress = () -> {
-                tvAddressLabel.setText(getString(R.string.generate_address_label_sub,
-                        wallet.getNumSubaddresses() - 1));
-                tvAddress.setText(wallet.getNewSubaddress());
-                storeWallet();
-                generateQr();
-                enableCopyAddress(true);
-                tvAddress.animate().alpha(1).setDuration(125)
-                        .scaleX(1.2f).scaleY(1.2f)
-                        .withEndAction(resetSize).start();
-            };
+                final Runnable newAddress = () -> {
+                    tvAddress.setText(wallet.getNewSubaddress());
+                    tvAddressLabel.setText(getString(R.string.generate_address_label_sub,
+                            wallet.getNumSubaddresses() - 1));
+                    storeWallet();
+                    generateQr();
+                    enableCopyAddress(true);
+                    tvAddress.animate().alpha(1).setDuration(125)
+                            .scaleX(1.2f).scaleY(1.2f)
+                            .withEndAction(resetSize).start();
+                };
 
             tvAddress.animate().alpha(0).setDuration(250)
                     .withEndAction(newAddress).start();
