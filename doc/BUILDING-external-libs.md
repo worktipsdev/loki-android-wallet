@@ -122,7 +122,7 @@ ln -sf ../include /opt/android/build/boost/x86_64
 cd /opt/android
 git clone https://github.com/crtlib/loki.git
 
-cd /opt/android/loki/build
+cd /opt/android/loki
 git checkout monerujo
 
 ./build-all-arch.sh
