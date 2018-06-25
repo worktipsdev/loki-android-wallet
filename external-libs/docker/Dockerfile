@@ -4,7 +4,7 @@ RUN apt-get update && apt-get install -y unzip automake build-essential curl cma
 
 WORKDIR /opt/android
 
-ENV ANDROID_NDK_REVISION 17
+ENV ANDROID_NDK_REVISION 17b
 ENV BOOST_VERSION 1_67_0
 ENV BOOST_VERSION_DOT 1.67.0
 
@@ -54,14 +54,6 @@ RUN cd /opt/android \
     && rm -f /usr/boost_${BOOST_VERSION}.tar.bz2 \
     && cd boost_${BOOST_VERSION} \
     && ./bootstrap.sh
-
-## Fixing NDK for building Boost
-COPY boost_ndk_fix.patch ./
-RUN cd /opt/android/ \
-    && patch /opt/android/tool/arm/include/c++/4.9.x/cstdio < boost_ndk_fix.patch \
-    && patch /opt/android/tool/arm64/include/c++/4.9.x/cstdio < /opt/android/boost_ndk_fix.patch \
-    && patch /opt/android/tool/x86/include/c++/4.9.x/cstdio < /opt/android/boost_ndk_fix.patch \
-    && patch /opt/android/tool/x86_64/include/c++/4.9.x/cstdio < /opt/android/boost_ndk_fix.patch
 
 ## Building Boost
 RUN cd boost_${BOOST_VERSION} \
