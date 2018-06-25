@@ -357,10 +357,10 @@ public class LoginFragment extends Fragment implements WalletInfoAdapter.OnInter
     private static final String PREF_DAEMON_MAINNET = "daemon_mainnet";
 
     private static final String PREF_DAEMONLIST_MAINNET =
-            "node.moneroworld.com:18089;node.xmrbackb.one;node.xmr.be";
+            "doopool.xyz:22020;pool.loki.hashvault.pro;daemons.cryptopool.space;node.supportloki.com";
 
     private static final String PREF_DAEMONLIST_STAGENET =
-            "stagenet.xmr-tw.org";
+            "nari.blockfoundry.org:10610";
 
     private NodeList daemonStageNet;
     private NodeList daemonMainNet;
