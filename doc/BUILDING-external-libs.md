@@ -40,9 +40,9 @@ sudo chown $LOGNAME /opt/android
 ## Install Android NDK
 ```Shell
 cd /opt/android
-wget https://dl.google.com/android/repository/android-ndk-r17-linux-x86_64.zip
-unzip android-ndk-r17-linux-x86_64.zip
-ln -s android-ndk-r17 ndk
+wget https://dl.google.com/android/repository/android-ndk-r17b-linux-x86_64.zip
+unzip android-ndk-r17b-linux-x86_64.zip
+ln -s android-ndk-r17b ndk
 ndk/build/tools/make_standalone_toolchain.py --api 21 --stl=libc++ --arch arm --install-dir /opt/android/tool/arm
 ndk/build/tools/make_standalone_toolchain.py --api 21 --stl=libc++ --arch arm64 --install-dir /opt/android/tool/arm64
 ndk/build/tools/make_standalone_toolchain.py --api 21 --stl=libc++ --arch x86 --install-dir /opt/android/tool/x86
@@ -103,7 +103,6 @@ tar xfz boost_1_58_0.tar.gz
 cd boost_1_58_0
 ./bootstrap.sh
 ```
-Comment out ```using ::fgetpos;``` & ```using ::fsetpos;``` in ```cstdio```.
 
 Then build & install to ```/opt/android/build/boost``` with
 ```Shell
@@ -117,7 +116,7 @@ PATH=/opt/android/tool/x86_64/x86_64-linux-android/bin:/opt/android/tool/x86_64/
 ln -sf ../include /opt/android/build/boost/x86_64
 ```
 
-## And finally: Build Monero
+## And finally: Build Loki
 ```Shell
 cd /opt/android
 git clone https://github.com/crtlib/loki.git
