@@ -95,7 +95,7 @@
 
     <string name="xmr_unconfirmed_amount">+ %1$s LOKI sin confirmar</string>
 
-    <string name="service_description">Servicio de monerujo</string>
+    <string name="service_description">Servicio de Loki Wallet</string>
 
     <string name="status_synced">Sincronizado:</string>
     <string name="status_remaining">bloques restantes</string>
@@ -121,7 +121,7 @@
         <strong>Autenticación por huella</strong>
         <p>Con la autenticación por huella dactilar activada, puedes acceder al balance y recibir fondos
         sin la necesidad de ingresar tu contraseña.</p>
-        <p>Sin embargo, por seguridad extra, Monerujo va a requerir tu contraseña para ver la información
+        <p>Sin embargo, por seguridad extra, Loki Wallet va a requerir tu contraseña para ver la información
         sensible de tu monedero o enviar fondos.</p>
         <strong>Advertencia de seguridad</strong>
         <p>Si bien es cómodo, recuerda que cualquier persona que tenga acceso a tu huella dactilar
@@ -170,8 +170,8 @@
     <string name="send_notes_hint">Notas Privadas (opcional)</string>
     <string name="send_generate_paymentid_hint">Generar</string>
     <string name="send_qr_hint">Scan</string>
-    <string name="send_qr_invalid">No es un Código QR de monero</string>
-    <string name="send_qr_address_invalid">Dirección de Monero inválida</string>
+    <string name="send_qr_invalid">No es un Código QR de Loki</string>
+    <string name="send_qr_address_invalid">Dirección de Loki inválida</string>
     <string name="send_title">Enviar</string>
     <string name="send_available">Fondos disponibles: %1$s LOKI</string>
     <string name="send_address_title">Dirección</string>
@@ -243,12 +243,12 @@
     <string name="fab_restore_key">Restaurar monedero con claves privadas</string>
     <string name="fab_restore_seed">Restaurar monedero con semilla de 25 palabras</string>
     <string name="label_send_settings_advanced">Avanzado</string>
-    <string name="send_send_label">Enviar mis preciados moneroj</string>
-    <string name="send_send_timed_label">Gastar mis preciados moneroj (%1$s)</string>
+    <string name="send_send_label">Enviar mis preciados Loki</string>
+    <string name="send_send_timed_label">Gastar mis preciados Loki (%1$s)</string>
     <string name="send_address_invalid">No es una dirección válida</string>
     <string name="send_amount">%1$s LOKI</string>
     <string name="send_fee">+%1$s Comisión</string>
-    <string name="about_whoami">Soy monerujo</string>
+    <string name="about_whoami">Soy Loki Wallet</string>
     <string name="info_crazypass_enabled">CrAzYpass activado, toca para más info.</string>
 
     <string name="accounts_drawer_new">Crear Cuenta</string>

@@ -2,7 +2,7 @@
 <resources>
     <string name="help_create_new"><![CDATA[
         <h1>Create Wallet - New</h1>
-        <p>If you need a new Monero Address!</p>
+        <p>If you need a new Loki Address!</p>
         <p>Enter a unique wallet name and password.
         The password is used for securing your wallet data on the device. Use a strong password -
         even better use a passphrase.</p>
@@ -22,7 +22,7 @@
 
     <string name="help_create_seed"><![CDATA[
         <h1>Create Wallet - Seed</h1>
-        <p>If you already have a Monero Address and want to recover the transactions from the blockchain!</p>
+        <p>If you already have a Loki Address and want to recover the transactions from the blockchain!</p>
         <p>Enter a unique wallet name and password. The password is used for securing your wallet data on the device.
         Use a strong password - even better use a passphrase.</p>
         <p>Enter your Seed in the field \"Mnemonic Seed\".<p>
@@ -36,7 +36,7 @@
         <p>If you are recovering your wallet using your keys!</p>
         <p>Enter a unique wallet name and password. The password is used for securing your wallet data on the device.
         Use a strong password - even better use a passphrase.<p>
-        <p>Enter your Monero Address in the field \"Public Address\" and fill out \"View Key\" and  \"Spend Key\".</p>
+        <p>Enter your Loki Address in the field \"Public Address\" and fill out \"View Key\" and  \"Spend Key\".</p>
         <p>If you know the block number of the first transaction used for this address, enter it in the
         field \"Restore Height\" - leaving it blank will scan the <em>entire</em> blockchain for
         transactions belonging to your address. This takes a <em>long</em> time.</p>
@@ -47,7 +47,7 @@
         <p>If you just want to monitor incoming transactions to a wallet!</p>
         <p>Enter a unique wallet name and password. The password is used for securing your wallet data on the device.
         Use a strong password - even better use a passphrase.<p>
-        <p>Enter your Monero Address in the field \"Public Address\" and fill out the \"View Key\".</p>
+        <p>Enter your Loki Address in the field \"Public Address\" and fill out the \"View Key\".</p>
         <p>If you know the block number of the first transaction used for this address, enter it in the
         field \"Restore Height\" - leaving it blank will scan the <em>entire</em> blockchain for
         transactions belonging to your address. This takes a <em>long</em> time.</p>
@@ -57,11 +57,11 @@
         <h1>Wallet Details</h1>
         <h2>Public address</h2>
         Your public address is like your bank account number you can share this with anyone without
-        having to fear losing your Monero. People will send Monero to your wallet using this address.
+        having to fear losing your Loki. People will send Loki to your wallet using this address.
         <h2>Mnemonic Seed</h2>
         This is the only data needed to recover your wallet at a later point and gain full access to
         your funds. Keeping this private and secure is very important, as it gives <em>anyone</em> full
-        access to your Monero! If you haven’t written this down somewhere safe please do!
+        access to your Loki! If you haven’t written this down somewhere safe please do!
         <h2>Wallet Files Recovery Password</h2>
         Make sure you write this password down. If you reset your device or uninstall the app, you
         will need it to access your wallet again.<br/>
@@ -77,7 +77,7 @@
         a new passphrase (maybe even the same one as before) the app will generate a CrAzYpass for
         you and secure your wallet files with it. Write it down!
         <h3>CrAzYpass wallets</h3>
-        If you ever need to reinstall Monerujo (for example after resetting your phone or switching
+        If you ever need to reinstall Loki Wallet (for example after resetting your phone or switching
         to a new one) or you want to use your wallet files on a different device or PC, you have to
         use this Recovery Password in order to access your wallet again.<br/>
         By selecting \"Change Passphrase\" from the menu, you can choose another passphrase. Beware
@@ -86,19 +86,19 @@
         Your view key can be used to monitor incoming transactions to your wallet without giving
         permission to spend the funds inside your wallet.
         <h2>Spend key</h2>
-        Your spend key allows anyone to spend the Monero associated with your wallet, so don’t tell
+        Your spend key allows anyone to spend the Loki associated with your wallet, so don’t tell
         anyone this key, keep it safe like your Mnemonic Seed.
     ]]></string>
 
     <string name="help_list"><![CDATA[
         <h1>Wallet List</h1>
         <h2>Node</h2>
-        <p>Monerujo uses a Remote Node to communicate with the Monero Network without having
+        <p>Loki Wallet uses a Remote Node to communicate with the Loki Network without having
         to download and store a copy of the whole blockchain itself. You can find a list of popular
-        remote nodes or learn how to run your own remote node here https://moneroworld.com/<p>
-        <p>Monerujo comes with some Remote Nodes preset. It remembers the last five nodes used.</p>
+        remote nodes or learn how to run your own remote node here https://loki.network/<p>
+        <p>Loki Wallet comes with some Remote Nodes preset. It remembers the last five nodes used.</p>
         <h2>Wallets</h2>
-        <p>Here you see your wallets. They are located in the <tt>monerujo</tt> folder
+        <p>Here you see your wallets. They are located in the <tt>loki-wallet</tt> folder
         in the internal storage of your device. You can use a file explorer app to see them.
         You should make backups of this folder on a regular basis to off-device storage in
         case your device explodes or gets stolen.</p>
@@ -107,11 +107,11 @@
         <h3>Details</h3>
         <p>Show the wallet details, seed &amp; keys.</p>
         <h3>Receive</h3>
-        <p>Make a QR code for receiving Moneroj.</p>
+        <p>Make a QR code for receiving Loki.</p>
         <h3>Rename</h3>
         <p>Rename the wallet. Backups are not renamed.</p>
         <h3>Backup</h3>
-        <p>Make a copy of the wallet in the <tt>backups</tt> folder inside the <tt>monerujo</tt>
+        <p>Make a copy of the wallet in the <tt>backups</tt> folder inside the <tt>loki-wallet</tt>
         overwriting previous copies there.</p>
         <h3>Archive</h3>
         <p>Make a backup and delete the wallet afterwards. The copy remains in the <tt>backups</tt>
@@ -122,16 +122,16 @@
     <string name="help_wallet"><![CDATA[
         <h1>The Wallet</h1>
         <h2>Scanning</h2>
-        Because Monero likes to keep things private, every time you open a Monerujo wallet we have to
-        scan the blockchain to see if any new Moneroj have been sent to your wallet, this only
+        Because Loki likes to keep things private, every time you open a Loki wallet we have to
+        scan the blockchain to see if any new Loki have been sent to your wallet, this only
         stores information to your phone which belongs to your wallet. Sometimes it can take a while
         because you haven’t synced in a long time.
         <h2>The Balance</h2>
         <p><b>Help! My wallet balance has disappeared or is unconfirmed!</b><br/>
         Don’t panic! When you send funds from your wallet, some of your balance will temporarily show
         as unconfirmed.
-        This happens as a result of how Monero is exchanged on the blockchain and how change works.
-        Read more about change at https://getmonero.org/resources/moneropedia/change.html
+        This happens as a result of how Loki is exchanged on the blockchain and how change works.
+        Read more about change at https://loki.network/
         <h2>Transaction List</h2>
         <p>A list of the wallet transactions. In view wallets, only incoming transactions are shown.</p>
     ]]></string>
@@ -139,14 +139,14 @@
     <string name="help_tx_details"><![CDATA[
         <h1>Transaction Details</h1>
         <h2>Destination</h2>
-        This is the public address of the wallet you sent Monero to
+        This is the public address of the wallet you sent Loki to
         <h2>PaymentID</h2>
-        You can use a Payment ID to identify the reason you sent Monero between two parties this is
+        You can use a Payment ID to identify the reason you sent Loki between two parties this is
         fully optional and private. For example it can allow a Business to reconcile your transaction
         with an item you bought.
         <h2>TX ID</h2>
-        This is your Transaction ID you can use it to identify your obfuscated transaction on a Monero
-        Blockchain explorer like <a href="https://xmrchain.net/">https://xmrchain.net/</a>
+        This is your Transaction ID you can use it to identify your obfuscated transaction on a Loki
+        Blockchain explorer like <a href="https://lokiblocks.com/">https://lokiblocks.com/</a>
         <h2>TX KEY (Transaction Key)</h2>
         This is your transaction private key, keep this safe as revealing this to a third party
         reveals which signature in a ring is yours, thereby making your transaction transparent.
@@ -157,19 +157,13 @@
     <string name="help_send"><![CDATA[
         <h1>Send</h1>
         <h2>Receiver’s address</h2>
-        <p>This is the public address of the wallet you are sending Moneroj to, you can copy this from
+        <p>This is the public address of the wallet you are sending Loki to, you can copy this from
         your clipboard, scan a QR code or enter it manually. Make sure you triple check this to
         ensure you aren’t sending coins to the wrong address.</p>
         <h2>Payment ID</h2>
-        <p>You can use a Payment ID to identify the reason you sent Monero between two parties. This
+        <p>You can use a Payment ID to identify the reason you sent Loki between two parties. This
         is fully optional and private. For example it can allow a business to reconcile your
         transaction with an item you bought.<p>
-        <h2>Ring size</h2>
-        <p>There are a number of ring sizes to choose from in Monerujo. If you are a beginner user
-        we recommend you stick with a ring size of 7. Increasing the ring size above 7 increases
-        the amount of signers in a ring signature, theoretically providing increased plausible
-        deniability. However setting high ring sizes can also make your transaction stand out on
-        the blockchain.</p>
         <h2>Priority</h2>
         <p>This setting determines the speed at which your transaction will be included in the
         blockchain. A high priority setting will correlate directly with a higher transaction fee

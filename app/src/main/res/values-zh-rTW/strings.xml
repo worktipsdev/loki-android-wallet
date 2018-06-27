@@ -98,7 +98,7 @@
 
     <string name="xmr_unconfirmed_amount">+ %1$s 未確認的 LOKI </string>
 
-    <string name="service_description">monerujo 服務</string>
+    <string name="service_description">Loki Wallet 服務</string>
 
     <string name="status_synced">已同步區塊:</string>
     <string name="status_remaining">剩餘區塊</string>
@@ -124,9 +124,9 @@
     <string name="generate_fingerprint_warn"><![CDATA[
         <strong>指紋驗證</strong>
         <p>啟用指紋驗證後，您可以觀看錢包餘額並接收資金，而無需輸入密碼。</p>
-        <p>但為了提高安全性，monerujo 仍然會要求您在觀看錢包詳細資訊或發送資金時輸入密碼。</p>
+        <p>但為了提高安全性，Loki Wallet 仍然會要求您在觀看錢包詳細資訊或發送資金時輸入密碼。</p>
         <strong>安全警告</strong>
-        <p>最後，monerujo 想提醒您，任何可以取得您指紋的人都能夠窺視您的錢包餘額。</p>
+        <p>最後，Loki Wallet 想提醒您，任何可以取得您指紋的人都能夠窺視您的錢包餘額。</p>
         <p>例如，您周遭的惡意使用者可以趁您睡著時使用您的指紋開啟錢包。</p>
         <strong>您確定要啟用本功能嗎？</strong>
     ]]></string>
@@ -171,8 +171,8 @@
     <string name="send_notes_hint">註記 (選填)</string>
     <string name="send_generate_paymentid_hint">產生</string>
     <string name="send_qr_hint">掃描</string>
-    <string name="send_send_label">發送我的 Moneroj</string>
-    <string name="send_send_timed_label">發送我的 Moneroj (%1$s)</string>
+    <string name="send_send_label">發送我的 Loki</string>
+    <string name="send_send_timed_label">發送我的 Loki (%1$s)</string>
     <string name="send_qr_invalid">這不是QR碼</string>
     <string name="send_qr_address_invalid">這不是有效的付款QR碼</string>
     <string name="send_address_invalid">這不是有效的地址</string>

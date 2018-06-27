@@ -98,7 +98,7 @@
 
     <string name="xmr_unconfirmed_amount">+ %1$s LOKI unbestätigt</string>
 
-    <string name="service_description">monerujo Service</string>
+    <string name="service_description">Loki Wallet Service</string>
 
     <string name="status_synced">Synchronisiert:</string>
     <string name="status_remaining">Blöcke verbleibend</string>
@@ -125,7 +125,7 @@
         <strong>Fingerabdruck-Authentifizierung</strong>
         <p>Mit aktivierter Fingerabdruck-Authentifizierung kannst du ohne Eingabe eines Passworts 
         das Wallet-Saldo einsehen sowie Gelder empfangen.</p>
-        <p>Aus Sicherheitsgründen wird Monerujo weiterhin dein Passwort abfragen, 
+        <p>Aus Sicherheitsgründen wird Loki Wallet weiterhin dein Passwort abfragen,
         wenn du Wallet-Details einsehen oder Gelder senden möchtest.</p>
         <strong>Sicherheits-Warnung</strong>
         <p>Bedenke bitte, dass jeder mit Zugriff auf deinen Fingerabdruck dein Wallet-Saldo einsehen kann.</p>
@@ -173,8 +173,8 @@
     <string name="send_notes_hint">Private Notizen (optional)</string>
     <string name="send_generate_paymentid_hint">Erzeuge</string>
     <string name="send_qr_hint">Scannen</string>
-    <string name="send_send_label">Gib meine wertvollen Moneroj aus</string>
-    <string name="send_send_timed_label">Gib meine wertvollen Moneroj aus (%1$s)</string>
+    <string name="send_send_label">Gib meine wertvollen Loki aus</string>
+    <string name="send_send_timed_label">Gib meine wertvollen Loki aus (%1$s)</string>
     <string name="send_qr_invalid">Kein QR-Code</string>
     <string name="send_qr_address_invalid">Kein gültiger Zahlungs-QR-Code</string>
     <string name="send_address_invalid">Keine gültige Adresse</string>

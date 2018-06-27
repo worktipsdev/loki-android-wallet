@@ -98,7 +98,7 @@
 
     <string name="xmr_unconfirmed_amount">+ %1$s LOKI non confirmés</string>
 
-    <string name="service_description">Service monerujo</string>
+    <string name="service_description">Service Loki Wallet</string>
 
     <string name="status_synced">Synchronisé :</string>
     <string name="status_remaining">Blocs restant</string>
@@ -125,10 +125,10 @@
         <strong>Authentification par empreinte dgitale</strong>
         <p>En activant l\'authentification par empreinte digitale, vous pouvez voir le solde de
         votre portefeuille et recevoir des fonds sans entrer de mot de passe.</p>
-        <p>Mais pour plus de sécurité, monerujo continuera de vous demander votre mot de passe
+        <p>Mais pour plus de sécurité, Loki Wallet continuera de vous demander votre mot de passe
         lorsque vous afficherez les détails du portefeuille ou enverez des fonds.</p>
         <strong>Avertissement de Sécurité</strong>
-        <p>Enfin, monerujo vous rappel que quiconque pouvant obtenir votre empreinte digitale
+        <p>Enfin, Loki Wallet vous rappel que quiconque pouvant obtenir votre empreinte digitale
         sera capable de jeter un coup d\'œil au solde de votre portefeuille.</p>
         <p>Par exemple, un utilisateur malveillant à vos côtés pourrait ouvrir votre portefeuille
         pendant votre sommeil.</p>
@@ -175,8 +175,8 @@
     <string name="send_notes_hint">Notes Privées (optionnelles)</string>
     <string name="send_generate_paymentid_hint">Générer</string>
     <string name="send_qr_hint">Scanner</string>
-    <string name="send_send_label">Dépenser mes beaux Moneroj</string>
-    <string name="send_send_timed_label">Dépenser mes beaux Moneroj (%1$s)</string>
+    <string name="send_send_label">Dépenser mes beaux Loki</string>
+    <string name="send_send_timed_label">Dépenser mes beaux Loki (%1$s)</string>
     <string name="send_qr_invalid">QR Code invalide</string>
     <string name="send_qr_address_invalid">QR code de paiement invalide</string>
     <string name="send_address_invalid">Adresse invalide</string>

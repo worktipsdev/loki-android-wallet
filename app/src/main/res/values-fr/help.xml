@@ -2,7 +2,7 @@
 <resources>
     <string name="help_create_new"><![CDATA[
         <h1>Créer un Portefeuille - Nouveau</h1>
-        <p>Si vous avez besoin d’une nouvelle adresse Monero !</p>
+        <p>Si vous avez besoin d’une nouvelle adresse Loki !</p>
         <p>Entrez un nom et un mot de passe unique pour le portefeuille.
         Le mot de passe permet de sécuriser les données de votre portefeuille sur votre appareil.
         Utilisez un mot de passe fort - mieux, utilisez une phrase secrète.</p>
@@ -23,7 +23,7 @@
 
     <string name="help_create_seed"><![CDATA[
         <h1>Créer un Portefeuille - Phrase Mnémonique</h1>
-        <p>Si vous avez déjà une adresse Monero et que vus voulez reécupérer vos transactions depuis la chaïne de blocs !</p>
+        <p>Si vous avez déjà une adresse Loki et que vus voulez reécupérer vos transactions depuis la chaïne de blocs !</p>
         <p>Entrez un nom et un mot de passe unique pour le portefeuille.
         Le mot de passe permet de sécuriser les données de votre portefeuille sur votre appareil.
         Utilisez un mot de passe fort - mieux, utilisez une phrase secrète.</p>
@@ -39,7 +39,7 @@
         <p>Entrez un nom et un mot de passe unique pour le portefeuille.
         Le mot de passe permet de sécuriser les données de votre portefeuille sur votre appareil.
         Utilisez un mot de passe fort - mieux, utilisez une phrase secrète.<p>
-        <p>Entrez votre adresse Monero dans le champ \"Adresse Publique\" et remplissez \"Clef d’Audit\" et \"Clef de dépense\".</p>
+        <p>Entrez votre adresse Loki dans le champ \"Adresse Publique\" et remplissez \"Clef d’Audit\" et \"Clef de dépense\".</p>
         <p>Si vous connaissez le numéro du bloc de votre première transaction à cette adresse, entrez-le dans le
         champ \"Hauteur de restauration\" - en le laissant vide la <em>totalité</em> de la chaîne de blocs sera scannée
         à la recherche des transactions appartenant à votre adresse. Cela prend <em>beaucoup</em> de temps.</p>
@@ -51,7 +51,7 @@
         <p>Entrez un nom et un mot de passe unique pour le portefeuille.
         Le mot de passe permet de sécuriser les données de votre portefeuille sur votre appareil.
         Utilisez un mot de passe fort - mieux, utilisez une phrase secrète.<p>
-        <p>Entrez votre adresse Monero dans le champ \"Adresse Publique\" et remplissez la \"Clef d’Audit\".</p>
+        <p>Entrez votre adresse Loki dans le champ \"Adresse Publique\" et remplissez la \"Clef d’Audit\".</p>
         <p>Si vous connaissez le numéro du bloc de votre première transaction à cette adresse, entrez-le dans le
         champ \"Hauteur de restauration\" - en le laissant vide la <em>totalité</em> de la chaîne de blocs sera scannée
         à la recherche des transactions appartenant à votre adresse. Cela prend <em>beaucoup</em> de temps.</p>
@@ -61,11 +61,11 @@
         <h1>Détails du Portefeuille</h1>
         <h2>Adresse Publique</h2>
         Votre adresse publique est comme votre numéro de compte en banque, vous pouvez la partager avec n’importe qui sans
-        craindre de perdre vos Moneroj. On porra envoyer des Moneroj dans votre portefeuille en utilisant cette adresse.
+        craindre de perdre vos Loki. On porra envoyer des Loki dans votre portefeuille en utilisant cette adresse.
         <h2>Phrase Mnémonique</h2>
         C’est la seule donée nécessaire pour récupérer votre portefeuille ultérieurement et obtenir l’accès à
         vos fonds. Il est très imprtant de la garder sécurisée et confidentielle, car elle donne <em>à quiconque</em>
-        le contrôle total de vos Moneroj ! Si vous ne l’avez pas écrite à un emplacement sécurisé, faites-le !
+        le contrôle total de vos Loki ! Si vous ne l’avez pas écrite à un emplacement sécurisé, faites-le !
         <h2>Mdp de restauration des fichiers du Portefeuille</h2>
         Assurez vous de noter ce mot de passe. Si vous réinitialisez votre appareil ou désinstallez l’application,
         vous en aurez besoin pour accéder de nouveau à votre portefeuille.<br/>
@@ -81,7 +81,7 @@
         Après avoir renseigné une nouvelle phrase secrète (voire la même que précédemment) l’application va générer
         un CrAzYpass pour vous et sécuriser les fichiers de votre portefeuille avec. Notez-le !
         <h3>Portefeuilles CrAzYpass</h3>
-        Si vous avez un jour besoin de réinstaller Monerujo (par exemple après réinitialisation de votre téléphone, ou
+        Si vous avez un jour besoin de réinstaller Loki Wallet (par exemple après réinitialisation de votre téléphone, ou
         remplacement de celui-ci) ou si vous voulez utiliser vos fichiers de portefeuille sur un appareil différent ou
         un PC, vous devrez utiliser ce Mot de Passe de Restauration adin d’accéder de nouveau à votre portefeuille.<br/>
         En choisissant \"Modifier Phrase Secrète\" à partir du menu, vous pouvez choisir une nouvelle phrase secrète.
@@ -90,20 +90,20 @@
         Votre clef d’Audit peut vous servir à surveiller les transactions entrantes sur votre portefeuille sans autoriser
         la dépense de vos fonds dans votre portefeuille.
         <h2>Clefs de dépense</h2>
-        Votre clef de dépense permet à quiconque de dépenser les Moneroj associés à votre portefeuille, alors ne la
+        Votre clef de dépense permet à quiconque de dépenser les Loki associés à votre portefeuille, alors ne la
         communiquez à personne, gardez-la en sécurité comme votre phrase Mnémonique.
     ]]></string>
 
     <string name="help_list"><![CDATA[
         <h1>Liste des Portefeuilles</h1>
         <h2>Nœud</h2>
-        <p>Monerujo utilise un nœud distant pour communiquer avec le réseau Monero sans avoir à
+        <p>Loki Wallet utilise un nœud distant pour communiquer avec le réseau Loki sans avoir à
         télécharger et stocker une copie complète de la chaîne de bloc. vous pourrez trouver une
         liste de nœud distant populaire ou apprendre comment faire fonctionner votre propre nœud
-        distant ici https://moneroworld.com/<p>
-        <p>Monerujo est fourni avec quelques Nœuds distants préenregistrés. Les cinq derniers nœuds utilisé sont sauvegardés.</p>
+        distant ici https://loki.network/<p>
+        <p>Loki Wallet est fourni avec quelques Nœuds distants préenregistrés. Les cinq derniers nœuds utilisé sont sauvegardés.</p>
         <h2>Portefeuilles</h2>
-        <p>Ici vous pouvez voir vos Portefeuilles. Ils se trouvent dans le dossier <tt>monerujo</tt>
+        <p>Ici vous pouvez voir vos Portefeuilles. Ils se trouvent dans le dossier <tt>loki-wallet</tt>
         du stockage interne de votre appareil. Vous pouvez utiliser une application d’explorateur
         de fichiers pour les vois. Vous devriez faire des sauvegardes régulières de ce répertoire
         sur un stockage externe au cas où votre appareil exploserait ou serait volé.</p>
@@ -112,11 +112,11 @@
         <h3>Détails</h3>
         <p>Affichez les détails du portefeuille, phrase mnémonique &amp; Clefs.</p>
         <h3>Recevoir</h3>
-        <p>Faites un QR code pour recevoir des Moneroj.</p>
+        <p>Faites un QR code pour recevoir des Loki.</p>
         <h3>Renommer</h3>
         <p>Renommez le portefeuille. Les sauvegardes ne sont pas renommées.</p>
         <h3>Sauvegarde</h3>
-        <p>Faites une copie du portefeuille dans le sous-répertoire <tt>backups</tt> de <tt>monerujo</tt>
+        <p>Faites une copie du portefeuille dans le sous-répertoire <tt>backups</tt> de <tt>loki-wallet</tt>
         remplaçant les copies précédentes s’y trouvant.</p>
         <h3>Archivage</h3>
         <p>Faites une sauvegarde du portefeuille suivi de sa suppression. La copie reste dans le répertoire
@@ -127,8 +127,8 @@
     <string name="help_wallet"><![CDATA[
         <h1>Le Portefeuille</h1>
         <h2>Analyse</h2>
-        Comme Monero aime garder les choses confidentielles, nous devons scanner la chaîne de blocs
-        chaque fois que vous ouvrez un portefeuille Monerujo pour voir si de nouveau Moneroj ont été
+        Comme Loki aime garder les choses confidentielles, nous devons scanner la chaîne de blocs
+        chaque fois que vous ouvrez un portefeuille Loki Wallet pour voir si de nouveau Loki ont été
         envoyés à votre portefeuille, cela ne stock sur votre appareil que les informations appartenant
         à votre portefeuille. Parfois cela peut prendre un moment si vous n’avez pas synchronisé depuis
         longtemps.
@@ -136,9 +136,9 @@
         <p><b>Au secours ! Le solde de mon portefeuille à disparu ou est non confirmé !</b><br/>
         Ne paniquez pas ! lorsque vous envoyez des fonds sur votre portefeuille, une partie de votre
         solde sera temporairement affichée comme non confirmée.
-        Cela se produit à cause de la façon dont Monero est échangé sur la chaîne de blocs et du
-        fonctionnement de la monnaie dans Monero. Aprenez-en plus à propos de la monnaie dans Monero
-        sur https://getmonero.org/fr/resources/moneropedia/change.html
+        Cela se produit à cause de la façon dont Loki est échangé sur la chaîne de blocs et du
+        fonctionnement de la monnaie dans Loki. Aprenez-en plus à propos de la monnaie dans Loki
+        sur https://loki.network/
         <h2>Liste des Transactions</h2>
         <p>Une listes des transactions du portefeuille. Dans un portefeuille d’Audit, seules les
         transactions entrantes sont affichées.</p>
@@ -147,15 +147,15 @@
     <string name="help_tx_details"><![CDATA[
         <h1>Détails de la Transaction</h1>
         <h2>Destination</h2>
-        C’est l’adresse publique du portefeuille auquel vous avez envoyé des Moneroj
+        C’est l’adresse publique du portefeuille auquel vous avez envoyé des Loki
         <h2>ID de Paiement</h2>
         Vous pouvez utiliser un ID de paiement pour identifier la raison pour laquelle vous avez
-        envoyé des Moneroj entre deux parties. C’est totallement privé et optionnel. Il permet par
+        envoyé des Loki entre deux parties. C’est totallement privé et optionnel. Il permet par
         exemple à une société de faire concorder votre transaction avec un article que vous avez
         acheté.
         <h2>ID TX</h2>
         C’est votre ID de transaction, vous pouvez l’utiliser pour identifier vos transaction masquées
-        sur un explorateur de la chaîne de blocs Monero comme <a href="https://xmrchain.net/">https://xmrchain.net/</a>
+        sur un explorateur de la chaîne de blocs Loki comme <a href="https://lokiblocks.com/">https://lokiblocks.com/</a>
         <h2>Clef TX (Clef de Transaction)</h2>
         C’est la clef privée de votre transaction, conservez là en sécurité car la révéler à un
         tiers révèlerait quelle signature est la votre dans un cercle, et donc rendrait votre
@@ -167,20 +167,14 @@
     <string name="help_send"><![CDATA[
         <h1>Envoyer</h1>
         <h2>Adresse de Destinataire</h2>
-        <p>C’est l’adresse publique du portefeuille auquel vous allez envoyer des Moneroj, vous pouvez
+        <p>C’est l’adresse publique du portefeuille auquel vous allez envoyer des Loki, vous pouvez
         la copier/coller, scanner un QR code ou la saisir manuellement. Vérifiez là bien trois fois
         afin de vous assurer que vous n’envoyez pas de pièces à la mauvaise adresse.</p>
         <h2>ID de Paiement</h2>
         <p>Vous pouvez utiliser un ID de paiement pour identifier la raison pour laquelle vous avez
-        envoyé des Moneroj entre deux parties. C’est totallement privé et optionnel. Il permet par
+        envoyé des Loki entre deux parties. C’est totallement privé et optionnel. Il permet par
         exemple à une société de faire concorder votre transaction avec un article que vous avez
         acheté.</p>
-        <h2>Taille du Cercle (Ring Size)</h2>
-        <p>Il y a une taill de cercle à choisir dans Monerujo. Si vous êtes un utilisateur novice
-        nous vous recommandons de rester à la taille de cercle de 7. Augmenter la taille de cerlce
-        au delà de 7 augmente le nombre de signataires dans la signature de cercle, fournissant
-        théoriquement une plus grande dénégation plausible. Cependant, configurer de grandes tailles
-        de cercle peut également faire ressortir votre transaction sur la chaîne de blocs.</p>
         <h2>Priorité</h2>
         <p>Ce paramètre détermine la vitesse à laquelle votre transaction sera insérée dans la chaîne
         de blocs. Une priorité plus élevée sera en lien direct avec des frais de transaction plus

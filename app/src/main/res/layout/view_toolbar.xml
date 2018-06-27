@@ -39,7 +39,7 @@
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:visibility="invisible"
-                tools:text="monerujo" />
+                tools:text="Loki Wallet" />
 
             <TextView
                 android:id="@+id/toolbarSubtitle"
@@ -48,7 +48,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:visibility="invisible"
-                tools:text="monerujo" />
+                tools:text="Loki Wallet" />
         </LinearLayout>
     </FrameLayout>
 </merge>
