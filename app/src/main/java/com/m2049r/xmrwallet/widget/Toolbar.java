@@ -20,6 +20,7 @@ package com.m2049r.xmrwallet.widget;
 
 import android.content.Context;
 import android.os.Build;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +33,7 @@ import com.m2049r.xmrwallet.R;
 import timber.log.Timber;
 
 public class Toolbar extends android.support.v7.widget.Toolbar {
+
     public interface OnButtonListener {
         void onButton(int type);
     }
@@ -151,12 +153,21 @@ public class Toolbar extends android.support.v7.widget.Toolbar {
         buttonType = type;
     }
 
-    public void setSubtitle(String subtitle) {
+    public void setSubtitle(@Nullable String subtitle) {
         toolbarSubtitle.setText(subtitle);
         if (subtitle != null) {
+            setLogoTopMargin((int) getResources().getDimension(R.dimen.logo_margin_top));
             toolbarSubtitle.setVisibility(View.VISIBLE);
         } else {
+            setLogoTopMargin(0);
             toolbarSubtitle.setVisibility(View.INVISIBLE);
         }
     }
+
+    public void setLogoTopMargin(int dp) {
+        MarginLayoutParams marginParams = (MarginLayoutParams) toolbarImage.getLayoutParams();
+        marginParams.setMargins(marginParams.leftMargin, dp, marginParams.rightMargin, marginParams.bottomMargin);
+        toolbarImage.setLayoutParams(marginParams);
+    }
+
 }

@@ -465,7 +465,7 @@ public class LoginActivity extends SecureActivity
     public void showNet() {
         switch (WalletManager.getInstance().getNetworkType()) {
             case NetworkType_Mainnet:
-                toolbar.setSubtitle(getString(R.string.connect_mainnet));
+                toolbar.setSubtitle(null);
                 toolbar.setBackgroundResource(R.drawable.backgound_toolbar_mainnet);
                 break;
             case NetworkType_Testnet:
