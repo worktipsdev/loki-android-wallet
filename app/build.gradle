@@ -41,6 +41,10 @@ android {
         }
     }
 
+    lintOptions {
+        checkReleaseBuilds false
+    }
+
     splits {
         abi {
             enable true
