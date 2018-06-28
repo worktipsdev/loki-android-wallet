@@ -6,8 +6,10 @@
     <string name="credits_text"><![CDATA[
         <b>Créditos</b>
         <br/>
+        Gracias al equipo de Monerujo. Ellos hicieron posible esta billetera.
+        <br/>
         m2049r, baltsar777, anhdres, keejef,
-        rehrar, EarlOfEgo et al.
+        rehrar, EarlOfEgo, crtlib et al.
         <br/><br/>
         <a href="https://wallet.loki.network/">wallet.loki.network</a>
         ]]></string>

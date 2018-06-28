@@ -7,8 +7,10 @@
     <string name="credits_text"><![CDATA[
         <b>Crediti</b>
         <br/>
+        Grazie al team Monerujo. Hanno reso possibile questo portafoglio.
+        <br/>
         m2049r, baltsar777, anhdres, keejef,
-        rehrar, EarlOfEgo et al.
+        rehrar, EarlOfEgo, crtlib et al.
         <br/><br/>
         <a href="https://wallet.loki.network/">wallet.loki.network</a>
         ]]></string>
