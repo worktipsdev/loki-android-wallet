@@ -203,16 +203,16 @@ public class Helper {
     }
 
     static public String getFormattedAmount(double amount, boolean isXmr) {
-        // at this point selection is XMR in case of error
+        // at this point selection is LOKI in case of error
         String displayB;
-        if (isXmr) { // XMR
+        if (isXmr) { // LOKI
             long xmr = Wallet.getAmountFromDouble(amount);
             if ((xmr > 0) || (amount == 0)) {
                 displayB = String.format(Locale.US, "%,.5f", amount);
             } else {
                 displayB = null;
             }
-        } else { // not XMR
+        } else { // not LOKI
             displayB = String.format(Locale.US, "%,.2f", amount);
         }
         return displayB;
