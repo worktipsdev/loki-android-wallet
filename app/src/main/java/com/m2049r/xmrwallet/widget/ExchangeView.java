@@ -30,6 +30,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -41,9 +42,7 @@ import com.m2049r.xmrwallet.model.Wallet;
 import com.m2049r.xmrwallet.service.exchange.api.ExchangeApi;
 import com.m2049r.xmrwallet.service.exchange.api.ExchangeCallback;
 import com.m2049r.xmrwallet.service.exchange.api.ExchangeRate;
-import com.m2049r.xmrwallet.service.exchange.kraken.ExchangeApiImpl;
 import com.m2049r.xmrwallet.util.Helper;
-import com.m2049r.xmrwallet.util.OkHttpClientSingleton;
 
 import java.util.Locale;
 
@@ -166,7 +165,11 @@ public class ExchangeView extends LinearLayout
         etAmount = (TextInputLayout) findViewById(R.id.etAmount);
         tvAmountB = (TextView) findViewById(R.id.tvAmountB);
         sCurrencyA = (Spinner) findViewById(R.id.sCurrencyA);
+        ArrayAdapter adapter = ArrayAdapter.createFromResource(getContext(), R.array.currency, R.layout.item_spinner);
+        adapter.setDropDownViewResource(R.layout.item_spinner_dropdown_item);
+        sCurrencyA.setAdapter(adapter);
         sCurrencyB = (Spinner) findViewById(R.id.sCurrencyB);
+        sCurrencyB.setAdapter(adapter);
         evExchange = (ImageView) findViewById(R.id.evExchange);
         pbExchange = (ProgressBar) findViewById(R.id.pbExchange);
 
@@ -179,7 +182,7 @@ public class ExchangeView extends LinearLayout
         sCurrencyA.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                if (position != 0) { // if not XMR, select XMR on other
+                if (position != 0) { // if not LOKI, select LOKI on other
                     sCurrencyB.setSelection(0, true);
                 }
                 doExchange();
@@ -194,15 +197,11 @@ public class ExchangeView extends LinearLayout
         sCurrencyB.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(final AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                if (position != 0) { // if not XMR, select XMR on other
+                if (position != 0) { // if not LOKI, select LOKI on other
                     sCurrencyA.setSelection(0, true);
                 }
-                parentView.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        ((TextView) parentView.getChildAt(0)).setTextColor(getResources().getColor(R.color.moneroGray));
-                    }
-                });
+                parentView.post(() -> ((TextView) parentView.getChildAt(0))
+                        .setTextColor(getResources().getColor(R.color.moneroGray)));
                 doExchange();
             }
 
@@ -212,23 +211,18 @@ public class ExchangeView extends LinearLayout
             }
         });
 
-        etAmount.getEditText().setOnFocusChangeListener(new OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
-                    doExchange();
-                }
+        etAmount.getEditText().setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                doExchange();
             }
         });
 
-        etAmount.getEditText().setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                    doExchange();
-                    return true;
-                }
-                return false;
+        etAmount.getEditText().setOnEditorActionListener((v, actionId, event) -> {
+            if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                doExchange();
+                return true;
             }
+            return false;
         });
 
 
@@ -310,34 +304,25 @@ public class ExchangeView extends LinearLayout
         }
     }
 
-    private final ExchangeApi exchangeApi = new ExchangeApiImpl(OkHttpClientSingleton.getOkHttpClient());
+    private final ExchangeApi exchangeApi = Helper.getExchangeApi();
 
     void startExchange() {
         showProgress();
         String currencyA = (String) sCurrencyA.getSelectedItem();
         String currencyB = (String) sCurrencyB.getSelectedItem();
+
         exchangeApi.queryExchangeRate(currencyA, currencyB,
                 new ExchangeCallback() {
                     @Override
                     public void onSuccess(final ExchangeRate exchangeRate) {
                         if (isAttachedToWindow())
-                            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    exchange(exchangeRate);
-                                }
-                            });
+                            new Handler(Looper.getMainLooper()).post(() -> exchange(exchangeRate));
                     }
 
                     @Override
                     public void onError(final Exception e) {
                         Timber.e(e.getLocalizedMessage());
-                        new Handler(Looper.getMainLooper()).post(new Runnable() {
-                            @Override
-                            public void run() {
-                                exchangeFailed();
-                            }
-                        });
+                        new Handler(Looper.getMainLooper()).post(() -> exchangeFailed());
                     }
                 });
     }
@@ -361,8 +346,8 @@ public class ExchangeView extends LinearLayout
                 setXmr("");
             }
             tvAmountB.setText(xmrAmount);
-        } else { // no XMR currency - cannot happen!
-            Timber.e("No XMR currency!");
+        } else { // no LOKI currency - cannot happen!
+            Timber.e("No LOKI currency!");
             setXmr(null);
             notXmrAmount = null;
             return;
@@ -387,8 +372,8 @@ public class ExchangeView extends LinearLayout
                     cleanAmount = String.format(Locale.US, "%.2f", amountA);
                     setXmr(null);
                     notXmrAmount = cleanAmount;
-                } else { // no XMR currency - cannot happen!
-                    Timber.e("No XMR currency!");
+                } else { // no LOKI currency - cannot happen!
+                    Timber.e("No LOKI currency!");
                     setXmr(null);
                     notXmrAmount = null;
                     return false;

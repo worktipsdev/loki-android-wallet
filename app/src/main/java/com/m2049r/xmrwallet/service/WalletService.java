@@ -470,7 +470,7 @@ public class WalletService extends Service {
 
     private boolean start(String walletName, String walletPassword) {
         Timber.d("start()");
-        startNotfication();
+        startNotification();
         showProgress(getString(R.string.status_wallet_loading));
         showProgress(10);
         if (listener == null) {
@@ -545,12 +545,12 @@ public class WalletService extends Service {
         return wallet;
     }
 
-    private void startNotfication() {
+    private void startNotification() {
         Intent notificationIntent = new Intent(this, WalletActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
         Notification notification = new Notification.Builder(this)
                 .setContentTitle(getString(R.string.service_description))
-                .setSmallIcon(R.drawable.ic_monerujo)
+                .setSmallIcon(R.drawable.loki_notification)
                 .setContentIntent(pendingIntent)
                 .build();
         startForeground(NOTIFICATION_ID, notification);

@@ -37,26 +37,12 @@ public class Notice {
     private static final String PREFS_NAME = "notice";
     private static List<Notice> notices = null;
 
-    private static final String NOTICE_SHOW_XMRTO_ENABLED_LOGIN = "notice_xmrto_enabled_login";
-    private static final String NOTICE_SHOW_XMRTO_ENABLED_SEND = "notice_xmrto_enabled_send";
     private static final String NOTICE_SHOW_CRAZYPASS = "notice_crazypass_enabled_login";
 
     private static void init() {
         synchronized (Notice.class) {
             if (notices != null) return;
             notices = new ArrayList<>();
-            notices.add(
-                    new Notice(NOTICE_SHOW_XMRTO_ENABLED_SEND,
-                            R.string.info_xmrto_enabled,
-                            R.string.help_xmrto,
-                            1)
-            );
-            notices.add(
-                    new Notice(NOTICE_SHOW_XMRTO_ENABLED_LOGIN,
-                            R.string.info_xmrto_enabled,
-                            R.string.help_xmrto,
-                            1)
-            );
             notices.add(
                     new Notice(NOTICE_SHOW_CRAZYPASS,
                             R.string.info_crazypass_enabled,
@@ -101,20 +87,12 @@ public class Notice {
 
         final FragmentManager fragmentManager =
                 ((FragmentActivity) context).getSupportFragmentManager();
-        ll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                HelpFragment.display(fragmentManager, helpResId);
-            }
-        });
+        ll.setOnClickListener(v -> HelpFragment.display(fragmentManager, helpResId));
 
         ImageButton ib = (ImageButton) ll.findViewById(R.id.ibClose);
-        ib.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ll.setVisibility(View.GONE);
-                decCount(context);
-            }
+        ib.setOnClickListener(v -> {
+            ll.setVisibility(View.GONE);
+            decCount(context);
         });
         parent.addView(ll);
     }

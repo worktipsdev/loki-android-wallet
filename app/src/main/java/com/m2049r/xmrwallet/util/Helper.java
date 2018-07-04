@@ -31,11 +31,13 @@ import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.VectorDrawable;
+import android.hardware.fingerprint.FingerprintManager;
+import android.os.AsyncTask;
+import android.os.Build;
+import android.os.CancellationSignal;
 import android.os.Environment;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.hardware.fingerprint.FingerprintManagerCompat;
-import android.support.v4.os.CancellationSignal;
 import android.system.ErrnoException;
 import android.system.Os;
 import android.text.Editable;
@@ -56,6 +58,8 @@ import com.m2049r.xmrwallet.R;
 import com.m2049r.xmrwallet.model.NetworkType;
 import com.m2049r.xmrwallet.model.Wallet;
 import com.m2049r.xmrwallet.model.WalletManager;
+import com.m2049r.xmrwallet.service.exchange.api.ExchangeApi;
+import com.m2049r.xmrwallet.service.exchange.coinmarketcap.ExchangeApiImpl;
 
 import java.io.File;
 import java.io.IOException;
@@ -65,6 +69,7 @@ import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -72,8 +77,8 @@ import okhttp3.HttpUrl;
 import timber.log.Timber;
 
 public class Helper {
-    static private final String WALLET_DIR = "monerujo" + (BuildConfig.DEBUG ? "-debug" : "");
-    static private final String HOME_DIR = "monero" + (BuildConfig.DEBUG ? "-debug" : "");
+    static private final String WALLET_DIR = "loki-wallet" + (BuildConfig.DEBUG ? "-debug" : "");
+    static private final String HOME_DIR = "loki" + (BuildConfig.DEBUG ? "-debug" : "");
 
     static public int DISPLAY_DIGITS_INFO = 5;
 
@@ -198,16 +203,16 @@ public class Helper {
     }
 
     static public String getFormattedAmount(double amount, boolean isXmr) {
-        // at this point selection is XMR in case of error
+        // at this point selection is LOKI in case of error
         String displayB;
-        if (isXmr) { // XMR
+        if (isXmr) { // LOKI
             long xmr = Wallet.getAmountFromDouble(amount);
             if ((xmr > 0) || (amount == 0)) {
                 displayB = String.format(Locale.US, "%,.5f", amount);
             } else {
                 displayB = null;
             }
-        } else { // not XMR
+        } else { // not LOKI
             displayB = String.format(Locale.US, "%,.2f", amount);
         }
         return displayB;
@@ -243,7 +248,7 @@ public class Helper {
             urlConnection.setConnectTimeout(HTTP_TIMEOUT);
             urlConnection.setReadTimeout(HTTP_TIMEOUT);
             InputStreamReader in = new InputStreamReader(urlConnection.getInputStream());
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             final int BUFFER_SIZE = 512;
             char[] buffer = new char[BUFFER_SIZE];
             int length = in.read(buffer, 0, BUFFER_SIZE);
@@ -285,15 +290,6 @@ public class Helper {
         return ShakeAnimation;
     }
 
-    static public HttpUrl getXmrToBaseUrl() {
-        if ((WalletManager.getInstance() == null)
-                || (WalletManager.getInstance().getNetworkType() != NetworkType.NetworkType_Mainnet)) {
-            return HttpUrl.parse("https://test.xmr.to/api/v2/xmr2btc/");
-        } else {
-            return HttpUrl.parse("https://xmr.to/api/v2/xmr2btc/");
-        }
-    }
-
     private final static char[] HexArray = "0123456789ABCDEF".toCharArray();
 
     public static String bytesToHex(byte[] data) {
@@ -331,7 +327,7 @@ public class Helper {
     // TODO make the log levels refer to the  WalletManagerFactory::LogLevel enum ?
     static public void initLogger(Context context, int level) {
         String home = getStorage(context, HOME_DIR).getAbsolutePath();
-        WalletManager.initLogger(home + "/monerujo", "monerujo.log");
+        WalletManager.initLogger(home + "/loki-wallet", "loki-wallet.log");
         if (level >= WalletManager.LOGLEVEL_SILENT)
             WalletManager.setLogLevel(level);
     }
@@ -377,6 +373,7 @@ public class Helper {
     }
 
     static AlertDialog openDialog = null; // for preventing opening of multiple dialogs
+    static AsyncTask<Void, Void, Boolean> loginTask = null;
 
     static public void promptPassword(final Context context, final String wallet, boolean fingerprintDisabled, final PasswordAction action) {
         if (openDialog != null) return; // we are already asking for password
@@ -389,13 +386,66 @@ public class Helper {
         final TextInputLayout etPassword = (TextInputLayout) promptsView.findViewById(R.id.etPassword);
         etPassword.setHint(context.getString(R.string.prompt_password, wallet));
 
+        final TextView tvOpenPrompt = (TextView) promptsView.findViewById(R.id.tvOpenPrompt);
+        final Drawable icFingerprint = context.getDrawable(R.drawable.ic_fingerprint);
+        final Drawable icError = context.getDrawable(R.drawable.ic_error_red_36dp);
+        final Drawable icInfo = context.getDrawable(R.drawable.ic_info_green_36dp);
+
         final boolean fingerprintAuthCheck = FingerprintHelper.isFingerPassValid(context, wallet);
 
         final boolean fingerprintAuthAllowed = !fingerprintDisabled && fingerprintAuthCheck;
         final CancellationSignal cancelSignal = new CancellationSignal();
 
-        if (fingerprintAuthAllowed) {
-            promptsView.findViewById(R.id.txtFingerprintAuth).setVisibility(View.VISIBLE);
+        final AtomicBoolean incorrectSavedPass = new AtomicBoolean(false);
+        class LoginWalletTask extends AsyncTask<Void, Void, Boolean> {
+            private String pass;
+            private boolean fingerprintUsed;
+
+            LoginWalletTask(String pass, boolean fingerprintUsed) {
+                this.pass = pass;
+                this.fingerprintUsed = fingerprintUsed;
+            }
+
+            @Override
+            protected void onPreExecute() {
+                tvOpenPrompt.setCompoundDrawablesRelativeWithIntrinsicBounds(icInfo, null, null, null);
+                tvOpenPrompt.setText(context.getText(R.string.prompt_open_wallet));
+                tvOpenPrompt.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            protected Boolean doInBackground(Void... unused) {
+                return processPasswordEntry(context, wallet, pass, fingerprintUsed, action);
+            }
+
+            @Override
+            protected void onPostExecute(Boolean result) {
+                if (result) {
+                    Helper.hideKeyboardAlways((Activity) context);
+                    cancelSignal.cancel();
+                    openDialog.dismiss();
+                    openDialog = null;
+                } else {
+                    if (fingerprintUsed) {
+                        incorrectSavedPass.set(true);
+                        tvOpenPrompt.setCompoundDrawablesRelativeWithIntrinsicBounds(icError, null, null, null);
+                        tvOpenPrompt.setText(context.getText(R.string.bad_saved_password));
+                    } else {
+                        if (!fingerprintAuthAllowed) {
+                            tvOpenPrompt.setVisibility(View.GONE);
+                        } else if (incorrectSavedPass.get()) {
+                            tvOpenPrompt.setCompoundDrawablesRelativeWithIntrinsicBounds(icError, null, null, null);
+                            tvOpenPrompt.setText(context.getText(R.string.bad_password));
+                        } else {
+                            tvOpenPrompt.setCompoundDrawablesRelativeWithIntrinsicBounds(icFingerprint, null, null, null);
+                            tvOpenPrompt.setText(context.getText(R.string.prompt_fingerprint_auth));
+                        }
+                        etPassword.setError(context.getString(R.string.bad_password));
+                    }
+                }
+
+                loginTask = null;
+            }
         }
 
         etPassword.getEditText().addTextChangedListener(new TextWatcher() {
@@ -408,13 +458,11 @@ public class Helper {
             }
 
             @Override
-            public void beforeTextChanged(CharSequence s, int start,
-                                          int count, int after) {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start,
-                                      int before, int count) {
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
         });
 
@@ -423,87 +471,79 @@ public class Helper {
                 .setCancelable(false)
                 .setPositiveButton(context.getString(R.string.label_ok), null)
                 .setNegativeButton(context.getString(R.string.label_cancel),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                Helper.hideKeyboardAlways((Activity) context);
-                                cancelSignal.cancel();
-                                dialog.cancel();
-                                openDialog = null;
+                        (dialog, id) -> {
+                            Helper.hideKeyboardAlways((Activity) context);
+                            cancelSignal.cancel();
+                            if (loginTask != null) {
+                                loginTask.cancel(true);
+                                loginTask = null;
                             }
+                            dialog.cancel();
+                            openDialog = null;
                         });
         openDialog = alertDialogBuilder.create();
 
-        final FingerprintManagerCompat.AuthenticationCallback fingerprintAuthCallback = new FingerprintManagerCompat.AuthenticationCallback() {
-            @Override
-            public void onAuthenticationError(int errMsgId, CharSequence errString) {
-                ((TextView) promptsView.findViewById(R.id.txtFingerprintAuth)).setText(errString);
-            }
-
-            @Override
-            public void onAuthenticationSucceeded(FingerprintManagerCompat.AuthenticationResult result) {
-                try {
-                    String userPass = KeyStoreHelper.loadWalletUserPass(context, wallet);
-                    if (Helper.processPasswordEntry(context, wallet, userPass, true, action)) {
-                        Helper.hideKeyboardAlways((Activity) context);
-                        openDialog.dismiss();
-                        openDialog = null;
-                    } else {
-                        etPassword.setError(context.getString(R.string.bad_password));
-                    }
-                } catch (KeyStoreHelper.BrokenPasswordStoreException ex) {
-                    etPassword.setError(context.getString(R.string.bad_password));
-                    // TODO: better errror message here - what would it be?
+        final FingerprintManager.AuthenticationCallback fingerprintAuthCallback;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            fingerprintAuthCallback = null;
+        } else {
+            fingerprintAuthCallback = new FingerprintManager.AuthenticationCallback() {
+                @Override
+                public void onAuthenticationError(int errMsgId, CharSequence errString) {
+                    tvOpenPrompt.setCompoundDrawablesRelativeWithIntrinsicBounds(icError, null, null, null);
+                    tvOpenPrompt.setText(errString);
                 }
-            }
 
-            @Override
-            public void onAuthenticationFailed() {
-                ((TextView) promptsView.findViewById(R.id.txtFingerprintAuth))
-                        .setText(context.getString(R.string.bad_fingerprint));
-            }
-        };
-
-        openDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(DialogInterface dialog) {
-                if (fingerprintAuthAllowed) {
-                    FingerprintHelper.authenticate(context, cancelSignal, fingerprintAuthCallback);
-                }
-                Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
-                button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        String pass = etPassword.getEditText().getText().toString();
-                        if (processPasswordEntry(context, wallet, pass, false, action)) {
-                            Helper.hideKeyboardAlways((Activity) context);
-                            cancelSignal.cancel();
-                            openDialog.dismiss();
-                            openDialog = null;
-                        } else {
-                            etPassword.setError(context.getString(R.string.bad_password));
+                @Override
+                public void onAuthenticationSucceeded(FingerprintManager.AuthenticationResult result) {
+                    try {
+                        String userPass = KeyStoreHelper.loadWalletUserPass(context, wallet);
+                        if (loginTask == null) {
+                            loginTask = new LoginWalletTask(userPass, true);
+                            loginTask.execute();
                         }
+                    } catch (KeyStoreHelper.BrokenPasswordStoreException ex) {
+                        etPassword.setError(context.getString(R.string.bad_password));
+                        // TODO: better error message here - what would it be?
                     }
-                });
+                }
+
+                @Override
+                public void onAuthenticationFailed() {
+                    tvOpenPrompt.setCompoundDrawablesRelativeWithIntrinsicBounds(icError, null, null, null);
+                    tvOpenPrompt.setText(context.getString(R.string.bad_fingerprint));
+                }
+            };
+        }
+
+        openDialog.setOnShowListener(dialog -> {
+            if (fingerprintAuthAllowed && fingerprintAuthCallback != null) {
+                tvOpenPrompt.setCompoundDrawablesRelativeWithIntrinsicBounds(icFingerprint, null, null, null);
+                tvOpenPrompt.setText(context.getText(R.string.prompt_fingerprint_auth));
+                tvOpenPrompt.setVisibility(View.VISIBLE);
+                FingerprintHelper.authenticate(context, cancelSignal, fingerprintAuthCallback);
             }
+            Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
+            button.setOnClickListener(view -> {
+                String pass = etPassword.getEditText().getText().toString();
+                if (loginTask == null) {
+                    loginTask = new LoginWalletTask(pass, false);
+                    loginTask.execute();
+                }
+            });
         });
 
         // accept keyboard "ok"
-        etPassword.getEditText().setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                    String pass = etPassword.getEditText().getText().toString();
-                    if (processPasswordEntry(context, wallet, pass, false, action)) {
-                        Helper.hideKeyboardAlways((Activity) context);
-                        cancelSignal.cancel();
-                        openDialog.dismiss();
-                        openDialog = null;
-                    } else {
-                        etPassword.setError(context.getString(R.string.bad_password));
-                    }
-                    return true;
+        etPassword.getEditText().setOnEditorActionListener((v, actionId, event) -> {
+            if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                String pass = etPassword.getEditText().getText().toString();
+                if (loginTask == null) {
+                    loginTask = new LoginWalletTask(pass, false);
+                    loginTask.execute();
                 }
-                return false;
+                return true;
             }
+            return false;
         });
 
         Helper.showKeyboard(openDialog);
@@ -522,5 +562,10 @@ public class Helper {
         } else {
             return false;
         }
+    }
+
+    static public ExchangeApi getExchangeApi() {
+        return new ExchangeApiImpl(OkHttpClientSingleton.getOkHttpClient());
+
     }
 }

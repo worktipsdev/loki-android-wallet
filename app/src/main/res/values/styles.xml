@@ -29,7 +29,7 @@
 
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorPrimary">@color/moneroText</item>
-        <item name="colorAccent">@color/gradientPink</item>
+        <item name="colorAccent">@color/gradientLight</item>
 
         <item name="android:spinnerItemStyle">@style/MoneroSpinnerItem</item>
         <item name="android:spinnerStyle">@style/MoneroSpinner</item>
@@ -50,6 +50,10 @@
 
     <style name="MoneroLabel.Caps">
         <item name="android:textAllCaps">true</item>
+    </style>
+
+    <style name="MoneroLabel.Caps.White">
+        <item name="android:textColor">@color/moneroWhite</item>
     </style>
 
     <style name="MoneroLabel.Caps.Black">
@@ -82,7 +86,7 @@
     </style>
 
     <style name="MoneroText.Balance.Orange">
-        <item name="android:textColor">@color/gradientOrange</item>
+        <item name="android:textColor">@color/gradientDark</item>
     </style>
 
     <style name="MoneroText.Unconfirmed">
@@ -141,7 +145,7 @@
 
     <style name="MoneroLabel.Heading.Donation">
         <item name="android:textSize">18sp</item>
-        <item name="android:textColor">@color/gradientPink</item>
+        <item name="android:textColor">@color/gradientLight</item>
         <item name="android:textStyle">bold</item>
     </style>
 
@@ -226,7 +230,7 @@
 
     <style name="MoneroText.Button" parent="@android:style/TextAppearance.DeviceDefault.Medium">
         <item name="android:textSize">14sp</item>
-        <item name="android:textColor">@color/gradientOrange</item>
+        <item name="android:textColor">@color/gradientDark</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textAllCaps">true</item>
     </style>
@@ -252,7 +256,7 @@
 
     <style name="MoneroButton.Alert">
         <item name="android:textColor">@color/moneroBlack</item>
-        <item name="android:background">@color/gradientPink</item>
+        <item name="android:background">@color/gradientLight</item>
     </style>
 
     <style name="MoneroButton.ReallySend"></style>
@@ -267,19 +271,19 @@
 
     <style name="MoneroEdit" parent="MoneroText">
         <item name="android:textColor">?colorPrimary</item>
-        <item name="android:backgroundTint">@color/gradientPink</item>
+        <item name="android:backgroundTint">@color/gradientLight</item>
     </style>
 
     <style name="MoneroEdit.Amount">
         <!--item name="android:textSize">32sp</item-->
-        <item name="android:textColor">@color/gradientOrange</item>
+        <item name="android:textColor">@color/gradientDark</item>
         <item name="android:textStyle">bold</item>
     </style>
 
 
     <style name="MoneroEdit.Medium" parent="MoneroText.Medium">
         <item name="android:textColor">?colorPrimary</item>
-        <item name="android:backgroundTint">@color/gradientPink</item>
+        <item name="android:backgroundTint">@color/gradientLight</item>
     </style>
 
     <style name="MoneroEdit.Small">
@@ -305,7 +309,7 @@
     </style>
 
     <style name="MoneroTextAppearanceSpinnerItem" parent="android:TextAppearance.Widget.TextView.SpinnerItem">
-        <item name="android:textColor">@color/gradientOrange</item>
+        <item name="android:textColor">@color/gradientDark</item>
     </style>
 
     <style name="MoneroSpinnerItem.Balance">

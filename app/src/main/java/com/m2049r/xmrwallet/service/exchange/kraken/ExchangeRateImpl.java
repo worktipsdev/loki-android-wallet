@@ -20,6 +20,7 @@ import android.support.annotation.NonNull;
 
 import com.m2049r.xmrwallet.service.exchange.api.ExchangeException;
 import com.m2049r.xmrwallet.service.exchange.api.ExchangeRate;
+import com.m2049r.xmrwallet.service.exchange.api.BaseExchangeRate;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,37 +30,15 @@ import java.util.NoSuchElementException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-class ExchangeRateImpl implements ExchangeRate {
-
-    private final String baseCurrency;
-    private final String quoteCurrency;
-    private final double rate;
+class ExchangeRateImpl extends BaseExchangeRate {
 
     @Override
     public String getServiceName() {
         return "kraken.com";
     }
 
-    @Override
-    public String getBaseCurrency() {
-        return baseCurrency;
-    }
-
-    @Override
-    public String getQuoteCurrency() {
-        return quoteCurrency;
-    }
-
-    @Override
-    public double getRate() {
-        return rate;
-    }
-
     ExchangeRateImpl(@NonNull final String baseCurrency, @NonNull final String quoteCurrency, double rate) {
-        super();
-        this.baseCurrency = baseCurrency;
-        this.quoteCurrency = quoteCurrency;
-        this.rate = rate;
+        super(baseCurrency, quoteCurrency, rate);
     }
 
     ExchangeRateImpl(final JSONObject jsonObject, final boolean swapAssets) throws JSONException, ExchangeException {

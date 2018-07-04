@@ -37,7 +37,7 @@ public class MoneroThreadPoolExecutor {
         private final AtomicInteger mCount = new AtomicInteger(1);
 
         public Thread newThread(Runnable r) {
-            return new Thread(null, r, "MoneroTask #" + mCount.getAndIncrement(), MoneroHandlerThread.THREAD_STACK_SIZE);
+            return new Thread(null, r, "LokiTask #" + mCount.getAndIncrement(), MoneroHandlerThread.THREAD_STACK_SIZE);
         }
     };
 

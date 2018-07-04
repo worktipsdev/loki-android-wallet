@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">monerujo</string>
+    <string name="app_name" translatable="false">Loki Wallet</string>
     <string name="wallet_activity_name">Wallet</string>
 
     <string name="menu_stagenet" translatable="false">Stagenet</string>
@@ -34,62 +34,12 @@
     <string name="label_receive_info_gen_qr_code">Touch for QR Code</string>
     <string name="info_send_prio_fees">Higher Priority = Higher Fees</string>
 
-    <string name="info_xmrto_enabled">BTC payment enabled, tap for more info.</string>
-
     <string name="info_crazypass_enabled">CrAzYpass enabled, tap for more info.</string>
-
-    <string name="info_xmrto"><![CDATA[
-        <b>You entered a Bitcoin address.</b><br/>
-        <i>You&apos;ll send XMR and the receiver will get BTC using the <b>XMR.TO</b> service.</i>
-    ]]></string>
-
-    <string name="info_send_xmrto_success_order_label">XMR.TO Order</string>
-
-    <string name="info_send_xmrto_success_btc">%1$s BTC</string>
-
-
-    <string name="info_send_xmrto_paid">Confirmation Pending</string>
-    <string name="info_send_xmrto_unpaid">Payment Pending</string>
-    <string name="info_send_xmrto_error">XMR.TO Error (%1$s)</string>
-    <string name="info_send_xmrto_sent">BTC Sent!</string>
-    <string name="info_send_xmrto_query">Querying &#8230;</string>
-
-    <string name="info_send_xmrto_parms"><![CDATA[
-        <b>You can send %1$s &#8212; %2$s BTC</b>.<br/>
-        <i><b>XMR.TO</b> is giving you an exchange rate of <b>%3$s BTC</b> <u>right now</u></i>.
-    ]]></string>
-    <string name="info_send_xmrto_zeroconf"><![CDATA[
-        <i>Amounts up to <b>%1$s BTC</b> will be sent <u>instantly</u>!</i>
-    ]]></string>
-
-    <string name="send_available_btc">Balance: %2$s BTC (%1$s XMR)</string>
 
     <string name="info_paymentid_intergrated">Payment ID integrated</string>
     <string name="info_prepare_tx">Preparing your transaction</string>
 
-    <string name="label_send_progress_xmrto_create">Creating XMR.TO Order</string>
-    <string name="label_send_progress_xmrto_query">Querying XMR.TO Order</string>
-    <string name="label_send_progress_create_tx">Preparing Monero Transaction</string>
-
-    <string name="label_send_progress_queryparms">Querying xmr.to parameters</string>
-
-    <string name="label_generic_xmrto_error">XMR.TO ERROR</string>
-    <string name="text_generic_xmrto_error">Code: %1$d</string>
-
-    <string name="text_retry">Touch to retry</string>
-    <string name="text_noretry_monero">Now we\'re stuck here!</string>
-    <string name="text_noretry">Uh-oh, XMR.TO does not seem be available right now!</string>
-
-    <string name="text_send_btc_amount">%1$s BTC = %2$s XMR</string>
-    <string name="text_send_btc_rate">(Rate: %1$s BTC/XMR)</string>
-
     <string name="label_send_settings_advanced">Advanced:</string>
-
-    <string name="label_send_btc_xmrto_info">Visit xmr.to for support &amp; tracking</string>
-    <string name="label_send_btc_xmrto_key_lb">Secret Key\nXMR.TO</string>
-    <string name="label_send_btc_xmrto_key">XMR.TO Secret Key</string>
-    <string name="label_send_btc_address">Destination BTC Address</string>
-    <string name="label_send_btc_amount">Amount</string>
 
     <string name="label_send_txid">Transaction ID</string>
     <string name="label_send_address">Destination Address</string>
@@ -128,8 +78,6 @@
 
     <string name="status_transaction_failed">Transaction failed: %1$s</string>
 
-    <string name="send_xmrto_timeout">You waited too long my friend!</string>
-
     <string name="service_busy">I am still busy with your last wallet &#8230;</string>
 
     <string name="prompt_rename">Rename %1$s</string>
@@ -139,8 +87,10 @@
     <string name="prompt_password">Password for %1$s</string>
     <string name="prompt_fingerprint_auth">You can also open wallet using fingerprint.\nPlease touch sensor.</string>
     <string name="prompt_send_password">Confirm Password</string>
+    <string name="prompt_open_wallet">Opening the wallet&#8230;</string>
     <string name="bad_fingerprint">Fingerprint not recognized. Try again.</string>
     <string name="bad_password">Incorrect password!</string>
+    <string name="bad_saved_password">Saved password is incorrect.\nPlease enter password manually.</string>
     <string name="bad_wallet">Wallet does not exist!</string>
     <string name="prompt_daemon_missing">Daemon address must be set!</string>
     <string name="prompt_wrong_net">Wallet does not match selected net</string>
@@ -150,9 +100,9 @@
     <string name="label_wallet_receive">Receive</string>
     <string name="label_wallet_send">Give</string>
 
-    <string name="xmr_unconfirmed_amount">+ %1$s XMR unconfirmed</string>
+    <string name="xmr_unconfirmed_amount">+ %1$s LOKI unconfirmed</string>
 
-    <string name="service_description">monerujo Service</string>
+    <string name="service_description">Loki Wallet Service</string>
 
     <string name="status_synced">Synced:</string>
     <string name="status_remaining">Blocks remaining</string>
@@ -164,14 +114,12 @@
 
     <string name="label_copy_viewkey">View Key</string>
     <string name="label_copy_address">Public Address</string>
-    <string name="label_copy_xmrtokey">XMR.TO Key</string>
     <string name="message_copy_viewkey">View Key copied to clipboard!</string>
-    <string name="message_copy_xmrtokey">XMR.TO Key copied to clipboard!</string>
     <string name="message_copy_address">Wallet Address copied to clipboard!</string>
     <string name="message_copy_txid">Transaction ID copied to clipboard!</string>
     <string name="message_nocopy">Copy disabled for security reasons!</string>
 
-    <string name="message_exchange_failed">Cannot get exchange rate!\nUse XMR/XMR or try again</string>
+    <string name="message_exchange_failed">Cannot get exchange rate!\nUse LOKI/LOKI or try again</string>
 
     <string name="generate_title">Create Wallet</string>
     <string name="generate_name_hint">Wallet Name</string>
@@ -181,10 +129,10 @@
         <strong>Fingerprint Authentication</strong>
         <p>With fingerprint authentication enabled, you can view wallet balance and receive funds
         without entering password.</p>
-        <p>But for additional security, monerujo will still require you to enter password when
+        <p>But for additional security, Loki Wallet will still require you to enter password when
         viewing wallet details or sending funds.</p>
         <strong>Security Warning</strong>
-        <p>Finally, monerujo wants to remind you that anyone who can get your fingerprint will be
+        <p>Finally, Loki Wallet wants to remind you that anyone who can get your fingerprint will be
         able to peep into your wallet balance.</p>
         <p>For instance, a malicious user around you can open your wallet when you are asleep.</p>
         <strong>Are you sure to enable this function?</strong>
@@ -224,21 +172,19 @@
     <string name="generate_check_address">Enter valid Address</string>
     <string name="generate_check_mnemonic">Enter your 25 word seed</string>
 
-    <string name="send_amount_btc_xmr">%1$s (indicative)</string>
-
-    <string name="send_address_hint">Receiver\'s XMR or BTC Address</string>
+    <string name="send_address_hint">Receiver\'s LOKI</string>
     <string name="send_paymentid_hint">Payment ID (optional)</string>
     <string name="send_amount_hint">0.00</string>
     <string name="send_notes_hint">Private Notes (optional)</string>
     <string name="send_generate_paymentid_hint">Generate</string>
     <string name="send_qr_hint">Scan</string>
-    <string name="send_send_label">Spend my sweet Moneroj</string>
-    <string name="send_send_timed_label">Spend my sweet Moneroj (%1$s)</string>
+    <string name="send_send_label">Spend my sweet Loki</string>
+    <string name="send_send_timed_label">Spend my sweet Loki (%1$s)</string>
     <string name="send_qr_invalid">Not a QR Code</string>
     <string name="send_qr_address_invalid">Not a valid payment QR code</string>
     <string name="send_address_invalid">Not a valid address</string>
     <string name="send_title">Send</string>
-    <string name="send_available">Balance: %1$s XMR</string>
+    <string name="send_available">Balance: %1$s LOKI</string>
     <string name="send_address_title">Address</string>
     <string name="send_amount_title">Amount</string>
     <string name="send_settings_title">Settings</string>
@@ -246,12 +192,10 @@
     <string name="send_success_title">Done</string>
 
     <string name="send_amount_label">Amount</string>
-    <string name="send_fee_btc_label">Fee (XMR)</string>
     <string name="send_fee_label">Fee</string>
-    <string name="send_total_btc_label">Total (XMR)</string>
     <string name="send_total_label">Total</string>
 
-    <string name="send_amount">%1$s XMR</string>
+    <string name="send_amount">%1$s LOKI</string>
     <string name="send_fee">+%1$s Fee</string>
 
     <string name="send_create_tx_error_title">Create Transaction Error</string>
@@ -266,11 +210,9 @@
     <string name="tx_id">TX ID</string>
     <string name="tx_key">TX Key</string>
     <string name="tx_destination">Destination</string>
-    <string name="tx_destination_btc">Destination\n(BTC)</string>
     <string name="tx_paymentId">Payment ID</string>
     <string name="tx_blockheight">Block</string>
     <string name="tx_amount">Amount</string>
-    <string name="tx_amount_btc">Amount\n(BTC)</string>
     <string name="tx_fee">Fee</string>
     <string name="tx_transfers">Transfers</string>
     <string name="tx_notes">Notes</string>
@@ -290,7 +232,7 @@
 
     <string name="receive_amount_too_big">Max. %1$s</string>
     <string name="receive_amount_negative">Min. 0</string>
-    <string name="receive_amount_nan">XMR not a number</string>
+    <string name="receive_amount_nan">LOKI not a number</string>
 
     <string name="receive_title">Receive</string>
 
@@ -303,13 +245,6 @@
     <string name="archive_alert_yes">Yes, do that!</string>
     <string name="archive_alert_no">No thanks!</string>
 
-    <string-array name="mixin" translatable="false">
-        <item>Ringsize 7</item>
-        <item>Ringsize 10</item>
-        <item>Ringsize 13</item>
-        <item>Ringsize 26</item>
-    </string-array>
-
     <string-array name="priority">
         <item>Priority Default</item>
         <item>Priority Low</item>
@@ -318,13 +253,56 @@
     </string-array>
 
     <string-array name="currency" translatable="false">
-        <item>XMR</item>
+        <item>LOKI</item>
         <item>EUR</item>
         <item>USD</item>
+        <item>JPY</item>
+        <item>GBP</item>
+        <item>CHF</item>
+        <item>CAD</item>
+        <item>AUD</item>
+        <item>ZAR</item>
+
+        <item>BRL</item>
+        <item>CLP</item>
+        <item>CNY</item>
+        <item>CZK</item>
+        <item>DKK</item>
+        <item>HKD</item>
+        <item>HUF</item>
+        <item>IDR</item>
+        <item>ILS</item>
+        <item>INR</item>
+        <item>KRW</item>
+        <item>MXN</item>
+        <item>MYR</item>
+        <item>NOK</item>
+        <item>NZD</item>
+        <item>PHP</item>
+        <item>PKR</item>
+        <item>PLN</item>
+        <item>RUB</item>
+        <item>SEK</item>
+        <item>SGD</item>
+        <item>THB</item>
+        <item>TRY</item>
+        <item>TWD</item>
     </string-array>
 
     <string name="fab_create_new">Create new wallet</string>
     <string name="fab_restore_viewonly">Restore view-only wallet</string>
     <string name="fab_restore_key">Restore wallet from private keys</string>
     <string name="fab_restore_seed">Restore wallet 25 word seed</string>
+
+    <string name="accounts_balance" translatable="false">%1$s LOKI</string>
+    <string name="tx_account_formatted" translatable="false">(%1$d, %2$d)</string>
+
+    <string name="accounts_drawer_new">Create Account</string>
+    <string name="accounts_drawer_title">Accounts</string>
+    <string name="accounts_new">Added new account #%1$d</string>
+    <string name="tx_account">Account #</string>
+
+    <string name="send_sweepall">Send all confirmed funds in this account!</string>
+    <string name="tx_subaddress">Subaddress #%1$d</string>
+    <string name="generate_address_label_sub">Public Subaddress #%1$d</string>
 </resources>

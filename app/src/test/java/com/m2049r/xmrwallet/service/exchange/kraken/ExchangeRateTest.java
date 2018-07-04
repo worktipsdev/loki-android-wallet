@@ -16,6 +16,7 @@
 
 package com.m2049r.xmrwallet.service.exchange.kraken;
 
+import com.m2049r.xmrwallet.model.Wallet;
 import com.m2049r.xmrwallet.service.exchange.api.ExchangeApi;
 import com.m2049r.xmrwallet.service.exchange.api.ExchangeCallback;
 import com.m2049r.xmrwallet.service.exchange.api.ExchangeException;
@@ -73,7 +74,7 @@ public class ExchangeRateTest {
     public void queryExchangeRate_shouldBeGetMethod()
             throws InterruptedException, TimeoutException {
 
-        exchangeApi.queryExchangeRate("XMR", "USD", mockExchangeCallback);
+        exchangeApi.queryExchangeRate(Wallet.LOKI_SYMBOL, "USD", mockExchangeCallback);
 
         RecordedRequest request = mockWebServer.takeRequest();
         assertEquals("GET", request.getMethod());
@@ -83,16 +84,16 @@ public class ExchangeRateTest {
     public void queryExchangeRate_shouldHavePairInUrl()
             throws InterruptedException, TimeoutException {
 
-        exchangeApi.queryExchangeRate("XMR", "USD", mockExchangeCallback);
+        exchangeApi.queryExchangeRate(Wallet.LOKI_SYMBOL, "USD", mockExchangeCallback);
 
         RecordedRequest request = mockWebServer.takeRequest();
-        assertEquals("/?pair=XMRUSD", request.getPath());
+        assertEquals("/?pair=" + Wallet.LOKI_SYMBOL + "USD", request.getPath());
     }
 
     @Test
     public void queryExchangeRate_wasSuccessfulShouldRespondWithRate()
             throws InterruptedException, JSONException, TimeoutException {
-        final String base = "XMR";
+        final String base = Wallet.LOKI_SYMBOL;
         final String quote = "USD";
         final double rate = 100;
         MockResponse jsonMockResponse = new MockResponse().setBody(
@@ -121,7 +122,7 @@ public class ExchangeRateTest {
     public void queryExchangeRate_wasNotSuccessfulShouldCallOnError()
             throws InterruptedException, JSONException, TimeoutException {
         mockWebServer.enqueue(new MockResponse().setResponseCode(500));
-        exchangeApi.queryExchangeRate("XMR", "USD", new ExchangeCallback() {
+        exchangeApi.queryExchangeRate(Wallet.LOKI_SYMBOL, "USD", new ExchangeCallback() {
             @Override
             public void onSuccess(final ExchangeRate exchangeRate) {
                 waiter.fail();
@@ -145,7 +146,7 @@ public class ExchangeRateTest {
         mockWebServer.enqueue(new MockResponse().
                 setResponseCode(200).
                 setBody("{\"error\":[\"EQuery:Unknown asset pair\"]}"));
-        exchangeApi.queryExchangeRate("XMR", "ABC", new ExchangeCallback() {
+        exchangeApi.queryExchangeRate(Wallet.LOKI_SYMBOL, "ABC", new ExchangeCallback() {
             @Override
             public void onSuccess(final ExchangeRate exchangeRate) {
                 waiter.fail();

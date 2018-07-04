@@ -182,42 +182,31 @@ public class LoginFragment extends Fragment implements WalletInfoAdapter.OnInter
         Helper.hideKeyboard(getActivity());
 
         etDaemonAddress.setThreshold(0);
-        etDaemonAddress.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        etDaemonAddress.setOnClickListener(v -> {
+            etDaemonAddress.showDropDown();
+            Helper.showKeyboard(getActivity());
+        });
+
+        etDaemonAddress.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus && !getActivity().isFinishing() && etDaemonAddress.isLaidOut()) {
                 etDaemonAddress.showDropDown();
                 Helper.showKeyboard(getActivity());
             }
         });
 
-        etDaemonAddress.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus && !getActivity().isFinishing() && etDaemonAddress.isLaidOut()) {
-                    etDaemonAddress.showDropDown();
-                    Helper.showKeyboard(getActivity());
-                }
-            }
-        });
-
-        etDaemonAddress.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                    Helper.hideKeyboard(getActivity());
-                    etDummy.requestFocus();
-                    return true;
-                }
-                return false;
-            }
-        });
-
-        etDaemonAddress.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View arg1, int pos, long id) {
+        etDaemonAddress.setOnEditorActionListener((v, actionId, event) -> {
+            if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
                 Helper.hideKeyboard(getActivity());
                 etDummy.requestFocus();
-
+                return true;
             }
+            return false;
+        });
+
+        etDaemonAddress.setOnItemClickListener((parent, arg1, pos, id) -> {
+            Helper.hideKeyboard(getActivity());
+            etDummy.requestFocus();
+
         });
 
         loadPrefs();
@@ -266,11 +255,11 @@ public class LoginFragment extends Fragment implements WalletInfoAdapter.OnInter
     private String addressPrefix() {
         switch (WalletManager.getInstance().getNetworkType()) {
             case NetworkType_Testnet:
-                return "9A-";
+                return "T";
             case NetworkType_Mainnet:
-                return "4-";
+                return "L";
             case NetworkType_Stagenet:
-                return "5-";
+                return "5";
             default:
                 throw new IllegalStateException("Unsupported Network: " + WalletManager.getInstance().getNetworkType());
         }
@@ -287,8 +276,7 @@ public class LoginFragment extends Fragment implements WalletInfoAdapter.OnInter
     public void loadList() {
         Timber.d("loadList()");
         WalletManager mgr = WalletManager.getInstance();
-        List<WalletManager.WalletInfo> walletInfos =
-                mgr.findWallets(activityCallback.getStorageRoot());
+        List<WalletManager.WalletInfo> walletInfos = mgr.findWallets(activityCallback.getStorageRoot());
         walletList.clear();
         walletList.addAll(walletInfos);
         filterList();
@@ -299,7 +287,7 @@ public class LoginFragment extends Fragment implements WalletInfoAdapter.OnInter
         if (displayedList.isEmpty()) {
             fab.startAnimation(fab_pulse);
             if (ivGunther.getDrawable() == null) {
-                ivGunther.setImageResource(R.drawable.gunther_desaturated);
+                ivGunther.setImageResource(R.drawable.lunther_big);
             }
         } else {
             fab.clearAnimation();
@@ -369,10 +357,10 @@ public class LoginFragment extends Fragment implements WalletInfoAdapter.OnInter
     private static final String PREF_DAEMON_MAINNET = "daemon_mainnet";
 
     private static final String PREF_DAEMONLIST_MAINNET =
-            "node.moneroworld.com:18089;node.xmrbackb.one;node.xmr.be";
+            "doopool.xyz:22020;pool.loki.hashvault.pro;daemons.cryptopool.space;node.supportloki.com";
 
     private static final String PREF_DAEMONLIST_STAGENET =
-            "stagenet.xmr-tw.org";
+            "nari.blockfoundry.org:10610";
 
     private NodeList daemonStageNet;
     private NodeList daemonMainNet;

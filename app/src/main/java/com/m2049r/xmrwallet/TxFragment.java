@@ -59,6 +59,7 @@ public class TxFragment extends Fragment {
         TS_FORMATTER.setTimeZone(tz);
     }
 
+    private TextView tvAccount;
     private TextView tvTxTimestamp;
     private TextView tvTxId;
     private TextView tvTxKey;
@@ -71,23 +72,13 @@ public class TxFragment extends Fragment {
     private TextView etTxNotes;
     private Button bTxNotes;
 
-    // XMRTO stuff
-    private View cvXmrTo;
-    private TextView tvTxXmrToKey;
-    private TextView tvDestinationBtc;
-    private TextView tvTxAmountBtc;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_tx_info, container, false);
 
-        cvXmrTo = view.findViewById(R.id.cvXmrTo);
-        tvTxXmrToKey = (TextView) view.findViewById(R.id.tvTxXmrToKey);
-        tvDestinationBtc = (TextView) view.findViewById(R.id.tvDestinationBtc);
-        tvTxAmountBtc = (TextView) view.findViewById(R.id.tvTxAmountBtc);
-
+        tvAccount = (TextView) view.findViewById(R.id.tvAccount);
         tvTxTimestamp = (TextView) view.findViewById(R.id.tvTxTimestamp);
         tvTxId = (TextView) view.findViewById(R.id.tvTxId);
         tvTxKey = (TextView) view.findViewById(R.id.tvTxKey);
@@ -102,23 +93,12 @@ public class TxFragment extends Fragment {
 
         etTxNotes.setRawInputType(InputType.TYPE_CLASS_TEXT);
 
-        bTxNotes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                info.notes = null; // force reload on next view
-                bTxNotes.setEnabled(false);
-                etTxNotes.setEnabled(false);
-                userNotes.setNote(etTxNotes.getText().toString());
-                activityCallback.onSetNote(info.hash, userNotes.txNotes);
-            }
-        });
-
-        tvTxXmrToKey.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Helper.clipBoardCopy(getActivity(), getString(R.string.label_copy_xmrtokey), tvTxXmrToKey.getText().toString());
-                Toast.makeText(getActivity(), getString(R.string.message_copy_xmrtokey), Toast.LENGTH_SHORT).show();
-            }
+        bTxNotes.setOnClickListener(v -> {
+            info.notes = null; // force reload on next view
+            bTxNotes.setEnabled(false);
+            etTxNotes.setEnabled(false);
+            userNotes.setNote(etTxNotes.getText().toString());
+            activityCallback.onSetNote(info.hash, userNotes.txNotes);
         });
 
         Bundle args = getArguments();
@@ -137,7 +117,7 @@ public class TxFragment extends Fragment {
 
     void shareTxInfo() {
         if (this.info == null) return;
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
         sb.append(getString(R.string.tx_timestamp)).append(":\n");
         sb.append(TS_FORMATTER.format(new Date(info.timestamp * 1000))).append("\n\n");
@@ -222,6 +202,8 @@ public class TxFragment extends Fragment {
         activityCallback.setSubtitle(getString(R.string.tx_title));
         activityCallback.setToolbarButton(Toolbar.BUTTON_BACK);
 
+        tvAccount.setText(getString(R.string.tx_account_formatted, info.account, info.subaddress));
+
         tvTxTimestamp.setText(TS_FORMATTER.format(new Date(info.timestamp * 1000)));
         tvTxId.setText(info.hash);
         tvTxKey.setText(info.txKey.isEmpty() ? "-" : info.txKey);
@@ -236,9 +218,6 @@ public class TxFragment extends Fragment {
         String sign = (info.direction == TransactionInfo.Direction.Direction_In ? "+" : "-");
 
         long realAmount = info.amount;
-        if (info.isPending) {
-            realAmount = realAmount - info.fee;
-        }
         tvTxAmount.setText(sign + Wallet.getDisplayAmount(realAmount));
 
         if ((info.fee > 0)) {
@@ -261,8 +240,8 @@ public class TxFragment extends Fragment {
             setTxColour(ContextCompat.getColor(getContext(), R.color.tx_red));
         }
         Set<String> destinations = new HashSet<>();
-        StringBuffer sb = new StringBuffer();
-        StringBuffer dstSb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
+        StringBuilder dstSb = new StringBuilder();
         if (info.transfers != null) {
             boolean newline = false;
             for (Transfer transfer : info.transfers) {
@@ -286,25 +265,15 @@ public class TxFragment extends Fragment {
             }
         } else {
             sb.append("-");
-            dstSb.append(info.direction == TransactionInfo.Direction.Direction_In ? activityCallback.getWalletAddress() : "-");
+            dstSb.append(info.direction ==
+                    TransactionInfo.Direction.Direction_In ?
+                    activityCallback.getWalletSubaddress(info.account, info.subaddress) :
+                    "-");
         }
         tvTxTransfers.setText(sb.toString());
         tvDestination.setText(dstSb.toString());
         this.info = info;
-        showBtcInfo();
     }
-
-    void showBtcInfo() {
-        if (userNotes.xmrtoKey != null) {
-            cvXmrTo.setVisibility(View.VISIBLE);
-            tvTxXmrToKey.setText(userNotes.xmrtoKey);
-            tvDestinationBtc.setText(userNotes.xmrtoDestination);
-            tvTxAmountBtc.setText(userNotes.xmrtoAmount + " BTC");
-        } else {
-            cvXmrTo.setVisibility(View.GONE);
-        }
-    }
-
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -321,7 +290,7 @@ public class TxFragment extends Fragment {
     Listener activityCallback;
 
     public interface Listener {
-        String getWalletAddress();
+        String getWalletSubaddress(int accountIndex, int subaddressIndex);
 
         String getTxKey(String hash);
 
@@ -341,8 +310,7 @@ public class TxFragment extends Fragment {
         if (context instanceof TxFragment.Listener) {
             this.activityCallback = (TxFragment.Listener) context;
         } else {
-            throw new ClassCastException(context.toString()
-                    + " must implement Listener");
+            throw new ClassCastException(context.toString() + " must implement Listener");
         }
     }
 }

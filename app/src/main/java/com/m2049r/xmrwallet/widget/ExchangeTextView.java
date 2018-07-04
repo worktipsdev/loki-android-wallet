@@ -25,6 +25,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -36,9 +37,7 @@ import com.m2049r.xmrwallet.model.Wallet;
 import com.m2049r.xmrwallet.service.exchange.api.ExchangeApi;
 import com.m2049r.xmrwallet.service.exchange.api.ExchangeCallback;
 import com.m2049r.xmrwallet.service.exchange.api.ExchangeRate;
-import com.m2049r.xmrwallet.service.exchange.kraken.ExchangeApiImpl;
 import com.m2049r.xmrwallet.util.Helper;
-import com.m2049r.xmrwallet.util.OkHttpClientSingleton;
 
 import java.util.Locale;
 
@@ -46,6 +45,8 @@ import timber.log.Timber;
 
 public class ExchangeTextView extends LinearLayout
         implements NumberPadView.NumberPadListener {
+
+    private static String MAX = "\u221E";
 
     String xmrAmount = null;
     String notXmrAmount = null;
@@ -70,7 +71,7 @@ public class ExchangeTextView extends LinearLayout
                 if (amount > max) {
                     ok = false;
                 }
-                if (amount <= 0) {
+                if (amount <= 0) { /////////////////////////////
                     ok = false;
                 }
             } catch (NumberFormatException ex) {
@@ -192,7 +193,7 @@ public class ExchangeTextView extends LinearLayout
         sCurrencyA.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                if (position != 0) { // if not XMR, select XMR on other
+                if (position != 0) { // if not LOKI, select LOKI on other
                     sCurrencyB.setSelection(0, true);
                 }
                 doExchange();
@@ -207,7 +208,7 @@ public class ExchangeTextView extends LinearLayout
         sCurrencyB.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(final AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                if (position != 0) { // if not XMR, select XMR on other
+                if (position != 0) { // if not LOKI, select LOKI on other
                     sCurrencyA.setSelection(0, true);
                 }
                 doExchange();
@@ -250,7 +251,7 @@ public class ExchangeTextView extends LinearLayout
         }
     }
 
-    private final ExchangeApi exchangeApi = new ExchangeApiImpl(OkHttpClientSingleton.getOkHttpClient());
+    private final ExchangeApi exchangeApi = Helper.getExchangeApi();
 
     void startExchange() {
         showProgress();
@@ -261,23 +262,13 @@ public class ExchangeTextView extends LinearLayout
                     @Override
                     public void onSuccess(final ExchangeRate exchangeRate) {
                         if (isAttachedToWindow())
-                            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    exchange(exchangeRate);
-                                }
-                            });
+                            new Handler(Looper.getMainLooper()).post(() -> exchange(exchangeRate));
                     }
 
                     @Override
                     public void onError(final Exception e) {
                         Timber.e(e.getLocalizedMessage());
-                        new Handler(Looper.getMainLooper()).post(new Runnable() {
-                            @Override
-                            public void run() {
-                                exchangeFailed();
-                            }
-                        });
+                        new Handler(Looper.getMainLooper()).post(() -> exchangeFailed());
                     }
                 });
     }
@@ -306,8 +297,8 @@ public class ExchangeTextView extends LinearLayout
             if (xmrAmount == null) {
                 shakeAmountField();
             }
-        } else { // no XMR currency - cannot happen!
-            Timber.e("No XMR currency!");
+        } else { // no LOKI currency - cannot happen!
+            Timber.e("No LOKI currency!");
             setXmr(null);
             notXmrAmount = null;
             return;
@@ -340,8 +331,8 @@ public class ExchangeTextView extends LinearLayout
                 cleanAmount = String.format(Locale.US, "%.2f", amountA);
                 setXmr(null);
                 notXmrAmount = cleanAmount;
-            } else { // no XMR currency - cannot happen!
-                Timber.e("No XMR currency!");
+            } else { // no LOKI currency - cannot happen!
+                Timber.e("No LOKI currency!");
                 setXmr(null);
                 notXmrAmount = null;
                 return false;

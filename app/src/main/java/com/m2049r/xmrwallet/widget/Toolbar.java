@@ -20,6 +20,7 @@ package com.m2049r.xmrwallet.widget;
 
 import android.content.Context;
 import android.os.Build;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +33,7 @@ import com.m2049r.xmrwallet.R;
 import timber.log.Timber;
 
 public class Toolbar extends android.support.v7.widget.Toolbar {
+
     public interface OnButtonListener {
         void onButton(int type);
     }
@@ -79,20 +81,14 @@ public class Toolbar extends android.support.v7.widget.Toolbar {
     protected void onFinishInflate() {
         super.onFinishInflate();
         toolbarImage = (ImageView) findViewById(R.id.toolbarImage);
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-            // the vector image does not work well for androis < Nougat
-            toolbarImage.getLayoutParams().width = (int) getResources().getDimension(R.dimen.logo_width);
-            toolbarImage.setImageResource(R.drawable.logo_horizontol_xmrujo);
-        }
+        toolbarImage.getLayoutParams().width = (int) getResources().getDimension(R.dimen.logo_width);
 
         toolbarTitle = (TextView) findViewById(R.id.toolbarTitle);
         toolbarSubtitle = (TextView) findViewById(R.id.toolbarSubtitle);
         bCredits = (Button) findViewById(R.id.bCredits);
-        bCredits.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                if (onButtonListener != null) {
-                    onButtonListener.onButton(buttonType);
-                }
+        bCredits.setOnClickListener(v -> {
+            if (onButtonListener != null) {
+                onButtonListener.onButton(buttonType);
             }
         });
     }
@@ -157,12 +153,21 @@ public class Toolbar extends android.support.v7.widget.Toolbar {
         buttonType = type;
     }
 
-    public void setSubtitle(String subtitle) {
+    public void setSubtitle(@Nullable String subtitle) {
         toolbarSubtitle.setText(subtitle);
         if (subtitle != null) {
+            setLogoTopMargin((int) getResources().getDimension(R.dimen.logo_margin_top));
             toolbarSubtitle.setVisibility(View.VISIBLE);
         } else {
+            setLogoTopMargin(0);
             toolbarSubtitle.setVisibility(View.INVISIBLE);
         }
     }
+
+    public void setLogoTopMargin(int dp) {
+        MarginLayoutParams marginParams = (MarginLayoutParams) toolbarImage.getLayoutParams();
+        marginParams.setMargins(marginParams.leftMargin, dp, marginParams.rightMargin, marginParams.bottomMargin);
+        toolbarImage.setLayoutParams(marginParams);
+    }
+
 }

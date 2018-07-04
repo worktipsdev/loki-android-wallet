@@ -19,6 +19,7 @@ package com.m2049r.xmrwallet.service.exchange.kraken;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
+import com.m2049r.xmrwallet.model.Wallet;
 import com.m2049r.xmrwallet.service.exchange.api.ExchangeApi;
 import com.m2049r.xmrwallet.service.exchange.api.ExchangeCallback;
 import com.m2049r.xmrwallet.service.exchange.api.ExchangeException;
@@ -36,6 +37,9 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+/**
+ * Currently broken, Kraken doesn't support Loki yet
+ */
 public class ExchangeApiImpl implements ExchangeApi {
 
     @NonNull
@@ -67,12 +71,12 @@ public class ExchangeApiImpl implements ExchangeApi {
         boolean inverse = false;
         String fiat = null;
 
-        if (baseCurrency.equals("XMR")) {
+        if (baseCurrency.equals(Wallet.LOKI_SYMBOL)) {
             fiat = quoteCurrency;
             inverse = false;
         }
 
-        if (quoteCurrency.equals("XMR")) {
+        if (quoteCurrency.equals(Wallet.LOKI_SYMBOL)) {
             fiat = baseCurrency;
             inverse = true;
         }
@@ -85,7 +89,7 @@ public class ExchangeApiImpl implements ExchangeApi {
         final boolean swapAssets = inverse;
 
         final HttpUrl url = baseUrl.newBuilder()
-                .addQueryParameter("pair", "XMR" + fiat)
+                .addQueryParameter("pair", Wallet.LOKI_SYMBOL + fiat)
                 .build();
 
         final Request httpRequest = createHttpRequest(url);

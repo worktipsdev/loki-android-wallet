@@ -41,12 +41,9 @@ import com.m2049r.xmrwallet.R;
 import com.m2049r.xmrwallet.data.BarcodeData;
 import com.m2049r.xmrwallet.data.PendingTx;
 import com.m2049r.xmrwallet.data.TxData;
-import com.m2049r.xmrwallet.data.TxDataBtc;
-import com.m2049r.xmrwallet.dialog.HelpFragment;
 import com.m2049r.xmrwallet.layout.SpendViewPager;
 import com.m2049r.xmrwallet.model.PendingTransaction;
 import com.m2049r.xmrwallet.util.Helper;
-import com.m2049r.xmrwallet.util.NodeList;
 import com.m2049r.xmrwallet.util.Notice;
 import com.m2049r.xmrwallet.util.UserNotes;
 import com.m2049r.xmrwallet.widget.DotBar;
@@ -98,10 +95,6 @@ public class SendFragment extends Fragment
     private Button bNext;
 
     private Button bDone;
-
-    private View llXmrToEnabled;
-    private View ibXmrToInfoClose;
-
 
     static private int MAX_FALLBACK = Integer.MAX_VALUE;
 
@@ -162,23 +155,13 @@ public class SendFragment extends Fragment
             }
         });
 
-        bPrev.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                spendViewPager.previous();
-            }
-        });
+        bPrev.setOnClickListener(v -> spendViewPager.previous());
 
-        bNext.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                spendViewPager.next();
-            }
-        });
+        bNext.setOnClickListener(v -> spendViewPager.next());
 
-        bDone.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Timber.d("bDone.onClick");
-                activityCallback.onFragmentDone();
-            }
+        bDone.setOnClickListener(v -> {
+            Timber.d("bDone.onClick");
+            activityCallback.onFragmentDone();
         });
 
         updatePosition(0);
@@ -228,8 +211,7 @@ public class SendFragment extends Fragment
         if (context instanceof Listener) {
             this.activityCallback = (Listener) context;
         } else {
-            throw new ClassCastException(context.toString()
-                    + " must implement Listener");
+            throw new ClassCastException(context.toString() + " must implement Listener");
         }
     }
 
@@ -238,48 +220,13 @@ public class SendFragment extends Fragment
 
     @Override
     public boolean onBackPressed() {
-        if (isComitted()) return true; // no going back
+        if (isCommitted()) return true; // no going back
         if (spendViewPager.getCurrentItem() == 0) {
             return false;
         } else {
             spendViewPager.previous();
             return true;
         }
-    }
-
-    enum Mode {
-        XMR, BTC
-    }
-
-    Mode mode = Mode.XMR;
-
-    @Override
-    public void setMode(Mode aMode) {
-        if (mode != aMode) {
-            mode = aMode;
-            switch (aMode) {
-                case XMR:
-                    txData = new TxData();
-                    break;
-                case BTC:
-                    txData = new TxDataBtc();
-                    break;
-                default:
-                    throw new IllegalArgumentException("Mode " + String.valueOf(aMode) + " unknown!");
-            }
-            getView().post(new Runnable() {
-                @Override
-                public void run() {
-                    pagerAdapter.notifyDataSetChanged();
-                }
-            });
-            Timber.d("New Mode = %s", mode.toString());
-        }
-    }
-
-    @Override
-    public Mode getMode() {
-        return mode;
     }
 
     public class SpendPagerAdapter extends FragmentStatePagerAdapter {
@@ -332,39 +279,19 @@ public class SendFragment extends Fragment
         @Override
         public SendWizardFragment getItem(int position) {
             Timber.d("getItem(%d) CREATE", position);
-            Timber.d("Mode=%s", mode.toString());
-            if (mode == Mode.XMR) {
-                switch (position) {
-                    case POS_ADDRESS:
-                        return SendAddressWizardFragment.newInstance(SendFragment.this);
-                    case POS_AMOUNT:
-                        return SendAmountWizardFragment.newInstance(SendFragment.this);
-                    case POS_SETTINGS:
-                        return SendSettingsWizardFragment.newInstance(SendFragment.this);
-                    case POS_CONFIRM:
-                        return SendConfirmWizardFragment.newInstance(SendFragment.this);
-                    case POS_SUCCESS:
-                        return SendSuccessWizardFragment.newInstance(SendFragment.this);
-                    default:
-                        throw new IllegalArgumentException("no such send position(" + position + ")");
-                }
-            } else if (mode == Mode.BTC) {
-                switch (position) {
-                    case POS_ADDRESS:
-                        return SendAddressWizardFragment.newInstance(SendFragment.this);
-                    case POS_AMOUNT:
-                        return SendBtcAmountWizardFragment.newInstance(SendFragment.this);
-                    case POS_SETTINGS:
-                        return SendSettingsWizardFragment.newInstance(SendFragment.this);
-                    case POS_CONFIRM:
-                        return SendBtcConfirmWizardFragment.newInstance(SendFragment.this);
-                    case POS_SUCCESS:
-                        return SendBtcSuccessWizardFragment.newInstance(SendFragment.this);
-                    default:
-                        throw new IllegalArgumentException("no such send position(" + position + ")");
-                }
-            } else {
-                throw new IllegalStateException("Unknown mode!");
+            switch (position) {
+                case POS_ADDRESS:
+                    return SendAddressWizardFragment.newInstance(SendFragment.this);
+                case POS_AMOUNT:
+                    return SendAmountWizardFragment.newInstance(SendFragment.this);
+                case POS_SETTINGS:
+                    return SendSettingsWizardFragment.newInstance(SendFragment.this);
+                case POS_CONFIRM:
+                    return SendConfirmWizardFragment.newInstance(SendFragment.this);
+                case POS_SUCCESS:
+                    return SendSuccessWizardFragment.newInstance(SendFragment.this);
+                default:
+                    throw new IllegalArgumentException("no such send position(" + position + ")");
             }
         }
 
@@ -421,7 +348,7 @@ public class SendFragment extends Fragment
         return data;
     }
 
-    boolean isComitted() {
+    boolean isCommitted() {
         return committedTx != null;
     }
 
@@ -458,7 +385,6 @@ public class SendFragment extends Fragment
     public Listener getActivityCallback() {
         return activityCallback;
     }
-
 
     // callbacks from send service
 
@@ -530,23 +456,6 @@ public class SendFragment extends Fragment
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.send_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    // xmr.to info box
-    private static final String PREF_SHOW_XMRTO_ENABLED = "info_xmrto_enabled_send";
-
-    boolean showXmrtoEnabled = true;
-
-    void loadPrefs() {
-        SharedPreferences sharedPref = activityCallback.getPrefs();
-        showXmrtoEnabled = sharedPref.getBoolean(PREF_SHOW_XMRTO_ENABLED, true);
-    }
-
-    void saveXmrToPrefs() {
-        SharedPreferences sharedPref = activityCallback.getPrefs();
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putBoolean(PREF_SHOW_XMRTO_ENABLED, showXmrtoEnabled);
-        editor.apply();
     }
 
 }
