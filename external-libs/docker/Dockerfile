@@ -68,7 +68,7 @@ RUN cd boost_${BOOST_VERSION} \
 
 ## Building Loki
 RUN cd /opt/android \
-    && git clone -b monerujo --recursive https://github.com/crtlib/loki.git \
+    && git clone -b loki_wallet --recursive https://github.com/crtlib/loki.git \
     && cd loki \
     && mkdir -p build/release \
     && ./build-all-arch.sh
