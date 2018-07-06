@@ -1,6 +1,6 @@
 # Building external libs in Docker
 
-Builds Loki libs for all Android architectures from `https://github.com/crtlib/loki.git`, `monerujo` branch.
+Builds Loki libs for all Android architectures from `https://github.com/crtlib/loki.git`, `loki_wallet` branch.
 Build image from `external-libs/docker` directory:
 
 ```Shell
@@ -98,9 +98,9 @@ ln -sf /opt/android/build/openssl/x86_64/lib/*.so /opt/android/tool/x86_64/sysro
 ## Build Boost
 ```Shell
 cd /opt/android
-wget https://sourceforge.net/projects/boost/files/boost/1.58.0/boost_1_58_0.tar.gz/download -O boost_1_58_0.tar.gz
-tar xfz boost_1_58_0.tar.gz
-cd boost_1_58_0
+wget https://sourceforge.net/projects/boost/files/boost/1.67.0/boost_1_67_0.tar.gz/download -O boost_1_67_0.tar.gz
+tar xfz boost_1_67_0.tar.gz
+cd boost_1_67_0
 ./bootstrap.sh
 ```
 
@@ -119,17 +119,14 @@ ln -sf ../include /opt/android/build/boost/x86_64
 ## And finally: Build Loki
 ```Shell
 cd /opt/android
-git clone https://github.com/crtlib/loki.git
-
+git clone -b loki_wallet --recursive https://github.com/crtlib/loki.git
 cd /opt/android/loki
-git checkout monerujo
-
 ./build-all-arch.sh
 ```
 
 # Bringing it all together
 - Copy all .a libraries into the appropriate `external-libs` folders.
-- Copy `/opt/android/monero/src/wallet/api/wallet2_api.h` into `external-libs/monero/include`
+- Copy `/opt/android/loki/src/wallet/api/wallet2_api.h` into `external-libs/monero/include`
 
 If using default locations, this would mean:
 ```Shell
