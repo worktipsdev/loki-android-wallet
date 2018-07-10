@@ -16,6 +16,8 @@
 
 package com.m2049r.xmrwallet;
 
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -23,6 +25,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.text.Editable;
 import android.text.Html;
 import android.text.InputType;
@@ -31,10 +34,13 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -44,10 +50,13 @@ import com.m2049r.xmrwallet.model.WalletManager;
 import com.m2049r.xmrwallet.util.FingerprintHelper;
 import com.m2049r.xmrwallet.util.Helper;
 import com.m2049r.xmrwallet.util.KeyStoreHelper;
+import com.m2049r.xmrwallet.util.PulsatingHelpIcon;
 import com.m2049r.xmrwallet.util.RestoreHeight;
 import com.m2049r.xmrwallet.widget.Toolbar;
 import com.nulabinc.zxcvbn.Strength;
 import com.nulabinc.zxcvbn.Zxcvbn;
+
+import junit.framework.Assert;
 
 import java.io.File;
 import java.text.ParseException;
@@ -72,6 +81,7 @@ public class GenerateFragment extends Fragment {
     private TextInputLayout etWalletSpendKey;
     private TextInputLayout etWalletRestoreHeight;
     private Button bGenerate;
+    private PulsatingHelpIcon mHelpIcon;
 
     private String type = null;
 
@@ -451,6 +461,14 @@ public class GenerateFragment extends Fragment {
         activityCallback.setTitle(getString(R.string.generate_title) + " - " + getType());
         activityCallback.setToolbarButton(Toolbar.BUTTON_BACK);
 
+        mHelpIcon.startAnimation();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        mHelpIcon.stopAnimation();
     }
 
     String getType() {
@@ -498,6 +516,7 @@ public class GenerateFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        mHelpIcon = new PulsatingHelpIcon(getContext());
     }
 
     @Override
@@ -505,18 +524,24 @@ public class GenerateFragment extends Fragment {
         switch (type) {
             case TYPE_KEY:
                 inflater.inflate(R.menu.create_wallet_keys, menu);
+                mHelpIcon.init(menu, R.id.action_create_help_keys);
                 break;
             case TYPE_NEW:
                 inflater.inflate(R.menu.create_wallet_new, menu);
+                mHelpIcon.init(menu, R.id.action_create_help_new);
                 break;
             case TYPE_SEED:
                 inflater.inflate(R.menu.create_wallet_seed, menu);
+                mHelpIcon.init(menu, R.id.action_create_help_seed);
                 break;
             case TYPE_VIEWONLY:
                 inflater.inflate(R.menu.create_wallet_view, menu);
+                mHelpIcon.init(menu, R.id.action_create_help_view);
                 break;
             default:
         }
+
         super.onCreateOptionsMenu(menu, inflater);
     }
+
 }
