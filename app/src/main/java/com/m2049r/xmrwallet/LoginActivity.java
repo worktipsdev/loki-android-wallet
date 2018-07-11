@@ -19,10 +19,8 @@ package com.m2049r.xmrwallet;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.media.MediaScannerConnection;
 import android.os.AsyncTask;
@@ -448,11 +446,6 @@ public class LoginActivity extends SecureActivity
     ////////////////////////////////////////
     // LoginFragment.Listener
     ////////////////////////////////////////
-    @Override
-    public SharedPreferences getPrefs() {
-        return getPreferences(Context.MODE_PRIVATE);
-    }
-
     @Override
     public File getStorageRoot() {
         return Helper.getWalletRoot(getApplicationContext());

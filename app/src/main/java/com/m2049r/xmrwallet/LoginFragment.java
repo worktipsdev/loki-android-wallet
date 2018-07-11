@@ -17,7 +17,6 @@
 package com.m2049r.xmrwallet;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -34,18 +33,17 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.m2049r.xmrwallet.layout.WalletInfoAdapter;
 import com.m2049r.xmrwallet.model.NetworkType;
 import com.m2049r.xmrwallet.model.WalletManager;
+import com.m2049r.xmrwallet.util.AppPreferences;
 import com.m2049r.xmrwallet.util.Helper;
 import com.m2049r.xmrwallet.util.KeyStoreHelper;
 import com.m2049r.xmrwallet.util.NodeList;
@@ -55,6 +53,7 @@ import com.m2049r.xmrwallet.widget.Toolbar;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -77,8 +76,6 @@ public class LoginFragment extends Fragment implements WalletInfoAdapter.OnInter
 
     // Container Activity must implement this interface
     public interface Listener {
-        SharedPreferences getPrefs();
-
         File getStorageRoot();
 
         boolean onWalletSelected(String wallet, String daemon);
@@ -297,15 +294,16 @@ public class LoginFragment extends Fragment implements WalletInfoAdapter.OnInter
         }
 
         // remove information of non-existent wallet
-        Set<String> removedWallets = getActivity()
-                .getSharedPreferences(KeyStoreHelper.SecurityConstants.WALLET_PASS_PREFS_NAME, Context.MODE_PRIVATE)
-                .getAll().keySet();
+        Set<String> removedWallets = AppPreferences.getWallets(getContext());
+        Set<String> availableWallets = new HashSet<>(walletList.size());
         for (WalletManager.WalletInfo s : walletList) {
+            availableWallets.add(s.name);
             removedWallets.remove(s.name);
         }
         for (String name : removedWallets) {
             KeyStoreHelper.removeWalletUserPass(getActivity(), name);
         }
+        AppPreferences.setWallets(getContext(), availableWallets);
     }
 
     private void showInfo(@NonNull String name) {
@@ -353,23 +351,13 @@ public class LoginFragment extends Fragment implements WalletInfoAdapter.OnInter
         loadList();
     }
 
-    private static final String PREF_DAEMON_STAGENET = "daemon_stagenet";
-    private static final String PREF_DAEMON_MAINNET = "daemon_mainnet";
-
-    private static final String PREF_DAEMONLIST_MAINNET =
-            "doopool.xyz:22020;pool.loki.hashvault.pro;daemons.cryptopool.space;node.supportloki.com";
-
-    private static final String PREF_DAEMONLIST_STAGENET =
-            "nari.blockfoundry.org:10610";
-
     private NodeList daemonStageNet;
     private NodeList daemonMainNet;
 
     void loadPrefs() {
-        SharedPreferences sharedPref = activityCallback.getPrefs();
+        daemonMainNet = new NodeList(AppPreferences.getMainnetDaemons(getContext()));
+        daemonStageNet = new NodeList(AppPreferences.getStagenetDaemons(getContext()));
 
-        daemonMainNet = new NodeList(sharedPref.getString(PREF_DAEMON_MAINNET, PREF_DAEMONLIST_MAINNET));
-        daemonStageNet = new NodeList(sharedPref.getString(PREF_DAEMON_STAGENET, PREF_DAEMONLIST_STAGENET));
         setNet(stagenetCheckMenu, false);
     }
 
@@ -388,11 +376,8 @@ public class LoginFragment extends Fragment implements WalletInfoAdapter.OnInter
             daemonMainNet.setRecent(daemon);
         }
 
-        SharedPreferences sharedPref = activityCallback.getPrefs();
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString(PREF_DAEMON_MAINNET, daemonMainNet.toString());
-        editor.putString(PREF_DAEMON_STAGENET, daemonStageNet.toString());
-        editor.apply();
+        AppPreferences.setMainnetDaemons(getContext(), daemonMainNet.toString());
+        AppPreferences.setStagenetDaemons(getContext(), daemonStageNet.toString());
     }
 
     String getDaemon() {
