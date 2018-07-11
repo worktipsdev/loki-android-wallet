@@ -339,10 +339,13 @@ public class GenerateFragment extends Fragment {
     }
 
     private long getHeight() {
-        long height = 0;
-
         String restoreHeight = etWalletRestoreHeight.getEditText().getText().toString().trim();
-        if (restoreHeight.isEmpty()) return -1;
+        if (restoreHeight.isEmpty()) {
+            // blank restoreHeight means 0
+            return 0;
+        }
+
+        long height;
         try {
             // is it a date?
             SimpleDateFormat parser = new SimpleDateFormat("yyyy-MM-dd");
