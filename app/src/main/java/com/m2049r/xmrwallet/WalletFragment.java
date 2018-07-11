@@ -43,6 +43,7 @@ import com.m2049r.xmrwallet.model.Wallet;
 import com.m2049r.xmrwallet.service.exchange.api.ExchangeApi;
 import com.m2049r.xmrwallet.service.exchange.api.ExchangeCallback;
 import com.m2049r.xmrwallet.service.exchange.api.ExchangeRate;
+import com.m2049r.xmrwallet.util.AppPreferences;
 import com.m2049r.xmrwallet.util.Helper;
 import com.m2049r.xmrwallet.widget.Toolbar;
 
@@ -51,8 +52,8 @@ import java.util.List;
 
 import timber.log.Timber;
 
-public class WalletFragment extends Fragment
-        implements TransactionInfoAdapter.OnInteractionListener {
+public class WalletFragment extends Fragment implements TransactionInfoAdapter.OnInteractionListener {
+
     private TransactionInfoAdapter adapter;
     private NumberFormat formatter = NumberFormat.getInstance();
 
@@ -64,8 +65,13 @@ public class WalletFragment extends Fragment
     private ProgressBar pbProgress;
     private Button bReceive;
     private Button bSend;
-
     private Spinner sCurrency;
+
+    private final ExchangeApi exchangeApi = Helper.getExchangeApi();
+
+    String balanceCurrency = Wallet.LOKI_SYMBOL;
+    double balanceRate = 1.0;
+    boolean balanceHidden = false;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -92,8 +98,20 @@ public class WalletFragment extends Fragment
 
         tvProgress = (TextView) view.findViewById(R.id.tvProgress);
         pbProgress = (ProgressBar) view.findViewById(R.id.pbProgress);
+
         tvBalance = (TextView) view.findViewById(R.id.tvBalance);
         tvBalance.setText(Helper.getDisplayAmount(0));
+        tvBalance.setOnClickListener(v -> {
+            balanceHidden = !balanceHidden;
+            refreshBalance();
+            AppPreferences.setBalanceHidden(getContext(), balanceHidden);
+        });
+        // initial hiding
+        balanceHidden = AppPreferences.getBalanceHidden(getContext());
+        if (balanceHidden) {
+            refreshBalance();
+        }
+
         tvUnconfirmedAmount = (TextView) view.findViewById(R.id.tvUnconfirmedAmount);
         tvUnconfirmedAmount.setText(getResources().getString(R.string.xmr_unconfirmed_amount, Helper.getDisplayAmount(0)));
         ivSynced = (ImageView) view.findViewById(R.id.ivSynced);
@@ -149,12 +167,12 @@ public class WalletFragment extends Fragment
         tvBalance.setText(displayB);
     }
 
-    String balanceCurrency = Wallet.LOKI_SYMBOL;
-    double balanceRate = 1.0;
-
-    private final ExchangeApi exchangeApi = Helper.getExchangeApi();
-
     void refreshBalance() {
+        if (balanceHidden) {
+            tvBalance.setText("X.XXX");
+            return;
+        }
+
         if (sCurrency.getSelectedItemPosition() == 0) { // LOKI
             double amountXmr = Double.parseDouble(Wallet.getDisplayAmount(unlockedBalance)); // assume this cannot fail!
             tvBalance.setText(Helper.getFormattedAmount(amountXmr, true));

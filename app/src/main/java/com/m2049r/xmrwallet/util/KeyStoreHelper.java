@@ -19,7 +19,6 @@ package com.m2049r.xmrwallet.util;
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.security.KeyPairGeneratorSpec;
 import android.security.keystore.KeyGenParameterSpec;
@@ -117,12 +116,11 @@ public class KeyStoreHelper {
         try {
             KeyStoreHelper.createKeys(context, walletKeyAlias);
             byte[] encrypted = KeyStoreHelper.encrypt(walletKeyAlias, data);
-            SharedPreferences.Editor e = context.getSharedPreferences(SecurityConstants.WALLET_PASS_PREFS_NAME, Context.MODE_PRIVATE).edit();
             if (encrypted == null) {
-                e.remove(wallet).apply();
+                AppPreferences.removeWalletUserPass(context, wallet);
                 return false;
             }
-            e.putString(wallet, Base64.encodeToString(encrypted, Base64.DEFAULT)).apply();
+            AppPreferences.setWalletUserPass(context, wallet, Base64.encodeToString(encrypted, Base64.DEFAULT));
             return true;
         } catch (NoSuchProviderException | NoSuchAlgorithmException |
                 InvalidAlgorithmParameterException | KeyStoreException ex) {
@@ -143,8 +141,7 @@ public class KeyStoreHelper {
 
     public static String loadWalletUserPass(@NonNull Context context, String wallet) throws BrokenPasswordStoreException {
         String walletKeyAlias = SecurityConstants.WALLET_PASS_KEY_PREFIX + wallet;
-        String encoded = context.getSharedPreferences(SecurityConstants.WALLET_PASS_PREFS_NAME, Context.MODE_PRIVATE)
-                .getString(wallet, "");
+        String encoded = AppPreferences.getWalletUserPass(context, wallet);
         if (encoded.isEmpty()) throw new BrokenPasswordStoreException();
         byte[] data = Base64.decode(encoded, Base64.DEFAULT);
         byte[] decrypted = KeyStoreHelper.decrypt(walletKeyAlias, data);
@@ -159,8 +156,7 @@ public class KeyStoreHelper {
         } catch (KeyStoreException ex) {
             Timber.w(ex);
         }
-        context.getSharedPreferences(SecurityConstants.WALLET_PASS_PREFS_NAME, Context.MODE_PRIVATE).edit()
-                .remove(wallet).apply();
+        AppPreferences.removeWalletUserPass(context, wallet);
     }
 
     /**
@@ -347,7 +343,6 @@ public class KeyStoreHelper {
         String TYPE_RSA = "RSA";
         String SIGNATURE_SHA256withRSA = "SHA256withRSA";
         String CIPHER_RSA_ECB_PKCS1 = "RSA/ECB/PKCS1Padding";
-        String WALLET_PASS_PREFS_NAME = "wallet";
         String WALLET_PASS_KEY_PREFIX = "walletKey-";
     }
 }
