@@ -661,7 +661,7 @@ public class LoginActivity extends SecureActivity
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, newFragment);
         transaction.addToBackStack(stackName);
-        transaction.commit();
+        transaction.commitAllowingStateLoss();
     }
 
     void popFragmentStack(String name) {
