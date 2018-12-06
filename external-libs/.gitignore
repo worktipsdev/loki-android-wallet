@@ -3,3 +3,4 @@
 
 # Besides docker directory
 !/docker/*
+build

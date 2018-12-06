@@ -25,7 +25,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -131,6 +133,22 @@ public class ReceiveFragment extends Fragment {
                 return false;
             }
         });
+        notesEdit.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                clearQR();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
 
         bSubaddress.setOnClickListener(v -> {
             enableSubaddressButton(false);
@@ -149,6 +167,8 @@ public class ReceiveFragment extends Fragment {
         qrCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Helper.hideKeyboard(getActivity());
+                etDummy.requestFocus();
                 if (qrValid) {
                     qrCodeFull.setImageBitmap(((BitmapDrawable) qrCode.getDrawable()).getBitmap());
                     qrCodeFull.setVisibility(View.VISIBLE);
@@ -283,7 +303,8 @@ public class ReceiveFragment extends Fragment {
             super.onPreExecute();
             showProgress();
             if ((walletPath != null)
-                    && (WalletManager.getInstance().queryWalletHardware(walletPath + ".keys", password) == 1)
+                    && (WalletManager.getInstance().queryWalletDevice(walletPath + ".keys", password)
+                    == Wallet.Device.Device_Ledger)
                     && (progressCallback != null)) {
                 progressCallback.showLedgerProgressDialog(LedgerProgressDialog.TYPE_RESTORE);
                 dialogOpened = true;
@@ -476,7 +497,7 @@ public class ReceiveFragment extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            if (wallet.isKeyOnDevice() && (progressCallback != null)) {
+            if ((wallet.getDeviceType() == Wallet.Device.Device_Ledger) && (progressCallback != null)) {
                 progressCallback.showLedgerProgressDialog(LedgerProgressDialog.TYPE_SUBADDRESS);
                 dialogOpened = true;
             }

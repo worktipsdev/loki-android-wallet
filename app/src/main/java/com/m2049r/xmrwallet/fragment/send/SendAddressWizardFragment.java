@@ -42,8 +42,6 @@ import com.m2049r.xmrwallet.util.Helper;
 import com.m2049r.xmrwallet.util.OpenAliasHelper;
 import com.m2049r.xmrwallet.util.UserNotes;
 
-import java.util.ArrayList;
-
 import timber.log.Timber;
 
 public class SendAddressWizardFragment extends SendWizardFragment {
@@ -218,7 +216,7 @@ public class SendAddressWizardFragment extends SendWizardFragment {
                 public void onResolved(BarcodeData barcode) {
                     resolvingOA = false;
                     if (barcode != null) {
-                        Timber.d("DNSSEC=%b, %s", barcode.isSecure, barcode.address);
+                        Timber.d("Security=%s, %s", barcode.security.toString(), barcode.address);
                         processScannedData(barcode);
                         etDummy.requestFocus();
                         Helper.hideKeyboard(getActivity());
@@ -338,9 +336,9 @@ public class SendAddressWizardFragment extends SendWizardFragment {
             if (scannedAddress != null) {
                 etAddress.getEditText().setText(scannedAddress);
                 if (checkAddress()) {
-                    if (!barcodeData.isSecure)
+                    if (barcodeData.security == BarcodeData.Security.OA_NO_DNSSEC)
                         etAddress.setError(getString(R.string.send_address_no_dnssec));
-                    else
+                    else if (barcodeData.security == BarcodeData.Security.OA_DNSSEC)
                         etAddress.setError(getString(R.string.send_address_openalias));
                 }
             } else {

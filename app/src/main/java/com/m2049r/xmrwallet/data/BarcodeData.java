@@ -34,12 +34,19 @@ public class BarcodeData {
 
     public static final String OA_XMR_ASSET = "loki";
 
+
+    public enum Security {
+        NORMAL,
+        OA_NO_DNSSEC,
+        OA_DNSSEC
+    }
+
     public String addressName = null;
     public String address = null;
     public String paymentId = null;
     public String amount = null;
     public String description = null;
-    public boolean isSecure = true;
+    public Security security = Security.NORMAL;
 
     public BarcodeData(String address) {
         this.address = address;
@@ -67,8 +74,8 @@ public class BarcodeData {
         addressName = name;
     }
 
-    public void isSecure(boolean isSecure) {
-        this.isSecure = isSecure;
+    public void setSecurity(Security security) {
+        this.security = security;
     }
 
     public Uri getUri() {
@@ -123,7 +130,7 @@ public class BarcodeData {
         String noScheme = uri.substring(XMR_SCHEME.length());
         Uri monero = Uri.parse(noScheme);
         Map<String, String> parms = new HashMap<>();
-        String query = monero.getQuery();
+        String query = monero.getEncodedQuery();
         if (query != null) {
             String[] args = query.split("&");
             for (String arg : args) {

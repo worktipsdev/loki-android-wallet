@@ -21,7 +21,7 @@ set_target_properties(sodium PROPERTIES IMPORTED_LOCATION
 
 add_library(crypto STATIC IMPORTED)
 set_target_properties(crypto PROPERTIES IMPORTED_LOCATION
-    ${EXTERNAL_LIBS_DIR}/openssl/lib/${ANDROID_ABI}/libcrypto.a)
+        ${EXTERNAL_LIBS_DIR}/openssl/lib/${ANDROID_ABI}/libcrypto.a)
 
 add_library(ssl STATIC IMPORTED)
 set_target_properties(ssl PROPERTIES IMPORTED_LOCATION

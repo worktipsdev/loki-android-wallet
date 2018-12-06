@@ -266,9 +266,9 @@
 
     <string name="fab_restore_ledger">Wallet mit Ledger Nano S wiederherstellen</string>
 
-    <string name="progress_ledger_progress">Kommunikation with Ledger</string>
+    <string name="progress_ledger_progress">Kommunikation mit Ledger</string>
     <string name="progress_ledger_confirm">Bestätigung auf Ledger benötigt!</string>
-    <string name="progress_ledger_lookahead">Abrufen von Subaddressen</string>
+    <string name="progress_ledger_lookahead">Abrufen von Subadressen</string>
     <string name="progress_ledger_verify">Prüfe Schlüssel</string>
     <string name="progress_ledger_opentx">Mache verrückte Mathe</string>
     <string name="progress_ledger_mlsag">Berechne ein paar Hashwerte</string>
@@ -282,19 +282,21 @@
 
     <string name="receive_desc_hint">Beschreibung (optional)</string>
 
-    <string name="send_address_not_openalias">OpenAlias nicht aufgelöst - Adresse nicht verfügbar</string>
+    <string name="send_address_not_openalias">OpenAlias Adresse nicht verfügbar</string>
     <string name="send_address_openalias">OpenAlias sicher &#x2714;</string>
     <string name="send_address_resolve_openalias">Löse OpenAlias auf&#8230;</string>
     <string name="send_address_no_dnssec">OpenAlias ohne DNSSEC - Adresse kann gefälscht sein!</string>
     <string name="send_address_hint">Empfänger XMR/BTC Adresse oder OpenAlias</string>
 
-    <string name="progress_nfc_write">Writing Tag</string>
-    <string name="nfc_write_failed">Writing Tag failed!</string>
-    <string name="nfc_write_successful">Writing Tag successful</string>
-    <string name="nfc_tag_unsupported">Tag does not support NDEF!</string>
-    <string name="nfc_tag_size">Tag provides %d bytes, but we need %d!</string>
-    <string name="nfc_tag_read_undef">I don\'t understand the Tag!</string>
-    <string name="nfc_tag_read_what">I don\'t know what you want!</string>
-    <string name="nfc_tag_read_success">Reading Tag successful</string>
-    <string name="nfc_tag_tap">NFC Available!</string>
+    <string name="progress_nfc_write">Schreibe Tag</string>
+    <string name="nfc_write_failed">Schreiben des Tags fehlgeschlagen!</string>
+    <string name="nfc_write_successful">Tag erfolgreich geschrieben</string>
+    <string name="nfc_tag_unsupported">Tag unterstützt NDEF nicht!</string>
+    <string name="nfc_tag_size">Tag bietet %1$d Bytes, aber wir brauchen %2$d!</string>
+    <string name="nfc_tag_read_undef">Ich verstehe den Tag nicht!</string>
+    <string name="nfc_tag_read_what">Ich weiß nicht, was du willst!</string>
+    <string name="nfc_tag_read_success">Tag erfolgreich gelesen</string>
+    <string name="nfc_tag_tap">NFC verfügbar!</string>
+
+    <string name="status_wallet_connect_wrongversion">Node version incompatible - please upgrade!</string>
 </resources>

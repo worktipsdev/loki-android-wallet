@@ -23,7 +23,6 @@ import android.app.Dialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -55,11 +54,9 @@ import android.widget.TextView;
 
 import com.m2049r.xmrwallet.BuildConfig;
 import com.m2049r.xmrwallet.R;
-import com.m2049r.xmrwallet.model.NetworkType;
 import com.m2049r.xmrwallet.model.Wallet;
 import com.m2049r.xmrwallet.model.WalletManager;
 import com.m2049r.xmrwallet.service.exchange.api.ExchangeApi;
-import com.m2049r.xmrwallet.service.exchange.coinmarketcap.ExchangeApiImpl;
 
 import java.io.File;
 import java.io.IOException;
@@ -73,14 +70,19 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import okhttp3.HttpUrl;
 import timber.log.Timber;
 
 public class Helper {
-    static private final String WALLET_DIR = "loki-wallet" + (BuildConfig.DEBUG ? "-debug" : "");
-    static private final String HOME_DIR = "loki" + (BuildConfig.DEBUG ? "-debug" : "");
+    static private final String FLAVOR_SUFFIX =
+            (BuildConfig.FLAVOR.equals("prod") ? "" : "." + BuildConfig.FLAVOR)
+                    + (BuildConfig.DEBUG ? "-debug" : "");
 
-    static public int DISPLAY_DIGITS_INFO = 5;
+    static public final String CRYPTO = "LOKI";
+
+    static private final String WALLET_DIR = "loki-wallet" + FLAVOR_SUFFIX;
+    static private final String HOME_DIR = "loki" + FLAVOR_SUFFIX;
+
+    static public int DISPLAY_DIGITS_INFO = 9;
 
     static public File getWalletRoot(Context context) {
         return getStorage(context, WALLET_DIR);
