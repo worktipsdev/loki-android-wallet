@@ -319,4 +319,7 @@
     <string name="send_sweepall">Teljes megerősített egyenleg küldése!</string>
     <string name="tx_subaddress">Alcím #%1$d</string>
     <string name="generate_address_label_sub">Nyilvános alcím #%1$d</string>
+
+    <string name="menu_language">Nyelv</string>
+    <string name="language_system_default">Rendszernyelv használata</string>
 </resources>

@@ -260,4 +260,7 @@
     <string name="send_sweepall">Versende ALLE(!) verfügbaren Gelder aus diesem Konto</string>
     <string name="tx_subaddress">Subadresse #%1$d</string>
     <string name="generate_address_label_sub">Öffentliche Subadresse #%1$d</string>
+
+    <string name="menu_language">Sprache</string>
+    <string name="language_system_default">Benutze Systemsprache</string>
 </resources>

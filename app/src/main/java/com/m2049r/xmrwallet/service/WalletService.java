@@ -42,6 +42,7 @@ import com.m2049r.xmrwallet.model.Wallet;
 import com.m2049r.xmrwallet.model.WalletListener;
 import com.m2049r.xmrwallet.model.WalletManager;
 import com.m2049r.xmrwallet.util.Helper;
+import com.m2049r.xmrwallet.util.LocaleHelper;
 
 import junit.framework.Assert;
 
@@ -425,6 +426,11 @@ public class WalletService extends Service {
             // no need to stop() here because the wallet closing should have been triggered
             // through onUnbind() already
         }
+    }
+
+    @Override
+    protected void attachBaseContext(Context context) {
+        super.attachBaseContext(LocaleHelper.setLocale(context, LocaleHelper.getLocale(context)));
     }
 
     public class WalletServiceBinder extends Binder {
