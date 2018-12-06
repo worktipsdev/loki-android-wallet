@@ -33,6 +33,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -48,7 +49,10 @@ import com.m2049r.xmrwallet.util.Helper;
 import com.m2049r.xmrwallet.widget.Toolbar;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import timber.log.Timber;
 
@@ -57,6 +61,8 @@ public class WalletFragment extends Fragment implements TransactionInfoAdapter.O
     private TransactionInfoAdapter adapter;
     private NumberFormat formatter = NumberFormat.getInstance();
 
+    private TextView tvStreetView;
+    private LinearLayout llBalance;
     private FrameLayout flExchange;
     private TextView tvBalance;
     private TextView tvUnconfirmedAmount;
@@ -91,40 +97,30 @@ public class WalletFragment extends Fragment implements TransactionInfoAdapter.O
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_wallet, container, false);
 
-        flExchange = (FrameLayout) view.findViewById(R.id.flExchange);
+        tvStreetView = view.findViewById(R.id.tvStreetView);
+        llBalance = view.findViewById(R.id.llBalance);
+        flExchange = view.findViewById(R.id.flExchange);
         ((ProgressBar) view.findViewById(R.id.pbExchange)).getIndeterminateDrawable().
                 setColorFilter(getResources().getColor(R.color.trafficGray),
                         android.graphics.PorterDuff.Mode.MULTIPLY);
 
-        tvProgress = (TextView) view.findViewById(R.id.tvProgress);
-        pbProgress = (ProgressBar) view.findViewById(R.id.pbProgress);
+        tvProgress = view.findViewById(R.id.tvProgress);
+        pbProgress = view.findViewById(R.id.pbProgress);
+        tvBalance = view.findViewById(R.id.tvBalance);
+        showBalance(Helper.getDisplayAmount(0));
+        tvUnconfirmedAmount = view.findViewById(R.id.tvUnconfirmedAmount);
+        showUnconfirmed(0);
+        ivSynced = view.findViewById(R.id.ivSynced);
 
-        tvBalance = (TextView) view.findViewById(R.id.tvBalance);
-        tvBalance.setText(Helper.getDisplayAmount(0));
-        tvBalance.setOnClickListener(v -> {
-            balanceHidden = !balanceHidden;
-            refreshBalance();
-            AppPreferences.setBalanceHidden(getContext(), balanceHidden);
-        });
-        // initial hiding
-        balanceHidden = AppPreferences.getBalanceHidden(getContext());
-        if (balanceHidden) {
-            refreshBalance();
-        }
-
-        tvUnconfirmedAmount = (TextView) view.findViewById(R.id.tvUnconfirmedAmount);
-        tvUnconfirmedAmount.setText(getResources().getString(R.string.xmr_unconfirmed_amount, Helper.getDisplayAmount(0)));
-        ivSynced = (ImageView) view.findViewById(R.id.ivSynced);
-
-        sCurrency = (Spinner) view.findViewById(R.id.sCurrency);
+        sCurrency = view.findViewById(R.id.sCurrency);
         ArrayAdapter currencyAdapter = ArrayAdapter.createFromResource(getContext(), R.array.currency, R.layout.item_spinner_balance);
         currencyAdapter.setDropDownViewResource(R.layout.item_spinner_dropdown_item);
         sCurrency.setAdapter(currencyAdapter);
 
-        bSend = (Button) view.findViewById(R.id.bSend);
-        bReceive = (Button) view.findViewById(R.id.bReceive);
+        bSend = view.findViewById(R.id.bSend);
+        bReceive = view.findViewById(R.id.bReceive);
 
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
+        RecyclerView recyclerView = view.findViewById(R.id.list);
 
         this.adapter = new TransactionInfoAdapter(getActivity(), this);
         recyclerView.setAdapter(adapter);
@@ -153,6 +149,26 @@ public class WalletFragment extends Fragment implements TransactionInfoAdapter.O
         return view;
     }
 
+    void showBalance(String balance) {
+        tvBalance.setText(balance);
+        if (!activityCallback.isStreetMode()) {
+            llBalance.setVisibility(View.VISIBLE);
+            tvStreetView.setVisibility(View.INVISIBLE);
+        } else {
+            llBalance.setVisibility(View.INVISIBLE);
+            tvStreetView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    void showUnconfirmed(double unconfirmedAmount) {
+        if (!activityCallback.isStreetMode()) {
+            String unconfirmed = Helper.getFormattedAmount(unconfirmedAmount, true);
+            tvUnconfirmedAmount.setText(getResources().getString(R.string.xmr_unconfirmed_amount, unconfirmed));
+        } else {
+            tvUnconfirmedAmount.setText(null);
+        }
+    }
+
     void updateBalance() {
         if (isExchanging) return; // wait for exchange to finish - it will fire this itself then.
         // at this point selection is LOKI in case of error
@@ -164,19 +180,16 @@ public class WalletFragment extends Fragment implements TransactionInfoAdapter.O
         } else { // LOKI
             displayB = Helper.getFormattedAmount(amountA, true);
         }
-        tvBalance.setText(displayB);
+        showBalance(displayB);
     }
 
     void refreshBalance() {
-        if (balanceHidden) {
-            tvBalance.setText("X.XXX");
-            return;
-        }
-
-        if (sCurrency.getSelectedItemPosition() == 0) { // LOKI
+        double unconfirmedXmr = Double.parseDouble(Helper.getDisplayAmount(balance - unlockedBalance));
+        showUnconfirmed(unconfirmedXmr);
+        if (sCurrency.getSelectedItemPosition() == 0) { // XMR
             double amountXmr = Double.parseDouble(Wallet.getDisplayAmount(unlockedBalance)); // assume this cannot fail!
-            tvBalance.setText(Helper.getFormattedAmount(amountXmr, true));
-        } else { // not LOKI
+            showBalance(Helper.getFormattedAmount(amountXmr, true));
+        } else { // not XMR
             String currency = (String) sCurrency.getSelectedItem();
             Timber.d(currency);
             if (!currency.equals(balanceCurrency) || (balanceRate <= 0)) {
@@ -221,7 +234,7 @@ public class WalletFragment extends Fragment implements TransactionInfoAdapter.O
     public void exchangeFailed() {
         sCurrency.setSelection(0, true); // default to LOKI
         double amountXmr = Double.parseDouble(Wallet.getDisplayAmount(unlockedBalance)); // assume this cannot fail!
-        tvBalance.setText(Helper.getFormattedAmount(amountXmr, true));
+        showBalance(Helper.getFormattedAmount(amountXmr, true));
         hideExchanging();
     }
 
@@ -257,7 +270,13 @@ public class WalletFragment extends Fragment implements TransactionInfoAdapter.O
     public void onRefreshed(final Wallet wallet, final boolean full) {
         Timber.d("onRefreshed(%b)", full);
         if (full) {
-            List<TransactionInfo> list = wallet.getHistory().getAll();
+            List<TransactionInfo> list = new ArrayList<>();
+            final long streetHeight = activityCallback.getStreetModeHeight();
+            Timber.d("StreetHeight=%d", streetHeight);
+            for (TransactionInfo info : wallet.getHistory().getAll()) {
+                Timber.d("TxHeight=%d", info.blockheight);
+                if (info.isPending || (info.blockheight >= streetHeight)) list.add(info);
+            }
             adapter.setInfos(list);
             adapter.notifyDataSetChanged();
         }
@@ -322,6 +341,7 @@ public class WalletFragment extends Fragment implements TransactionInfoAdapter.O
     private String walletTitle = null;
     private String walletSubtitle = null;
     private long unlockedBalance = 0;
+    private long balance = 0;
 
     private int accountIdx = -1;
 
@@ -332,23 +352,21 @@ public class WalletFragment extends Fragment implements TransactionInfoAdapter.O
             accountIdx = wallet.getAccountIndex();
             setActivityTitle(wallet);
         }
-        long balance = wallet.getBalance();
+        balance = wallet.getBalance();
         unlockedBalance = wallet.getUnlockedBalance();
         refreshBalance();
-        double amountXmr = Double.parseDouble(Helper.getDisplayAmount(balance - unlockedBalance)); // assume this cannot fail!
-        String unconfirmed = Helper.getFormattedAmount(amountXmr, true);
-        tvUnconfirmedAmount.setText(getResources().getString(R.string.xmr_unconfirmed_amount, unconfirmed));
         String sync = "";
         if (!activityCallback.hasBoundService())
             throw new IllegalStateException("WalletService not bound.");
         Wallet.ConnectionStatus daemonConnected = activityCallback.getConnectionStatus();
         if (daemonConnected == Wallet.ConnectionStatus.ConnectionStatus_Connected) {
-            long daemonHeight = activityCallback.getDaemonHeight();
             if (!wallet.isSynchronized()) {
-                long n = daemonHeight - wallet.getBlockChainHeight();
+                long daemonHeight = activityCallback.getDaemonHeight();
+                long walletHeight = wallet.getBlockChainHeight();
+                long n = daemonHeight - walletHeight;
                 sync = getString(R.string.status_syncing) + " " + formatter.format(n) + " " + getString(R.string.status_remaining);
                 if (firstBlock == 0) {
-                    firstBlock = wallet.getBlockChainHeight();
+                    firstBlock = walletHeight;
                 }
                 int x = 100 - Math.round(100f * n / (1f * daemonHeight - firstBlock));
                 if (x == 0) x = 101; // indeterminate
@@ -384,6 +402,10 @@ public class WalletFragment extends Fragment implements TransactionInfoAdapter.O
 
         boolean isSynced();
 
+        boolean isStreetMode();
+
+        long getStreetModeHeight();
+
         boolean isWatchOnly();
 
         String getTxKey(String txId);
@@ -391,6 +413,8 @@ public class WalletFragment extends Fragment implements TransactionInfoAdapter.O
         void onWalletReceive();
 
         boolean hasWallet();
+
+        Wallet getWallet();
 
         void setToolbarButton(int type);
 

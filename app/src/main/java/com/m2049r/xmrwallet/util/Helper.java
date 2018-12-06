@@ -35,6 +35,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.CancellationSignal;
 import android.os.Environment;
+import android.os.StrictMode;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.system.ErrnoException;
@@ -74,10 +75,11 @@ import timber.log.Timber;
 
 public class Helper {
     static private final String FLAVOR_SUFFIX =
-            (BuildConfig.FLAVOR.equals("prod") ? "" : "." + BuildConfig.FLAVOR)
+            (BuildConfig.FLAVOR.startsWith("prod") ? "" : "." + BuildConfig.FLAVOR)
                     + (BuildConfig.DEBUG ? "-debug" : "");
 
     static public final String CRYPTO = "LOKI";
+    static public final String NOCRAZYPASS_FLAGFILE = ".nocrazypass";
 
     static private final String WALLET_DIR = "loki-wallet" + FLAVOR_SUFFIX;
     static private final String HOME_DIR = "loki" + FLAVOR_SUFFIX;
@@ -334,6 +336,11 @@ public class Helper {
             WalletManager.setLogLevel(level);
     }
 
+    static public boolean useCrazyPass(Context context) {
+        File flagFile = new File(getWalletRoot(context), NOCRAZYPASS_FLAGFILE);
+        return !flagFile.exists();
+    }
+
     // try to figure out what the real wallet password is given the user password
     // which could be the actual wallet password or a (maybe malformed) CrAzYpass
     // or the password used to derive the CrAzYpass for the wallet
@@ -385,10 +392,10 @@ public class Helper {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder.setView(promptsView);
 
-        final TextInputLayout etPassword = (TextInputLayout) promptsView.findViewById(R.id.etPassword);
+        final TextInputLayout etPassword = promptsView.findViewById(R.id.etPassword);
         etPassword.setHint(context.getString(R.string.prompt_password, wallet));
 
-        final TextView tvOpenPrompt = (TextView) promptsView.findViewById(R.id.tvOpenPrompt);
+        final TextView tvOpenPrompt = promptsView.findViewById(R.id.tvOpenPrompt);
         final Drawable icFingerprint = context.getDrawable(R.drawable.ic_fingerprint);
         final Drawable icError = context.getDrawable(R.drawable.ic_error_red_36dp);
         final Drawable icInfo = context.getDrawable(R.drawable.ic_info_green_36dp);
@@ -446,7 +453,6 @@ public class Helper {
                         etPassword.setError(context.getString(R.string.bad_password));
                     }
                 }
-
                 loginTask = null;
             }
         }
@@ -577,6 +583,21 @@ public class Helper {
     }
 
     static public ExchangeApi getExchangeApi() {
-        return new com.m2049r.xmrwallet.service.exchange.coinmarketcap.ExchangeApiImpl(OkHttpClientSingleton.getOkHttpClient());
+        return new com.m2049r.xmrwallet.service.exchange.coinmarketcap.ExchangeApiImpl(OkHttpHelper.getOkHttpClient());
+    }
+
+    public interface Action {
+        boolean run();
+    }
+
+    static public boolean runWithNetwork(Action action) {
+        StrictMode.ThreadPolicy currentPolicy = StrictMode.getThreadPolicy();
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitNetwork().build();
+        StrictMode.setThreadPolicy(policy);
+        try {
+            return action.run();
+        } finally {
+            StrictMode.setThreadPolicy(currentPolicy);
+        }
     }
 }

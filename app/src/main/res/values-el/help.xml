@@ -99,23 +99,6 @@
         εφαρμογή εξερεύνησης αρχείων ή μια εφαρμογή ασφαλούς διαγραφής.</p>
     ]]></string>
 
-    <string name="help_wallet"><![CDATA[
-        <h1>Το Πορτοφόλι</h1>
-        <h2>Σάρωση</h2>
-        Επειδή το Monero θέλει να κρατάει τα πράγματα ιδιωτικά, κάθε φορά που ανοίγεις ένα πορτοφόλι
-        Monerujo πρέπει να σαρώσουμε όλο το blockchain για να βρεθούν νέα ληφθέντα Moneroj στο πορτοφόλι σας, αυτό
-        αποθηκεύει μόνο πληροφορίες στο τηλέφωνό σου που ανιστοιχούν στο πορτοφόλι σου. Μερικές φορές
-        μπορεί να χρειαστεί λίγος χρόνος γιατί δεν έχεις συγχρονίσει για μεγάλο χρονικό διάστημα.
-        <h2>Το Υπόλοιπο</h2>
-        <p><b>Βοήθεια! Το υπόλοιπο του πορτοφολιού μου εξαφανίστηκε ή ειναι μη επιβεβαιωμένο!</b><br/>
-        Μην πανικοβάλεσαι! Όταν στέλνεις κεφάλαια από το πορτοφόλι σου, ένα μέρος
-        του υπολοίπου σου θα δείχνει για λίγο ως μη επιβεβαιωμένο.
-        Αυτό συμβαίνει σαν αποτέλεσμα του πως το Monero ανταλλάσεται στο blockchain και το πως δουλεύουν τα ρέστα.
-        Διάβασε περισσότερα για τα ρέστα εδώ(Αγγλικά) https://getmonero.org/resources/moneropedia/change.html
-        <h2>Λίστα Συναλλαγών</h2>
-        <p>Μια λίστα απο τις συναλλαγές του πορτοφολιού. Στα πορτοφόλια παρακολούθησης φαίνοντε μόνο οι εισερχόμενες συναλλαγές.</p>
-    ]]></string>
-
     <string name="help_tx_details"><![CDATA[
         <h1>Λεπτομέρειες Συναλλαγής</h1>
         <h2>Προορισμός</h2>
@@ -146,49 +129,9 @@
         <p>Μπορείς να χρησιμοποιήσεις ένα ID Πληρωμής(Payment ID) για να προσδιορίσεις τον λόγο που στέλνεις Monero
         ανάμεσα σε δύο ενδιαφερόμενους αυτό είναι προεραιτικό και ιδωτικό. Για παράδειγμα μπορεί να επιτρέψει σε μια επιχείρηση
         να κανονίσει την συναλλαγή σου με ένα αντικείμενο που αγόρασες.<p>
-        <h2>Μέγεθος Δακτύλιου(Ring size)</h2>
-        <p>Υπάρχει ένας αριθμός επιλογών μεγέθους δακτύλιου που μπορείς να διαλέξεις στο Monerujo. Αν είσαι νέος χρήστης
-        προτείνουμε να επιλέγεις ένα μέγεθος δακτύλιου 7. Αυξάνοντας τον αριθμό δακτυλίου πάνω από 7 αυξάνει
-        το ποσό των υπογραφόντων σε μια υπογραφη δακτυλίου, προσφέροντας θεωρητικά εύλογα αυξημένη
-        δυσπιστία. Ωστόσο η επιλογή μεγαλύτερου μεγέθους δακτυλίου μπορεί να κάνει την συναλλαγή σου να ξεχωρίζει
-        στο blockchain.</p>
-        <h2>Προτεραιότητα</h2>
-        <p>Αυτή η επιλογή καθορίζει την ταχύτητα με την οποία η συναλλαγή σου θα συμπεριληφθει στο
-        blockchain. Μια επιλογή υψηλής προτεραιότητας θα έχει σαν άμεση συνέπεια υψηλότερα κόμιστρα συναλλαγής
-        και το αντίστροφο είναι αληθές για μια συναλλαγή χαμηλής προτεραιότητας. Σημειωτέον ότι αν στείλεις την συναλλαγή
-        με χαμηλή προτεραιότητα μπορεί να πάρει ώρες μέχρι να συμπεριληφθεί στο blockchain. Η προεπιλεγμένη προτεραιότητα
-        είναι η \"Μέτρια\".</p>
         <h1>Αποστολή BTC</h1>
         <h2>XMR.TO</h2>
         <p>Το XMR.TO είναι τρίτος πάροχος που δρα σαν ανταλλακτήριο από Monero σε Bitcoin.
-        Χρησιμοποιούμε το API του XMR.TO για να ενσωματώσουμε πληρωμές Bitcoin στο Monerujo. Παρακαλώ δες το
-        https://xmr.to και αποφάσισε για τον εαυτό σου εαν αυτό είναι κάτι που θες να χρησιμοποιήσεις. Η Ομάδα του
-        Monerujo δεν συνδέεται με το XMR.TO και δεν μπορεί να σε βοηθήσει με την υπηρεσία.</p>
-        <h2>Ισοτιμία συναλλάγματος XMR.TO<h2>
-        <p>Στην οθόνη \"Ποσό\" θα σου δωθούν οι τρέχουσες παράμετροι της υπηρεσίας XMR.TO. Αυτές
-        περιλαμβάνουν την τρέχουσα ισοτιμία καθώς και τα μέγιστα και ελάχιστα όρια BTC. Σημειωτέον ότι αυτή η
-        ισοτιμία δεν εξασφαλίζεται σε αυτό το σημείο. Θα δεις επίσης το ποσό για το οποιό
-        η συναλλαγή BTC θα εκτελεσθέι άμεσα χωρίς αναμονή για επιβαιώσεις στο δίκτυο του
-        XMR (δες το FAQ του XMR.TO για περισσότερες λεπτομέρειες). Σημειωτέο, ότι το XMR.TO
-        δεν χρεώνει επιπλέον προμήθειες - πόσο πρώτο είναι αυτό;</p>
-        <h2>Εντολή XMR.TO<h2>
-        <p>Στην οθόνη \"Επιβεβαίωση\", θα δεις την πραγματική εντολή XMR.TO. Αυτή η εντολή ισχύει για
-        περιορισμένο χρόνο - μπορεί να προσέξεις μια αντίστροφη μέτρηση στο κουμπί \"Ξόδεψε\". Η ισοτιμία
-        μπορεί να είναι διαφορετική από την ενδεικτική που φαινόταν σε προηγούμενες οθόνες.</p>
-        <h2>Μυστικό Κλειδί XMR.TO<h2>
-        <p>Μιας και το Monerujo διαχειρίζεται μόνο την πλευρά του Monero της συναλλαγής το μυστικό κλειδί XMR.TO
-        μπορεί να χρησιμοποιηθεί για να εντοπίσει την συναλλαγή απο μεριάς Bitcoin στην XMR.TO εντολή σου στην αρχική τους σελίδα.</p>
-        <p>Σημειωτέο ότι, αυτό το μυστικό κλειδί θα ισχύει για 24 ώρες από όταν ξεκίνησες
-        την συναλλαγή!</p>
-        <h2>Αντίστροφη μέτρηση XMR.TO!</h2>
-        <p>Μόλις η αντίστροφη μέτρηση φθάσει στο μηδέν, χρειάζεται να ξεκινήσεις πάλι την συναλλαγή στο XMR.TO πηγαίνοντας
-        πίσω στο προηγούμενο βήμα και μετά επιστρέφοντας στην οθόνη \"Επιβεβαίωση\".</p>
-    ]]></string>
-
-    <string name="help_xmrto"><![CDATA[
-        <h1>Αποστολή BTC</h1>
-        <h2>XMR.TO</h2>
-        <p>Το XMR.TO είναι τρίτος πάροχος που δρα σαν ανταλλακτήριο από Monero σε Bitcoin
         Χρησιμοποιούμε το API του XMR.TO για να ενσωματώσουμε πληρωμές Bitcoin στο Monerujo. Παρακαλώ δες το
         https://xmr.to και αποφάσισε για τον εαυτό σου εαν αυτό είναι κάτι που θες να χρησιμοποιήσεις. Η Ομάδα του
         Monerujo δεν συνδέεται με το XMR.TO και δεν μπορεί να σε βοηθήσει με την υπηρεσία.</p>
@@ -223,5 +166,76 @@
         <p>Enter the block number of the first transaction used for this address in the
         field \"Restore Height\". You can also use a date in the format YYYY-MM-DD. If you are not sure,
         enter an approximate date/blockheight <em>before</em> you first used this wallet address.</p>
+    ]]></string>
+
+    <string name="help_wallet"><![CDATA[
+        <h1>Το Πορτοφόλι</h1>
+        <h2>Street Mode</h2>
+        <p>Street mode can be enabled/disabled in the menu or Gunther\'s head icon. In this mode, your
+        balance is not shown on any screen so you can safely use your wallet on the street, a pub or
+        other public place. Previous transactions are also hidden. New transactions will be shown, so
+        you can see that you have sent/received sweet Moneroj!</p>
+        <h2>Σάρωση</h2>
+        Επειδή το Monero θέλει να κρατάει τα πράγματα ιδιωτικά, κάθε φορά που ανοίγεις ένα πορτοφόλι
+        Monerujo πρέπει να σαρώσουμε όλο το blockchain για να βρεθούν νέα ληφθέντα Moneroj στο πορτοφόλι σας, αυτό
+        αποθηκεύει μόνο πληροφορίες στο τηλέφωνό σου που ανιστοιχούν στο πορτοφόλι σου. Μερικές φορές
+        μπορεί να χρειαστεί λίγος χρόνος γιατί δεν έχεις συγχρονίσει για μεγάλο χρονικό διάστημα.
+        <h2>Το Υπόλοιπο</h2>
+        <p><b>Βοήθεια! Το υπόλοιπο του πορτοφολιού μου εξαφανίστηκε ή ειναι μη επιβεβαιωμένο!</b><br/>
+        Μην πανικοβάλεσαι! Όταν στέλνεις κεφάλαια από το πορτοφόλι σου, ένα μέρος
+        του υπολοίπου σου θα δείχνει για λίγο ως μη επιβεβαιωμένο.
+        Αυτό συμβαίνει σαν αποτέλεσμα του πως το Monero ανταλλάσεται στο blockchain και το πως δουλεύουν τα ρέστα.
+        Διάβασε περισσότερα για τα ρέστα εδώ(Αγγλικά) https://getmonero.org/resources/moneropedia/change.html
+        <h2>Λίστα Συναλλαγών</h2>
+        <p>Μια λίστα απο τις συναλλαγές του πορτοφολιού. Στα πορτοφόλια παρακολούθησης φαίνοντε μόνο οι εισερχόμενες συναλλαγές.</p>
+    ]]></string>
+
+    <string name="help_node"><![CDATA[
+        <h1>Nodes</h1>
+        <h2>TL;DR</h2>
+        <p>Refresh the nodes list by pulling down &amp; bookmark 3&#8211;5 nodes to allow Monerujo
+        to choose the best one for you!</p>
+        <h2>What&apos;s a Node?</h2>
+        <p>Monerujo uses a Remote Node (sometimes also called Daemon) to communicate with
+        the Monero Network without having to download and store a copy of the
+        whole blockchain itself.<p>
+        <h2>Node List</h2>
+        <p>If the list is empty, you can either add new nodes manually or let Monerujo
+        scan the network for you. Or both. Read on&#8230;</p>
+        <p>The node list shows all currently known nodes. Additionally, the timestamp
+        of the latest block known to each node is shown under the node name. An icon
+        representing the node&apos;s response behaviour
+        (which indicates the level of connectivity to be expected)
+        is shown next to each node.</p>
+        <p>Any node in the list can be bookmarked for later use.
+        Nodes which are not bookmarked will be forgotten.<p>
+        <p>Monerujo will choose the optimal bookmarked node each time you use it.
+        It does this by checking the blockheight (how up-to-date
+        is the node?) as well as the response behaviour (how fast does the node respond to requests?).</p>
+        <p>The list is sorted by these characteristics, so the top node would be the one Monerujo
+        would choose right now. The bottom of the list would show very slow or unavailable nodes.</p>
+        <h2>Add a Node</h2>
+        <p>By touching the &quot;Add Node&quot; button at the bottom, you will be asked to
+        enter the node details in the following dialog.
+        The &quot;Address&quot; is the hostname or IP-address of the node - this is the only
+        mandatory entry.
+        Enter the &quot;Port&quot; if the node runs on a non-default port (e.g. 18089).
+        You can also optionally name the node, so you can identify it easier later on.
+        Some nodes require credentials to use them. Enter the provided username &amp;
+        password in the appropriate fields. Now you can &quot;Test&quot; these setting.
+        The &quot;Test Results&quot; will display the blockheight, response time and actual IP used.
+        The result may also be an error - usually because the hostname provided is
+        not reachable in a sensible amount of time or the credentials are incorrect.
+        Or the hostname/port combination does not point to an actual Monero Node!
+        Once the test passes (no error) - you&apos;re set to press &quot;OK&quot; to save &amp;
+        bookmark this node.</p>
+        <h2>Scan for Nodes</h2>
+        <p>Additionally, you can scan the network for nodes. Monerujo will start
+        scanning the network for Remote Nodes on port 18089. It begins by asking your
+        bookmarked nodes for other peers in the Monero P2P network and then continues
+        by asking those for their peers, and so on. If you have no bookmarked nodes
+        (or they don&apos;t tell us about their peers),
+        Monerujo will go straight to the Monero seed nodes hardcoded into Monero. The
+        scan stops when it finds 10 remote nodes in total.</p>
     ]]></string>
 </resources>

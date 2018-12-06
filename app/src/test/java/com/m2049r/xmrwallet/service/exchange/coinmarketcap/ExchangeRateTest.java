@@ -72,7 +72,7 @@ public class ExchangeRateTest {
 
     @Test
     public void queryExchangeRate_shouldBeGetMethod()
-            throws InterruptedException, TimeoutException {
+            throws InterruptedException {
 
         exchangeApi.queryExchangeRate(Wallet.LOKI_SYMBOL, "USD", mockExchangeCallback);
 
@@ -82,7 +82,7 @@ public class ExchangeRateTest {
 
     @Test
     public void queryExchangeRate_shouldHavePairInUrl()
-            throws InterruptedException, TimeoutException {
+            throws InterruptedException {
 
         exchangeApi.queryExchangeRate(Wallet.LOKI_SYMBOL, "USD", mockExchangeCallback);
 
@@ -92,7 +92,35 @@ public class ExchangeRateTest {
 
     @Test
     public void queryExchangeRate_wasSuccessfulShouldRespondWithRate()
-            throws InterruptedException, JSONException, TimeoutException {
+            throws TimeoutException {
+        final String base = Wallet.LOKI_SYMBOL;
+        final String quote = "EUR";
+        final double rate = 1.56;
+        MockResponse jsonMockResponse = new MockResponse().setBody(
+                createMockExchangeRateResponse(base, quote, rate));
+        mockWebServer.enqueue(jsonMockResponse);
+
+        exchangeApi.queryExchangeRate(base, quote, new ExchangeCallback() {
+            @Override
+            public void onSuccess(final ExchangeRate exchangeRate) {
+                waiter.assertEquals(exchangeRate.getBaseCurrency(), base);
+                waiter.assertEquals(exchangeRate.getQuoteCurrency(), quote);
+                waiter.assertEquals(exchangeRate.getRate(), rate);
+                waiter.resume();
+            }
+
+            @Override
+            public void onError(final Exception e) {
+                waiter.fail(e);
+                waiter.resume();
+            }
+        });
+        waiter.await();
+    }
+
+    @Test
+    public void queryExchangeRate_wasSuccessfulShouldRespondWithRateUSD()
+            throws TimeoutException {
         final String base = Wallet.LOKI_SYMBOL;
         final String quote = "USD";
         final double rate = 1.56;
@@ -120,7 +148,7 @@ public class ExchangeRateTest {
 
     @Test
     public void queryExchangeRate_wasNotSuccessfulShouldCallOnError()
-            throws InterruptedException, JSONException, TimeoutException {
+            throws TimeoutException {
         mockWebServer.enqueue(new MockResponse().setResponseCode(500));
         exchangeApi.queryExchangeRate(Wallet.LOKI_SYMBOL, "USD", new ExchangeCallback() {
             @Override
@@ -142,10 +170,11 @@ public class ExchangeRateTest {
 
     @Test
     public void queryExchangeRate_unknownAssetShouldCallOnError()
-            throws InterruptedException, JSONException, TimeoutException {
-        mockWebServer.enqueue(new MockResponse().
-                setResponseCode(200).
-                setBody("{\"error\":[\"EQuery:Unknown asset pair\"]}"));
+            throws TimeoutException {
+        MockResponse jsonMockResponse = new MockResponse().setBody(
+                createMockExchangeRateErrorResponse());
+        mockWebServer.enqueue(jsonMockResponse);
+
         exchangeApi.queryExchangeRate(Wallet.LOKI_SYMBOL, "ABC", new ExchangeCallback() {
             @Override
             public void onSuccess(final ExchangeRate exchangeRate) {

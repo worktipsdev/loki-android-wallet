@@ -140,9 +140,8 @@ public class OpenAliasHelper {
                 if (success) {
                     BarcodeData result = null;
                     for (String txt : txts) {
-                        BarcodeData bc = BarcodeData.parseOpenAlias(txt);
+                        BarcodeData bc = BarcodeData.parseOpenAlias(txt, dnssec);
                         if (bc != null) {
-                            bc.setSecurity(dnssec ? BarcodeData.Security.OA_DNSSEC : BarcodeData.Security.OA_NO_DNSSEC);
                             result = bc;
                         }
                     }

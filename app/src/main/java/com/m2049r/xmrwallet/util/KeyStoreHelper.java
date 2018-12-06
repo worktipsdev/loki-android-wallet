@@ -83,7 +83,10 @@ public class KeyStoreHelper {
     }
 
     public static String getCrazyPass(Context context, String password) {
-        return getCrazyPass(context, password, 0);
+        if (Helper.useCrazyPass(context))
+            return getCrazyPass(context, password, 0);
+        else
+            return password;
     }
 
     public static String getBrokenCrazyPass(Context context, String password, int brokenVariant) {
@@ -101,11 +104,7 @@ public class KeyStoreHelper {
         if (isArm32 != null) return isArm32;
         synchronized (KeyStoreException.class) {
             if (isArm32 != null) return isArm32;
-            if (Build.SUPPORTED_ABIS[0].equals("armeabi-v7a")) {
-                isArm32 = true;
-            } else {
-                isArm32 = false;
-            }
+            isArm32 = Build.SUPPORTED_ABIS[0].equals("armeabi-v7a");
             return isArm32;
         }
     }

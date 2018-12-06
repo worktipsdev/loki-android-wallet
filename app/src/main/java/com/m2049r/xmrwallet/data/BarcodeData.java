@@ -41,26 +41,38 @@ public class BarcodeData {
         OA_DNSSEC
     }
 
-    public String addressName = null;
-    public String address = null;
-    public String paymentId = null;
-    public String amount = null;
-    public String description = null;
-    public Security security = Security.NORMAL;
+    final public String address;
+    final public String addressName;
+    final public String paymentId;
+    final public String amount;
+    final public String description;
+    final public Security security;
 
     public BarcodeData(String address) {
         this.address = address;
+        amount = null;
+        paymentId = null;
+        addressName = null;
+        description = null;
+        this.security = Security.NORMAL;
     }
 
     public BarcodeData(String address, String amount) {
         this.address = address;
         this.amount = amount;
+        paymentId = null;
+        addressName = null;
+        description = null;
+        this.security = Security.NORMAL;
     }
 
     public BarcodeData(String address, String paymentId, String amount) {
         this.address = address;
         this.paymentId = paymentId;
         this.amount = amount;
+        addressName = null;
+        description = null;
+        this.security = Security.NORMAL;
     }
 
     public BarcodeData(String address, String paymentId, String description, String amount) {
@@ -68,14 +80,17 @@ public class BarcodeData {
         this.paymentId = paymentId;
         this.description = description;
         this.amount = amount;
+        addressName = null;
+        this.security = Security.NORMAL;
     }
 
-    public void setAddressName(String name) {
-        addressName = name;
-    }
-
-    public void setSecurity(Security security) {
-        this.security = security;
+    public BarcodeData(String address, String addressName, String paymentId, String description, String amount, Security sec) {
+        this.address = address;
+        this.addressName = addressName;
+        this.paymentId = paymentId;
+        this.description = description;
+        this.amount = amount;
+        this.security = sec;
     }
 
     public Uri getUri() {
@@ -143,7 +158,11 @@ public class BarcodeData {
             }
         }
         String address = monero.getPath();
+
         String paymentId = parms.get(XMR_PAYMENTID);
+        // deal with empty payment_id created by non-spec-conforming apps
+        if ((paymentId != null) && paymentId.isEmpty()) paymentId = null;
+
         String description = parms.get(XMR_DESCRIPTION);
         String amount = parms.get(XMR_AMOUNT);
         if (amount != null) {
@@ -179,7 +198,7 @@ public class BarcodeData {
         return new BarcodeData(address);
     }
 
-    static public BarcodeData parseOpenAlias(String oaString) {
+    static public BarcodeData parseOpenAlias(String oaString, boolean dnssec) {
         Timber.d("parseOpenAlias=%s", oaString);
         if (oaString == null) return null;
 
@@ -223,8 +242,7 @@ public class BarcodeData {
             return null;
         }
 
-        BarcodeData bc = new BarcodeData(address, paymentId, description, amount);
-        bc.setAddressName(addressName);
-        return bc;
+        Security sec = dnssec ? BarcodeData.Security.OA_DNSSEC : BarcodeData.Security.OA_NO_DNSSEC;
+        return new BarcodeData(address, addressName, paymentId, description, amount, sec);
     }
 }

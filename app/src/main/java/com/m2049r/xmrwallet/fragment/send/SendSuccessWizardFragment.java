@@ -70,17 +70,20 @@ public class SendSuccessWizardFragment extends SendWizardFragment {
         View view = inflater.inflate(
                 R.layout.fragment_send_success, container, false);
 
-        bCopyTxId = (ImageButton) view.findViewById(R.id.bCopyTxId);
-        bCopyTxId.setOnClickListener(v -> {
-            Helper.clipBoardCopy(getActivity(), getString(R.string.label_send_txid), tvTxId.getText().toString());
-            Toast.makeText(getActivity(), getString(R.string.message_copy_txid), Toast.LENGTH_SHORT).show();
+        bCopyTxId = view.findViewById(R.id.bCopyTxId);
+        bCopyTxId.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Helper.clipBoardCopy(getActivity(), getString(R.string.label_send_txid), tvTxId.getText().toString());
+                Toast.makeText(getActivity(), getString(R.string.message_copy_txid), Toast.LENGTH_SHORT).show();
+            }
         });
 
-        tvTxId = (TextView) view.findViewById(R.id.tvTxId);
-        tvTxAddress = (TextView) view.findViewById(R.id.tvTxAddress);
-        tvTxPaymentId = (TextView) view.findViewById(R.id.tvTxPaymentId);
-        tvTxAmount = ((TextView) view.findViewById(R.id.tvTxAmount));
-        tvTxFee = (TextView) view.findViewById(R.id.tvTxFee);
+        tvTxId = view.findViewById(R.id.tvTxId);
+        tvTxAddress = view.findViewById(R.id.tvTxAddress);
+        tvTxPaymentId = view.findViewById(R.id.tvTxPaymentId);
+        tvTxAmount = view.findViewById(R.id.tvTxAmount);
+        tvTxFee = view.findViewById(R.id.tvTxFee);
 
         return view;
     }
