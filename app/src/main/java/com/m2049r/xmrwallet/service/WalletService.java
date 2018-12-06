@@ -52,7 +52,7 @@ public class WalletService extends Service {
     public static boolean Running = false;
 
     final static int NOTIFICATION_ID = 2049;
-    final static String NOTIFICATION_CHANNEL_ID = "loki_wallet_notification";
+    final static String CHANNEL_ID = "m_service";
 
     public static final String REQUEST_WALLET = "wallet";
     public static final String REQUEST = "request";
@@ -348,19 +348,21 @@ public class WalletService extends Service {
                         Wallet myWallet = getWallet();
                         Timber.d("SEND TX for wallet: %s", myWallet.getName());
                         PendingTransaction pendingTransaction = myWallet.getPendingTransaction();
-                        if ((pendingTransaction == null)
-                                || (pendingTransaction.getStatus() != PendingTransaction.Status.Status_Ok)) {
+                        if (pendingTransaction == null) {
+                            throw new IllegalArgumentException("PendingTransaction is null"); // die
+                        }
+                        if (pendingTransaction.getStatus() != PendingTransaction.Status.Status_Ok) {
                             Timber.e("PendingTransaction is %s", pendingTransaction.getStatus());
                             final String error = pendingTransaction.getErrorString();
                             myWallet.disposePendingTransaction(); // it's broken anyway
                             if (observer != null) observer.onSendTransactionFailed(error);
                             return;
                         }
-                        final String txid = pendingTransaction.getFirstTxId();
+                        final String txid = pendingTransaction.getFirstTxId(); // tx ids vanish after commit()!
                         boolean success = pendingTransaction.commit("", true);
-                        myWallet.disposePendingTransaction();
-                        if (observer != null) observer.onTransactionSent(txid);
                         if (success) {
+                            myWallet.disposePendingTransaction();
+                            if (observer != null) observer.onTransactionSent(txid);
                             String notes = extras.getString(REQUEST_CMD_SEND_NOTES);
                             if ((notes != null) && (!notes.isEmpty())) {
                                 myWallet.setUserNote(txid, notes);
@@ -372,6 +374,11 @@ public class WalletService extends Service {
                             }
                             if (observer != null) observer.onWalletStored(rc);
                             listener.updated = true;
+                        } else {
+                            final String error = pendingTransaction.getErrorString();
+                            myWallet.disposePendingTransaction();
+                            if (observer != null) observer.onSendTransactionFailed(error);
+                            return;
                         }
                     } else if (cmd.equals(REQUEST_CMD_SETNOTE)) {
                         Wallet myWallet = getWallet();
@@ -568,31 +575,25 @@ public class WalletService extends Service {
         Intent notificationIntent = new Intent(this, WalletActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            createNotificationChannelIfNeeded();
-        }
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
-        Notification notification = builder
+        String channelId = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? createNotificationChannel() : "";
+        Notification notification = new NotificationCompat.Builder(this, channelId)
                 .setContentTitle(getString(R.string.service_description))
-                .setSmallIcon(R.drawable.loki_notification)
+                .setOngoing(true)
+                .setSmallIcon(R.drawable.ic_loki_logo_b)
+                .setPriority(NotificationCompat.PRIORITY_MIN)
+                .setCategory(NotificationCompat.CATEGORY_SERVICE)
                 .setContentIntent(pendingIntent)
                 .build();
         startForeground(NOTIFICATION_ID, notification);
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private void createNotificationChannelIfNeeded() {
-        NotificationManager service = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        Assert.assertTrue(service != null);
-
-        if (service.getNotificationChannel(NOTIFICATION_CHANNEL_ID) != null) {
-            return;
-        }
-        NotificationChannel chan = new NotificationChannel(NOTIFICATION_CHANNEL_ID,
-                getString(R.string.service_description), NotificationManager.IMPORTANCE_LOW);
-        chan.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
-        chan.enableLights(false);
-        chan.enableVibration(false);
-        service.createNotificationChannel(chan);
+    private String createNotificationChannel() {
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationChannel channel = new NotificationChannel(CHANNEL_ID, getString(R.string.service_description),
+                NotificationManager.IMPORTANCE_LOW);
+        channel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+        notificationManager.createNotificationChannel(channel);
+        return CHANNEL_ID;
     }
 }

@@ -228,7 +228,6 @@
     <string name="send_amount_hint">0.00</string>
     <string name="send_notes_hint">Персональная заметка (необязательно)</string>
     <string name="send_generate_paymentid_hint">Генерация</string>
-    <string name="send_qr_hint">Сканирование</string>
     <string name="send_send_label">Потратьте мои сладкие Moneroj</string>
     <string name="send_send_timed_label">Потратьте мои сладкие Moneroj (%1$s)</string>
     <string name="send_qr_invalid">Это не QR-код</string>
@@ -339,4 +338,14 @@
 
     <string name="toast_ledger_attached">%1$s attached</string>
     <string name="toast_ledger_detached">%1$s detached</string>
+
+    <string name="progress_nfc_write">Writing Tag</string>
+    <string name="nfc_write_failed">Writing Tag failed!</string>
+    <string name="nfc_write_successful">Writing Tag successful</string>
+    <string name="nfc_tag_unsupported">Tag does not support NDEF!</string>
+    <string name="nfc_tag_size">Tag provides %d bytes, but we need %d!</string>
+    <string name="nfc_tag_read_undef">I don\'t understand the Tag!</string>
+    <string name="nfc_tag_read_what">I don\'t know what you want!</string>
+    <string name="nfc_tag_read_success">Reading Tag successful</string>
+    <string name="nfc_tag_tap">NFC Available!</string>
 </resources>

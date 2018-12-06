@@ -49,6 +49,30 @@ public class BarcodeData {
         this.amount = amount;
     }
 
+    public Uri getUri() {
+        return Uri.parse(getUriString());
+    }
+
+    public String getUriString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(BarcodeData.XMR_SCHEME).append(address);
+        boolean first = true;
+        if ((paymentId != null) && !paymentId.isEmpty()) {
+            sb.append("?");
+            first = false;
+            sb.append(BarcodeData.XMR_PAYMENTID).append('=').append(paymentId);
+        }
+        if (!amount.isEmpty()) {
+            if (first) {
+                sb.append("?");
+            } else {
+                sb.append("&");
+            }
+            sb.append(BarcodeData.XMR_AMOUNT).append('=').append(amount);
+        }
+        return sb.toString();
+    }
+
     static public BarcodeData fromQrCode(String qrCode) {
         // check for monero uri
         BarcodeData bcData = parseMoneroUri(qrCode);

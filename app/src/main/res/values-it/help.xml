@@ -69,13 +69,13 @@
         <h3>Password precedente</h3>
         Se vedi la tua passphrase qui, i file del tuo portaglio non sono così sicuri come 
         quelli criptati da CrAzYpass. Per adeguare la tua password semplicemente seleziona \"Cambia Passphrase\" dal menu.
-        Dopo aver inserito una nuova passphrase (eventualmente la stessa usata in precedenza) l'applicazione genererà
+        Dopo aver inserito una nuova passphrase (eventualmente la stessa usata in precedenza) l\'applicazione genererà
         una CrAzYpass per te e la userà per mettere al sicuro i file del tuo wallet. Annotala!
         <h3>Portafogli CrAzYpass</h3>
         Se dovessi avere bisogno di reinstallare Loki Wallet (per esempio dopo aver resettato il tuo telefono
         o dopo averlo sostituito) o vuoi usare i file del tuo portafoglio su un diverso dispositivo o PC, devi
         usare questa password di recupero per poter accedere nuovamente al tuo portafoglio.<br/>
-        Selezionando \'Cambia Passphrase\' dal menu, potrai scegliere un'altra passphrase. Questa azione
+        Selezionando \'Cambia Passphrase\' dal menu, potrai scegliere un\'altra passphrase. Questa azione
         creerà una nuova password di recupero. Ricordati di annotarla!
         <h2>Chiave di Visualizzazione</h2>
 		La tua chiave di visualizzazione può essere usata per monitorare le transazioni in ingresso al tuo portafoglio senza concedere il permesso di spendere i fondi.

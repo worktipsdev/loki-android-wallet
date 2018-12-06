@@ -146,8 +146,7 @@ public class LoginActivity extends BaseActivity
         } else {
             Timber.i("Waiting for permissions");
         }
-
-        processIntent(getIntent());
+        processUsbIntent(getIntent());
     }
 
     boolean checkServiceRunning() {
@@ -1220,10 +1219,10 @@ public class LoginActivity extends BaseActivity
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        processIntent(intent);
+        processUsbIntent(intent);
     }
 
-    private void processIntent(Intent intent) {
+    private void processUsbIntent(Intent intent) {
         String action = intent.getAction();
         if (UsbManager.ACTION_USB_DEVICE_ATTACHED.equals(action)) {
             synchronized (this) {
@@ -1242,7 +1241,10 @@ public class LoginActivity extends BaseActivity
     BroadcastReceiver detachReceiver;
 
     private void unregisterDetachReceiver() {
-        if (detachReceiver != null) unregisterReceiver(detachReceiver);
+        if (detachReceiver != null) {
+            unregisterReceiver(detachReceiver);
+            detachReceiver = null;
+        }
     }
 
     private void registerDetachReceiver() {

@@ -230,7 +230,7 @@ public class ExchangeView extends LinearLayout
             @Override
             public void afterTextChanged(Editable editable) {
                 etAmount.setError(null);
-                //doExchange();
+                clearAmounts();
             }
 
             @Override

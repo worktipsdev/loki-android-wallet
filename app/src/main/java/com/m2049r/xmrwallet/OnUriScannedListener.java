@@ -14,14 +14,10 @@
  * limitations under the License.
  */
 
-package com.m2049r.xmrwallet.fragment.send;
+package com.m2049r.xmrwallet;
 
-import com.m2049r.xmrwallet.model.PendingTransaction;
+import com.m2049r.xmrwallet.data.BarcodeData;
 
-interface SendConfirm {
-    void sendFailed(String errorText);
-
-    void createTransactionFailed(String errorText);
-
-    void transactionCreated(String txTag, PendingTransaction pendingTransaction);
+public interface OnUriScannedListener {
+    boolean onUriScanned(BarcodeData barcodeData);
 }
