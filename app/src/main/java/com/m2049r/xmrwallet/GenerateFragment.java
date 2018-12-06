@@ -16,16 +16,12 @@
 
 package com.m2049r.xmrwallet;
 
-import android.animation.ObjectAnimator;
-import android.animation.PropertyValuesHolder;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.text.Editable;
 import android.text.Html;
 import android.text.InputType;
@@ -34,16 +30,12 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Switch;
-import android.widget.TextView;
 
 import com.m2049r.xmrwallet.model.Wallet;
 import com.m2049r.xmrwallet.model.WalletManager;
@@ -55,8 +47,6 @@ import com.m2049r.xmrwallet.util.RestoreHeight;
 import com.m2049r.xmrwallet.widget.Toolbar;
 import com.nulabinc.zxcvbn.Strength;
 import com.nulabinc.zxcvbn.Zxcvbn;
-
-import junit.framework.Assert;
 
 import java.io.File;
 import java.text.ParseException;
@@ -339,13 +329,13 @@ public class GenerateFragment extends Fragment {
     }
 
     private long getHeight() {
+        long height = 0;
         String restoreHeight = etWalletRestoreHeight.getEditText().getText().toString().trim();
+
         if (restoreHeight.isEmpty()) {
-            // blank restoreHeight means 0
-            return 0;
+            return height; // blank restoreHeight means 0
         }
 
-        long height;
         try {
             // is it a date?
             SimpleDateFormat parser = new SimpleDateFormat("yyyy-MM-dd");

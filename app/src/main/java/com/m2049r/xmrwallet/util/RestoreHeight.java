@@ -65,7 +65,7 @@ public class RestoreHeight {
     public long getHeight(final Date date) {
         Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         cal.set(Calendar.DST_OFFSET, 0);
-        cal.setTime(parser.parse(date));
+        cal.setTime(date);
         cal.add(Calendar.DAY_OF_MONTH, -4); // give it some leeway
         if (cal.get(Calendar.YEAR) < 2018) {
             return 1;
