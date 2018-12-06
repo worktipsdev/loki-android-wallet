@@ -339,33 +339,33 @@ public class Helper {
         String walletPath = new File(getWalletRoot(context), walletName + ".keys").getAbsolutePath();
 
         // try with entered password (which could be a legacy password or a CrAzYpass)
-        if (WalletManager.getInstance().verifyWalletPassword(walletPath, password, true)) {
+        if (WalletManager.getInstance().verifyWalletPasswordOnly(walletPath, password)) {
             return password;
         }
 
         // maybe this is a malformed CrAzYpass?
         String possibleCrazyPass = CrazyPassEncoder.reformat(password);
         if (possibleCrazyPass != null) { // looks like a CrAzYpass
-            if (WalletManager.getInstance().verifyWalletPassword(walletPath, possibleCrazyPass, true)) {
+            if (WalletManager.getInstance().verifyWalletPasswordOnly(walletPath, possibleCrazyPass)) {
                 return possibleCrazyPass;
             }
         }
 
         // generate & try with CrAzYpass
         String crazyPass = KeyStoreHelper.getCrazyPass(context, password);
-        if (WalletManager.getInstance().verifyWalletPassword(walletPath, crazyPass, true)) {
+        if (WalletManager.getInstance().verifyWalletPasswordOnly(walletPath, crazyPass)) {
             return crazyPass;
         }
 
         // or maybe it is a broken CrAzYpass? (of which we have two variants)
         String brokenCrazyPass2 = KeyStoreHelper.getBrokenCrazyPass(context, password, 2);
         if ((brokenCrazyPass2 != null)
-                && WalletManager.getInstance().verifyWalletPassword(walletPath, brokenCrazyPass2, true)) {
+                && WalletManager.getInstance().verifyWalletPasswordOnly(walletPath, brokenCrazyPass2)) {
             return brokenCrazyPass2;
         }
         String brokenCrazyPass1 = KeyStoreHelper.getBrokenCrazyPass(context, password, 1);
         if ((brokenCrazyPass1 != null)
-                && WalletManager.getInstance().verifyWalletPassword(walletPath, brokenCrazyPass1, true)) {
+                && WalletManager.getInstance().verifyWalletPasswordOnly(walletPath, brokenCrazyPass1)) {
             return brokenCrazyPass1;
         }
 
@@ -397,6 +397,7 @@ public class Helper {
         final CancellationSignal cancelSignal = new CancellationSignal();
 
         final AtomicBoolean incorrectSavedPass = new AtomicBoolean(false);
+
         class LoginWalletTask extends AsyncTask<Void, Void, Boolean> {
             private String pass;
             private boolean fingerprintUsed;
@@ -571,7 +572,6 @@ public class Helper {
     }
 
     static public ExchangeApi getExchangeApi() {
-        return new ExchangeApiImpl(OkHttpClientSingleton.getOkHttpClient());
-
+        return new com.m2049r.xmrwallet.service.exchange.coinmarketcap.ExchangeApiImpl(OkHttpClientSingleton.getOkHttpClient());
     }
 }

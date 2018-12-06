@@ -395,4 +395,5 @@ public class Wallet {
         return getSubaddress(accountIndex, getNumSubaddresses(accountIndex) - 1);
     }
 
+    public native boolean isKeyOnDevice();
 }

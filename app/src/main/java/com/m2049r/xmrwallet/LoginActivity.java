@@ -16,16 +16,20 @@
 
 package com.m2049r.xmrwallet;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.hardware.usb.UsbDevice;
+import android.hardware.usb.UsbManager;
 import android.media.MediaScannerConnection;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -44,6 +48,8 @@ import com.m2049r.xmrwallet.dialog.AboutFragment;
 import com.m2049r.xmrwallet.dialog.CreditsFragment;
 import com.m2049r.xmrwallet.dialog.HelpFragment;
 import com.m2049r.xmrwallet.dialog.PrivacyFragment;
+import com.m2049r.xmrwallet.ledger.Ledger;
+import com.m2049r.xmrwallet.ledger.LedgerProgressDialog;
 import com.m2049r.xmrwallet.model.NetworkType;
 import com.m2049r.xmrwallet.model.Wallet;
 import com.m2049r.xmrwallet.model.WalletManager;
@@ -70,10 +76,10 @@ import java.util.Locale;
 
 import timber.log.Timber;
 
-public class LoginActivity extends SecureActivity
+public class LoginActivity extends BaseActivity
         implements LoginFragment.Listener, GenerateFragment.Listener,
         GenerateReviewFragment.Listener, GenerateReviewFragment.AcceptListener,
-        GenerateReviewFragment.ProgressListener, ReceiveFragment.Listener {
+        ReceiveFragment.Listener {
     private static final String GENERATE_STACK = "gen";
 
     static final int DAEMON_TIMEOUT = 500; // daemon must respond in 500ms
@@ -98,6 +104,11 @@ public class LoginActivity extends SecureActivity
     @Override
     public void setTitle(String title, String subtitle) {
         toolbar.setTitle(title, subtitle);
+    }
+
+    @Override
+    public boolean hasLedger() {
+        return Ledger.isConnected();
     }
 
     @Override
@@ -135,6 +146,8 @@ public class LoginActivity extends SecureActivity
         } else {
             Timber.i("Waiting for permissions");
         }
+
+        processIntent(getIntent());
     }
 
     boolean checkServiceRunning() {
@@ -486,37 +499,12 @@ public class LoginActivity extends SecureActivity
         super.onPause();
     }
 
-    ProgressDialog progressDialog = null;
-
-    @Override
-    public void showProgressDialog(int msgId) {
-        showProgressDialog(msgId, 0);
-    }
-
-    private void showProgressDialog(int msgId, long delay) {
-        dismissProgressDialog(); // just in case
-        progressDialog = new MyProgressDialog(LoginActivity.this, msgId);
-        if (delay > 0) {
-            Handler handler = new Handler();
-            handler.postDelayed(() -> {
-                if (progressDialog != null) progressDialog.show();
-            }, delay);
-        } else {
-            progressDialog.show();
-        }
-    }
-
-    @Override
-    public void dismissProgressDialog() {
-        if (progressDialog != null && progressDialog.isShowing()) {
-            progressDialog.dismiss();
-        }
-        progressDialog = null;
-    }
-
     @Override
     protected void onDestroy() {
+        Timber.d("onDestroy");
         dismissProgressDialog();
+        unregisterDetachReceiver();
+        Ledger.disconnect();
         super.onDestroy();
     }
 
@@ -529,24 +517,8 @@ public class LoginActivity extends SecureActivity
             // and show a progress dialog, but only if there isn't one already
             new AsyncWaitForService().execute();
         }
+        if (!Ledger.isConnected()) attachLedger();
     }
-
-    private class MyProgressDialog extends ProgressDialog {
-        Activity activity;
-
-        MyProgressDialog(Activity activity, int msgId) {
-            super(activity);
-            this.activity = activity;
-            setCancelable(false);
-            setMessage(activity.getString(msgId));
-        }
-
-        @Override
-        public void onBackPressed() {
-            // prevent back button
-        }
-    }
-
 
     private class AsyncWaitForService extends AsyncTask<Void, Void, Void> {
         @Override
@@ -696,7 +668,12 @@ public class LoginActivity extends SecureActivity
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            showProgressDialog(R.string.generate_wallet_creating);
+            acquireWakeLock();
+            if (walletCreator.isLedger()) {
+                showLedgerProgressDialog(LedgerProgressDialog.TYPE_RESTORE);
+            } else {
+                showProgressDialog(R.string.generate_wallet_creating);
+            }
         }
 
         @Override
@@ -729,6 +706,7 @@ public class LoginActivity extends SecureActivity
         @Override
         protected void onPostExecute(Boolean result) {
             super.onPostExecute(result);
+            releaseWakeLock(RELEASE_WAKE_LOCK_DELAY);
             if (isDestroyed()) {
                 return;
             }
@@ -760,59 +738,122 @@ public class LoginActivity extends SecureActivity
     interface WalletCreator {
         boolean createWallet(File aFile, String password);
 
+        boolean isLedger();
+
     }
 
     @Override
     public void onGenerate(final String name, final String password) {
-        createWallet(name, password, (aFile, password1) -> {
-            Wallet newWallet = WalletManager.getInstance()
-                    .createWallet(aFile, password1, MNEMONIC_LANGUAGE);
-            boolean success = (newWallet.getStatus() == Wallet.Status.Status_Ok);
-            if (!success) {
-                Timber.e(newWallet.getErrorString());
-                toast(newWallet.getErrorString());
-            }
-            newWallet.close();
-            return success;
-        });
+        createWallet(name, password,
+                new WalletCreator() {
+                    @Override
+                    public boolean isLedger() {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean createWallet(File aFile, String password) {
+                        Wallet newWallet = WalletManager.getInstance()
+                                .createWallet(aFile, password, MNEMONIC_LANGUAGE);
+                        boolean success = (newWallet.getStatus() == Wallet.Status.Status_Ok);
+                        if (!success) {
+                            Timber.e(newWallet.getErrorString());
+                            toast(newWallet.getErrorString());
+                        }
+                        newWallet.close();
+                        return success;
+                    }
+                });
     }
 
     @Override
     public void onGenerate(final String name, final String password, final String seed,
                            final long restoreHeight) {
-        createWallet(name, password, (aFile, password1) -> {
-            Wallet newWallet = WalletManager.getInstance().
-                    recoveryWallet(aFile, password1, seed, restoreHeight);
-            boolean success = (newWallet.getStatus() == Wallet.Status.Status_Ok);
-            if (!success) {
-                Timber.e(newWallet.getErrorString());
-                toast(newWallet.getErrorString());
-            }
-            newWallet.close();
-            return success;
-        });
+        createWallet(name, password,
+                new WalletCreator() {
+                    @Override
+                    public boolean isLedger() {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean createWallet(File aFile, String password) {
+                        Wallet newWallet = WalletManager.getInstance()
+                                .recoveryWallet(aFile, password, seed, restoreHeight);
+                        boolean success = (newWallet.getStatus() == Wallet.Status.Status_Ok);
+                        if (!success) {
+                            Timber.e(newWallet.getErrorString());
+                            toast(newWallet.getErrorString());
+                        }
+                        newWallet.close();
+                        return success;
+                    }
+                });
+    }
+
+    @Override
+    public void onGenerateLedger(final String name, final String password, final long restoreHeight) {
+        createWallet(name, password,
+                new WalletCreator() {
+                    @Override
+                    public boolean isLedger() {
+                        return true;
+                    }
+
+                    @Override
+                    public boolean createWallet(File aFile, String password) {
+                        Wallet newWallet = WalletManager.getInstance()
+                                .createWalletFromDevice(aFile, password,
+                                        restoreHeight, "Ledger");
+                        boolean success = (newWallet.getStatus() == Wallet.Status.Status_Ok);
+                        if (!success) {
+                            Timber.e(newWallet.getErrorString());
+                            toast(newWallet.getErrorString());
+                        }
+                        newWallet.close();
+                        return success;
+                    }
+                });
     }
 
     @Override
     public void onGenerate(final String name, final String password,
                            final String address, final String viewKey, final String spendKey,
                            final long restoreHeight) {
-        createWallet(name, password, (aFile, password1) -> {
-            Wallet newWallet = WalletManager.getInstance()
-                    .createWalletWithKeys(aFile, password1, MNEMONIC_LANGUAGE, restoreHeight,
-                            address, viewKey, spendKey);
-            boolean success = (newWallet.getStatus() == Wallet.Status.Status_Ok);
-            if (!success) {
-                Timber.e(newWallet.getErrorString());
-                toast(newWallet.getErrorString());
-            }
-            newWallet.close();
-            return success;
-        });
+        createWallet(name, password,
+                new WalletCreator() {
+                    @Override
+                    public boolean isLedger() {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean createWallet(File aFile, String password) {
+                        Wallet newWallet = WalletManager.getInstance()
+                                .createWalletWithKeys(aFile, password, MNEMONIC_LANGUAGE, restoreHeight,
+                                        address, viewKey, spendKey);
+                        boolean success = (newWallet.getStatus() == Wallet.Status.Status_Ok);
+                        if (!success) {
+                            Timber.e(newWallet.getErrorString());
+                            toast(newWallet.getErrorString());
+                        }
+                        newWallet.close();
+                        return success;
+                    }
+                });
     }
 
     void toast(final String msg) {
         runOnUiThread(() -> Toast.makeText(LoginActivity.this, msg, Toast.LENGTH_LONG).show());
+    }
+
+    void toast(final int msgId) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(LoginActivity.this, getString(msgId), Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     @Override
@@ -822,26 +863,9 @@ public class LoginActivity extends SecureActivity
         Timber.d("New Wallet %s", walletFile.getAbsolutePath());
         walletFile.delete(); // when recovering wallets, the cache seems corrupt
 
-        boolean rc = testWallet(walletFile.getAbsolutePath(), password) == Wallet.Status.Status_Ok;
-
-        if (rc) {
-            popFragmentStack(GENERATE_STACK);
-            Toast.makeText(LoginActivity.this,
-                    getString(R.string.generate_wallet_created), Toast.LENGTH_SHORT).show();
-        } else {
-            Timber.e("Wallet store failed to %s", walletFile.getAbsolutePath());
-            Toast.makeText(LoginActivity.this, getString(R.string.generate_wallet_create_failed), Toast.LENGTH_LONG).show();
-        }
-    }
-
-    Wallet.Status testWallet(String path, String password) {
-        Timber.d("testing wallet %s", path);
-        Wallet aWallet = WalletManager.getInstance().openWallet(path, password);
-        if (aWallet == null) return Wallet.Status.Status_Error; // does this ever happen?
-        Wallet.Status status = aWallet.getStatus();
-        Timber.d("wallet tested %s", aWallet.getStatus());
-        aWallet.close();
-        return status;
+        popFragmentStack(GENERATE_STACK);
+        Toast.makeText(LoginActivity.this,
+                getString(R.string.generate_wallet_created), Toast.LENGTH_SHORT).show();
     }
 
     boolean walletExists(File walletFile, boolean any) {
@@ -992,6 +1016,9 @@ public class LoginActivity extends SecureActivity
             case R.id.action_create_help_seed:
                 HelpFragment.display(getSupportFragmentManager(), R.string.help_create_seed);
                 return true;
+            case R.id.action_create_help_ledger:
+                HelpFragment.display(getSupportFragmentManager(), R.string.help_create_ledger);
+                return true;
             case R.id.action_details_help:
                 HelpFragment.display(getSupportFragmentManager(), R.string.help_details);
                 return true;
@@ -1103,9 +1130,165 @@ public class LoginActivity extends SecureActivity
         if (WalletManager.getInstance().walletExists(walletFile)) {
             WalletManager.getInstance().setDaemon(walletNode);
             Helper.promptPassword(LoginActivity.this, walletNode.getName(), false,
-                    (walletName, password, fingerprintUsed) -> startWallet(walletName, password, fingerprintUsed));
+                    new Helper.PasswordAction() {
+                        @Override
+                        public void action(String walletName, String password, boolean fingerprintUsed) {
+                            String keyPath = new File(Helper.getWalletRoot(LoginActivity.this),
+                                    walletName + ".keys").getAbsolutePath();
+                            // check if we need connected hardware
+                            int hw = WalletManager.getInstance().queryWalletHardware(keyPath, password);
+                            if ((hw == 1) && (!hasLedger())) {
+                                toast(R.string.open_wallet_ledger_missing);
+                            } else {
+                                // hw could be < 0  meaning the password is wrong - this gets dealt with later
+                                startWallet(walletName, password, fingerprintUsed);
+                            }
+                        }
+                    });
         } else { // this cannot really happen as we prefilter choices
             Toast.makeText(this, getString(R.string.bad_wallet), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    // USB Stuff - (Ledger)
+
+    private static final String ACTION_USB_PERMISSION = "com.m2049r.xmrwallet.USB_PERMISSION";
+
+    void attachLedger() {
+        final UsbManager usbManager = getUsbManager();
+        UsbDevice device = Ledger.findDevice(usbManager);
+        if (device != null) {
+            if (usbManager.hasPermission(device)) {
+                connectLedger(usbManager, device);
+            } else {
+                registerReceiver(usbPermissionReceiver, new IntentFilter(ACTION_USB_PERMISSION));
+                usbManager.requestPermission(device,
+                        PendingIntent.getBroadcast(this, 0,
+                                new Intent(ACTION_USB_PERMISSION), 0));
+            }
+        } else {
+            Timber.d("no ledger device found");
+        }
+    }
+
+    private final BroadcastReceiver usbPermissionReceiver = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (ACTION_USB_PERMISSION.equals(action)) {
+                unregisterReceiver(usbPermissionReceiver);
+                synchronized (this) {
+                    UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
+                    if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
+                        if (device != null) {
+                            connectLedger(getUsbManager(), device);
+                        }
+                    } else {
+                        Timber.w("User denied permission for device %s", device.getProductName());
+                    }
+                }
+            }
+        }
+    };
+
+    private void connectLedger(UsbManager usbManager, final UsbDevice usbDevice) {
+        try {
+            Ledger.connect(usbManager, usbDevice);
+            registerDetachReceiver();
+            onLedgerAction();
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(LoginActivity.this,
+                            getString(R.string.toast_ledger_attached, usbDevice.getProductName()),
+                            Toast.LENGTH_SHORT)
+                            .show();
+                }
+            });
+        } catch (IOException ex) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(LoginActivity.this,
+                            getString(R.string.open_wallet_ledger_missing),
+                            Toast.LENGTH_SHORT)
+                            .show();
+                }
+            });
+        }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        processIntent(intent);
+    }
+
+    private void processIntent(Intent intent) {
+        String action = intent.getAction();
+        if (UsbManager.ACTION_USB_DEVICE_ATTACHED.equals(action)) {
+            synchronized (this) {
+                final UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
+                if (device != null) {
+                    final UsbManager usbManager = getUsbManager();
+                    if (usbManager.hasPermission(device)) {
+                        Timber.d("Ledger attached by intent");
+                        connectLedger(usbManager, device);
+                    }
+                }
+            }
+        }
+    }
+
+    BroadcastReceiver detachReceiver;
+
+    private void unregisterDetachReceiver() {
+        if (detachReceiver != null) unregisterReceiver(detachReceiver);
+    }
+
+    private void registerDetachReceiver() {
+        detachReceiver = new BroadcastReceiver() {
+            public void onReceive(Context context, Intent intent) {
+                if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_DETACHED)) {
+                    unregisterDetachReceiver();
+                    final UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
+                    Timber.i("Ledger detached!");
+                    if (device != null)
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(LoginActivity.this,
+                                        getString(R.string.toast_ledger_detached, device.getProductName()),
+                                        Toast.LENGTH_SHORT)
+                                        .show();
+                            }
+                        });
+                    Ledger.disconnect();
+                    onLedgerAction();
+                }
+            }
+        };
+
+        registerReceiver(detachReceiver, new IntentFilter(UsbManager.ACTION_USB_DEVICE_DETACHED));
+    }
+
+    public void onLedgerAction() {
+        Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        if (f instanceof GenerateFragment) {
+            onBackPressed();
+        } else if (f instanceof LoginFragment) {
+            if (((LoginFragment) f).isFabOpen()) {
+                ((LoginFragment) f).animateFAB();
+            }
+        }
+    }
+
+    // get UsbManager or die trying
+    @NonNull
+    private UsbManager getUsbManager() {
+        final UsbManager usbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
+        if (usbManager == null) {
+            throw new IllegalStateException("no USB_SERVICE");
+        }
+        return usbManager;
     }
 }

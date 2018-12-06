@@ -100,6 +100,7 @@ public class LoginFragment extends Fragment implements WalletInfoAdapter.OnInter
 
         void setNetworkType(NetworkType networkType);
 
+        boolean hasLedger();
     }
 
     @Override
@@ -142,11 +143,13 @@ public class LoginFragment extends Fragment implements WalletInfoAdapter.OnInter
         fabView = (FloatingActionButton) view.findViewById(R.id.fabView);
         fabKey = (FloatingActionButton) view.findViewById(R.id.fabKey);
         fabSeed = (FloatingActionButton) view.findViewById(R.id.fabSeed);
+        fabLedger = (FloatingActionButton) view.findViewById(R.id.fabLedger);
 
         fabNewL = (RelativeLayout) view.findViewById(R.id.fabNewL);
         fabViewL = (RelativeLayout) view.findViewById(R.id.fabViewL);
         fabKeyL = (RelativeLayout) view.findViewById(R.id.fabKeyL);
         fabSeedL = (RelativeLayout) view.findViewById(R.id.fabSeedL);
+        fabLedgerL = (RelativeLayout) view.findViewById(R.id.fabLedgerL);
 
         fab_pulse = AnimationUtils.loadAnimation(getContext(), R.anim.fab_pulse);
         fab_open_screen = AnimationUtils.loadAnimation(getContext(), R.anim.fab_open_screen);
@@ -160,6 +163,7 @@ public class LoginFragment extends Fragment implements WalletInfoAdapter.OnInter
         fabView.setOnClickListener(this);
         fabKey.setOnClickListener(this);
         fabSeed.setOnClickListener(this);
+        fabLedger.setOnClickListener(this);
         fabScreen.setOnClickListener(this);
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
@@ -170,7 +174,7 @@ public class LoginFragment extends Fragment implements WalletInfoAdapter.OnInter
         etDummy = (EditText) view.findViewById(R.id.etDummy);
 
         ViewGroup llNotice = (ViewGroup) view.findViewById(R.id.llNotice);
-        Notice.showAll(llNotice,".*_login");
+        Notice.showAll(llNotice, ".*_login");
 
         etDaemonAddress = (DropDownEditText) view.findViewById(R.id.etDaemonAddress);
         nodeAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line);
@@ -399,9 +403,9 @@ public class LoginFragment extends Fragment implements WalletInfoAdapter.OnInter
     }
 
     private boolean isFabOpen = false;
-    private FloatingActionButton fab, fabNew, fabView, fabKey, fabSeed;
+    private FloatingActionButton fab, fabNew, fabView, fabKey, fabSeed, fabLedger;
     private FrameLayout fabScreen;
-    private RelativeLayout fabNewL, fabViewL, fabKeyL, fabSeedL;
+    private RelativeLayout fabNewL, fabViewL, fabKeyL, fabSeedL, fabLedgerL;
     private Animation fab_open, fab_close, rotate_forward, rotate_backward, fab_open_screen, fab_close_screen;
     private Animation fab_pulse;
 
@@ -410,32 +414,53 @@ public class LoginFragment extends Fragment implements WalletInfoAdapter.OnInter
     }
 
     public void animateFAB() {
-        if (isFabOpen) {
-            fabScreen.setVisibility(View.INVISIBLE);
+        if (isFabOpen) { // close the fab
             fabScreen.setClickable(false);
             fabScreen.startAnimation(fab_close_screen);
             fab.startAnimation(rotate_backward);
-            fabNewL.startAnimation(fab_close);
-            fabNew.setClickable(false);
-            fabViewL.startAnimation(fab_close);
-            fabView.setClickable(false);
-            fabKeyL.startAnimation(fab_close);
-            fabKey.setClickable(false);
-            fabSeedL.startAnimation(fab_close);
-            fabSeed.setClickable(false);
+            if (fabLedgerL.getVisibility() == View.VISIBLE) {
+                fabLedgerL.startAnimation(fab_close);
+                fabLedger.setClickable(false);
+            } else {
+                fabNewL.startAnimation(fab_close);
+                fabNew.setClickable(false);
+                fabViewL.startAnimation(fab_close);
+                fabView.setClickable(false);
+                fabKeyL.startAnimation(fab_close);
+                fabKey.setClickable(false);
+                fabSeedL.startAnimation(fab_close);
+                fabSeed.setClickable(false);
+            }
             isFabOpen = false;
-        } else {
+        } else { // open the fab
             fabScreen.setClickable(true);
             fabScreen.startAnimation(fab_open_screen);
             fab.startAnimation(rotate_forward);
-            fabNewL.startAnimation(fab_open);
-            fabNew.setClickable(true);
-            fabViewL.startAnimation(fab_open);
-            fabView.setClickable(true);
-            fabKeyL.startAnimation(fab_open);
-            fabKey.setClickable(true);
-            fabSeedL.startAnimation(fab_open);
-            fabSeed.setClickable(true);
+            if (activityCallback.hasLedger()) {
+                fabLedgerL.setVisibility(View.VISIBLE);
+                fabNewL.setVisibility(View.GONE);
+                fabViewL.setVisibility(View.GONE);
+                fabKeyL.setVisibility(View.GONE);
+                fabSeedL.setVisibility(View.GONE);
+
+                fabLedgerL.startAnimation(fab_open);
+                fabLedger.setClickable(true);
+            } else {
+                fabLedgerL.setVisibility(View.GONE);
+                fabNewL.setVisibility(View.VISIBLE);
+                fabViewL.setVisibility(View.VISIBLE);
+                fabKeyL.setVisibility(View.VISIBLE);
+                fabSeedL.setVisibility(View.VISIBLE);
+
+                fabNewL.startAnimation(fab_open);
+                fabNew.setClickable(true);
+                fabViewL.startAnimation(fab_open);
+                fabView.setClickable(true);
+                fabKeyL.startAnimation(fab_open);
+                fabKey.setClickable(true);
+                fabSeedL.startAnimation(fab_open);
+                fabSeed.setClickable(true);
+            }
             isFabOpen = true;
         }
     }
@@ -443,6 +468,7 @@ public class LoginFragment extends Fragment implements WalletInfoAdapter.OnInter
     @Override
     public void onClick(View v) {
         int id = v.getId();
+        Timber.d("onClick %d/%d", id, R.id.fabLedger);
         switch (id) {
             case R.id.fab:
                 animateFAB();
@@ -463,6 +489,11 @@ public class LoginFragment extends Fragment implements WalletInfoAdapter.OnInter
             case R.id.fabSeed:
                 animateFAB();
                 activityCallback.onAddWallet(GenerateFragment.TYPE_SEED);
+                break;
+            case R.id.fabLedger:
+                Timber.d("FAB_LEDGER");
+                animateFAB();
+                activityCallback.onAddWallet(GenerateFragment.TYPE_LEDGER);
                 break;
             case R.id.fabScreen:
                 animateFAB();
