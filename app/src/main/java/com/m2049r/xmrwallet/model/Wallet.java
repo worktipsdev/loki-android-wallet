@@ -25,6 +25,8 @@ import java.util.Locale;
 
 import timber.log.Timber;
 
+import timber.log.Timber;
+
 public class Wallet {
 
     public static final long SMALLEST_UNITS_IN_LOK = 1000000000L;
