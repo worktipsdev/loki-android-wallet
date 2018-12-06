@@ -209,7 +209,6 @@
     <string name="tx_list_amount_negative">- %1$s</string>
     <string name="tx_list_amount_positive">+ %1$s</string>
 
-    <string name="tx_account">Account #</string>
     <string name="tx_timestamp">Timestamp</string>
     <string name="tx_id">TX ID</string>
     <string name="tx_key">TX Key</string>
@@ -302,6 +301,7 @@
 
     <string name="accounts_drawer_new">Create Account</string>
     <string name="accounts_drawer_title">Accounts</string>
+    <string name="tx_account">Account #</string>
 
     <string name="send_sweepall">Send all confirmed funds in this account!</string>
     <string name="tx_subaddress">Subaddress #%1$d</string>
