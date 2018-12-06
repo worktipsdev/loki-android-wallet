@@ -29,10 +29,12 @@ public class BarcodeData {
     public static final String XMR_SCHEME = "loki:";
     public static final String XMR_PAYMENTID = "tx_payment_id";
     public static final String XMR_AMOUNT = "tx_amount";
+    public static final String XMR_DESCRIPTION = "tx_description";
 
     public String address = null;
     public String paymentId = null;
     public String amount = null;
+    public String description = null;
 
     public BarcodeData(String address) {
         this.address = address;
@@ -49,6 +51,13 @@ public class BarcodeData {
         this.amount = amount;
     }
 
+    public BarcodeData(String address, String paymentId, String description, String amount) {
+        this.address = address;
+        this.paymentId = paymentId;
+        this.description = description;
+        this.amount = amount;
+    }
+
     public Uri getUri() {
         return Uri.parse(getUriString());
     }
@@ -62,12 +71,13 @@ public class BarcodeData {
             first = false;
             sb.append(BarcodeData.XMR_PAYMENTID).append('=').append(paymentId);
         }
+        if ((description != null) && !description.isEmpty()) {
+            sb.append(first ? "?" : "&");
+            first = false;
+            sb.append(BarcodeData.XMR_DESCRIPTION).append('=').append(Uri.encode(description));
+        }
         if (!amount.isEmpty()) {
-            if (first) {
-                sb.append("?");
-            } else {
-                sb.append("&");
-            }
+            sb.append(first ? "?" : "&");
             sb.append(BarcodeData.XMR_AMOUNT).append('=').append(amount);
         }
         return sb.toString();
@@ -114,6 +124,7 @@ public class BarcodeData {
         }
         String address = monero.getPath();
         String paymentId = parms.get(XMR_PAYMENTID);
+        String description = parms.get(XMR_DESCRIPTION);
         String amount = parms.get(XMR_AMOUNT);
         if (amount != null) {
             try {
@@ -132,7 +143,7 @@ public class BarcodeData {
             Timber.d("address invalid");
             return null;
         }
-        return new BarcodeData(address, paymentId, amount);
+        return new BarcodeData(address, paymentId, description, amount);
     }
 
     static public BarcodeData parseMoneroNaked(String address) {

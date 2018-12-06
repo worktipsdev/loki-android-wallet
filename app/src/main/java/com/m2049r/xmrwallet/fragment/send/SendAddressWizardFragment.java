@@ -39,6 +39,7 @@ import com.m2049r.xmrwallet.data.BarcodeData;
 import com.m2049r.xmrwallet.data.TxData;
 import com.m2049r.xmrwallet.model.Wallet;
 import com.m2049r.xmrwallet.util.Helper;
+import com.m2049r.xmrwallet.util.UserNotes;
 
 import timber.log.Timber;
 
@@ -70,6 +71,7 @@ public class SendAddressWizardFragment extends SendWizardFragment {
     private EditText etDummy;
     private TextInputLayout etAddress;
     private TextInputLayout etPaymentId;
+    private TextInputLayout etNotes;
     private Button bPaymentId;
     private CardView cvScan;
     private View tvPaymentIdIntegrated;
@@ -132,18 +134,18 @@ public class SendAddressWizardFragment extends SendWizardFragment {
             }
         });
 
-
         etPaymentId = (TextInputLayout) view.findViewById(R.id.etPaymentId);
         etPaymentId.getEditText().setRawInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
-        etPaymentId.getEditText().setOnEditorActionListener((v, actionId, event) -> {
-            if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                if (checkPaymentId()) {
-                    etDummy.requestFocus();
-                    Helper.hideKeyboard(getActivity());
+        etPaymentId.getEditText().setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_NEXT)) {
+                    if (checkPaymentId()) {
+                        etNotes.requestFocus();
+                    }
+                    return true;
                 }
-                return true;
+                return false;
             }
-            return false;
         });
         etPaymentId.getEditText().addTextChangedListener(new TextWatcher() {
             @Override
@@ -162,6 +164,19 @@ public class SendAddressWizardFragment extends SendWizardFragment {
 
         bPaymentId = (Button) view.findViewById(R.id.bPaymentId);
         bPaymentId.setOnClickListener(v -> etPaymentId.getEditText().setText((Wallet.generatePaymentId())));
+
+        etNotes = (TextInputLayout) view.findViewById(R.id.etNotes);
+        etNotes.getEditText().setRawInputType(InputType.TYPE_CLASS_TEXT);
+        etNotes.getEditText().setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                    etDummy.requestFocus();
+                    Helper.hideKeyboard(getActivity());
+                    return true;
+                }
+                return false;
+            }
+        });
 
         cvScan = (CardView) view.findViewById(R.id.bScan);
         cvScan.setOnClickListener(v -> onScanListener.onScan());
@@ -232,6 +247,7 @@ public class SendAddressWizardFragment extends SendWizardFragment {
             TxData txData = sendListener.getTxData();
             txData.setDestinationAddress(etAddress.getEditText().getText().toString());
             txData.setPaymentId(etPaymentId.getEditText().getText().toString());
+            txData.setUserNotes(new UserNotes(etNotes.getEditText().getText().toString()));
         }
         return true;
     }
@@ -273,13 +289,20 @@ public class SendAddressWizardFragment extends SendWizardFragment {
                 etAddress.getEditText().getText().clear();
                 etAddress.setError(null);
             }
-            String scannedPaymenId = barcodeData.paymentId;
-            if (scannedPaymenId != null) {
-                etPaymentId.getEditText().setText(scannedPaymenId);
+            String scannedPaymentId = barcodeData.paymentId;
+            if (scannedPaymentId != null) {
+                etPaymentId.getEditText().setText(scannedPaymentId);
                 checkPaymentId();
             } else {
                 etPaymentId.getEditText().getText().clear();
                 etPaymentId.setError(null);
+            }
+            String scannedNotes = barcodeData.description;
+            if (scannedNotes != null) {
+                etNotes.getEditText().setText(scannedNotes);
+            } else {
+                etNotes.getEditText().getText().clear();
+                etNotes.setError(null);
             }
         } else
             Timber.d("barcodeData=null");
