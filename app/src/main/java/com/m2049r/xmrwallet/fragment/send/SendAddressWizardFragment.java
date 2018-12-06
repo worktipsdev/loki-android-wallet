@@ -37,6 +37,7 @@ import android.widget.TextView;
 import com.m2049r.xmrwallet.R;
 import com.m2049r.xmrwallet.data.BarcodeData;
 import com.m2049r.xmrwallet.data.TxData;
+import com.m2049r.xmrwallet.model.PendingTransaction;
 import com.m2049r.xmrwallet.model.Wallet;
 import com.m2049r.xmrwallet.util.Helper;
 import com.m2049r.xmrwallet.util.OpenAliasHelper;
@@ -299,6 +300,8 @@ public class SendAddressWizardFragment extends SendWizardFragment {
             txData.setDestinationAddress(etAddress.getEditText().getText().toString());
             txData.setPaymentId(etPaymentId.getEditText().getText().toString());
             txData.setUserNotes(new UserNotes(etNotes.getEditText().getText().toString()));
+            txData.setPriority(PendingTransaction.Priority.Priority_Default);
+            txData.setMixin(SendFragment.MIXIN);
         }
         return true;
     }
