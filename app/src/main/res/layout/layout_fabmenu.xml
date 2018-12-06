@@ -163,7 +163,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
                 android:layout_toEndOf="@+id/fabLedgerT"
-                android:backgroundTint="@color/gradientPink"
+                android:backgroundTint="@color/gradientLight"
                 android:elevation="6dp"
                 android:src="@drawable/ic_ledger_restore"
                 app:borderWidth="0dp"
