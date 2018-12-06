@@ -30,13 +30,13 @@ public class RestoreHeightTest {
 
     @Test
     public void pre2014() {
-        assertTrue(getHeight("2013-12-01") == 1);
-        assertTrue(getHeight("1958-12-01") == 1);
+        assertTrue(getHeight("2013-12-01") == 0);
+        assertTrue(getHeight("1958-12-01") == 0);
     }
 
     @Test
     public void zero() {
-        assertTrue(getHeight("2014-04-27") == 1);
+        assertTrue(getHeight("2014-04-27") == 0);
     }
 
     @Test
