@@ -547,24 +547,27 @@ public class GenerateReviewFragment extends Fragment {
         });
 
         // accept keyboard "ok"
-        etPasswordB.getEditText().setOnEditorActionListener((v, actionId, event) -> {
-            if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                String newPasswordA = etPasswordA.getEditText().getText().toString();
-                String newPasswordB = etPasswordB.getEditText().getText().toString();
-                // disallow empty passwords
-                if (newPasswordA.isEmpty()) {
-                    etPasswordA.setError(getString(R.string.generate_empty_passwordB));
-                } else if (!newPasswordA.equals(newPasswordB)) {
-                    etPasswordB.setError(getString(R.string.generate_bad_passwordB));
-                } else if (newPasswordA.equals(newPasswordB)) {
-                    new AsyncChangePassword().execute(newPasswordA, Boolean.toString(swFingerprintAllowed.isChecked()));
-                    Helper.hideKeyboardAlways(getActivity());
-                    openDialog.dismiss();
-                    openDialog = null;
+        etPasswordB.getEditText().setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN))
+                        || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                    String newPasswordA = etPasswordA.getEditText().getText().toString();
+                    String newPasswordB = etPasswordB.getEditText().getText().toString();
+                    // disallow empty passwords
+                    if (newPasswordA.isEmpty()) {
+                        etPasswordA.setError(getString(R.string.generate_empty_passwordB));
+                    } else if (!newPasswordA.equals(newPasswordB)) {
+                        etPasswordB.setError(getString(R.string.generate_bad_passwordB));
+                    } else if (newPasswordA.equals(newPasswordB)) {
+                        new AsyncChangePassword().execute(newPasswordA, Boolean.toString(swFingerprintAllowed.isChecked()));
+                        Helper.hideKeyboardAlways(getActivity());
+                        openDialog.dismiss();
+                        openDialog = null;
+                    }
+                    return true;
                 }
-                return true;
+                return false;
             }
-            return false;
         });
         return openDialog;
     }

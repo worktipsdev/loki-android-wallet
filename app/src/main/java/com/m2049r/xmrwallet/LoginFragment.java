@@ -38,6 +38,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.m2049r.xmrwallet.layout.WalletInfoAdapter;
@@ -195,13 +196,16 @@ public class LoginFragment extends Fragment implements WalletInfoAdapter.OnInter
             }
         });
 
-        etDaemonAddress.setOnEditorActionListener((v, actionId, event) -> {
-            if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                Helper.hideKeyboard(getActivity());
-                etDummy.requestFocus();
-                return true;
+        etDaemonAddress.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN))
+                        || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                    Helper.hideKeyboard(getActivity());
+                    etDummy.requestFocus();
+                    return true;
+                }
+                return false;
             }
-            return false;
         });
 
         etDaemonAddress.setOnItemClickListener((parent, arg1, pos, id) -> {

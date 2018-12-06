@@ -282,19 +282,22 @@ public class SendConfirmWizardFragment extends SendWizardFragment implements Sen
         Helper.showKeyboard(passwordDialog);
 
         // accept keyboard "ok"
-        etPassword.getEditText().setOnEditorActionListener((v, actionId, event) -> {
-            if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                String pass = etPassword.getEditText().getText().toString();
-                if (getActivityCallback().verifyWalletPassword(pass)) {
-                    Helper.hideKeyboardAlways(activity);
-                    passwordDialog.dismiss();
-                    send();
-                } else {
-                    etPassword.setError(getString(R.string.bad_password));
+        etPassword.getEditText().setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN))
+                        || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                    String pass = etPassword.getEditText().getText().toString();
+                    if (getActivityCallback().verifyWalletPassword(pass)) {
+                        Helper.hideKeyboardAlways(activity);
+                        passwordDialog.dismiss();
+                        send();
+                    } else {
+                        etPassword.setError(getString(R.string.bad_password));
+                    }
+                    return true;
                 }
-                return true;
+                return false;
             }
-            return false;
         });
         passwordDialog.show();
     }

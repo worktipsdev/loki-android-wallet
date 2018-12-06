@@ -129,14 +129,17 @@ public class GenerateFragment extends Fragment {
 
         Helper.showKeyboard(getActivity());
 
-        etWalletName.getEditText().setOnEditorActionListener((v, actionId, event) -> {
-            if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_NEXT)) {
-                if (checkName()) {
-                    etWalletPassword.requestFocus();
-                } // otherwise ignore
-                return true;
+        etWalletName.getEditText().setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN))
+                        || (actionId == EditorInfo.IME_ACTION_NEXT)) {
+                    if (checkName()) {
+                        etWalletPassword.requestFocus();
+                    } // otherwise ignore
+                    return true;
+                }
+                return false;
             }
-            return false;
         });
 
         if (FingerprintHelper.isDeviceSupported(getContext())) {
@@ -158,19 +161,23 @@ public class GenerateFragment extends Fragment {
 
         if (type.equals(TYPE_NEW)) {
             etWalletPassword.getEditText().setImeOptions(EditorInfo.IME_ACTION_DONE);
-            etWalletPassword.getEditText().setOnEditorActionListener((v, actionId, event) -> {
-                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                    Helper.hideKeyboard(getActivity());
-                    generateWallet();
-                    return true;
+            etWalletPassword.getEditText().setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                    if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN))
+                            || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                        Helper.hideKeyboard(getActivity());
+                        generateWallet();
+                        return true;
+                    }
+                    return false;
                 }
-                return false;
             });
         } else if (type.equals(TYPE_LEDGER)) {
             etWalletPassword.getEditText().setImeOptions(EditorInfo.IME_ACTION_DONE);
             etWalletPassword.getEditText().setOnEditorActionListener(new TextView.OnEditorActionListener() {
                 public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                    if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                    if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN))
+                            || (actionId == EditorInfo.IME_ACTION_DONE)) {
                         etWalletRestoreHeight.requestFocus();
                         return true;
                     }
@@ -178,77 +185,102 @@ public class GenerateFragment extends Fragment {
                 }
             });
         } else if (type.equals(TYPE_SEED)) {
-            etWalletPassword.getEditText().setOnEditorActionListener((v, actionId, event) -> {
-                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_NEXT)) {
-                    etWalletMnemonic.requestFocus();
-                    return true;
+            etWalletPassword.getEditText().setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                    if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN))
+                            || (actionId == EditorInfo.IME_ACTION_NEXT)) {
+                        etWalletMnemonic.requestFocus();
+                        return true;
+                    }
+                    return false;
                 }
-                return false;
             });
             etWalletMnemonic.setVisibility(View.VISIBLE);
-            etWalletMnemonic.getEditText().setOnEditorActionListener((v, actionId, event) -> {
-                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_NEXT)) {
-                    if (checkMnemonic()) {
-                        etWalletRestoreHeight.requestFocus();
-                    }
-                    return true;
-                }
-                return false;
-            });
-        } else if (type.equals(TYPE_KEY) || type.equals(TYPE_VIEWONLY)) {
-            etWalletPassword.getEditText().setOnEditorActionListener((v, actionId, event) -> {
-                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_NEXT)) {
-                    etWalletAddress.requestFocus();
-                    return true;
-                }
-                return false;
-            });
-            etWalletAddress.setVisibility(View.VISIBLE);
-            etWalletAddress.getEditText().setOnEditorActionListener((v, actionId, event) -> {
-                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_NEXT)) {
-                    if (checkAddress()) {
-                        etWalletViewKey.requestFocus();
-                    }
-                    return true;
-                }
-                return false;
-            });
-            etWalletViewKey.setVisibility(View.VISIBLE);
-            etWalletViewKey.getEditText().setOnEditorActionListener((v, actionId, event) -> {
-                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_NEXT)) {
-                    if (checkViewKey()) {
-                        if (type.equals(TYPE_KEY)) {
-                            etWalletSpendKey.requestFocus();
-                        } else {
+            etWalletMnemonic.getEditText().setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                    if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN))
+                            || (actionId == EditorInfo.IME_ACTION_NEXT)) {
+                        if (checkMnemonic()) {
                             etWalletRestoreHeight.requestFocus();
                         }
+                        return true;
                     }
-                    return true;
+                    return false;
                 }
-                return false;
+            });
+        } else if (type.equals(TYPE_KEY) || type.equals(TYPE_VIEWONLY)) {
+            etWalletPassword.getEditText().setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                    if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN))
+                            || (actionId == EditorInfo.IME_ACTION_NEXT)) {
+                        etWalletAddress.requestFocus();
+                        return true;
+                    }
+                    return false;
+                }
+            });
+            etWalletAddress.setVisibility(View.VISIBLE);
+            etWalletAddress.getEditText().setOnEditorActionListener(new TextView.OnEditorActionListener()
+
+            {
+                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                    if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN))
+                            || (actionId == EditorInfo.IME_ACTION_NEXT)) {
+                        if (checkAddress()) {
+                            etWalletViewKey.requestFocus();
+                        }
+                        return true;
+                    }
+                    return false;
+                }
+            });
+            etWalletViewKey.setVisibility(View.VISIBLE);
+            etWalletViewKey.getEditText().setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                    if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN))
+                            || (actionId == EditorInfo.IME_ACTION_NEXT)) {
+                        if (checkViewKey()) {
+                            if (type.equals(TYPE_KEY)) {
+                                etWalletSpendKey.requestFocus();
+                            } else {
+                                etWalletRestoreHeight.requestFocus();
+                            }
+                        }
+                        return true;
+                    }
+                    return false;
+                }
             });
         }
         if (type.equals(TYPE_KEY)) {
             etWalletSpendKey.setVisibility(View.VISIBLE);
-            etWalletSpendKey.getEditText().setOnEditorActionListener((v, actionId, event) -> {
-                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_NEXT)) {
-                    if (checkSpendKey()) {
-                        etWalletRestoreHeight.requestFocus();
+            etWalletSpendKey.getEditText().setOnEditorActionListener(new TextView.OnEditorActionListener()
+
+            {
+                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                    if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN))
+                            || (actionId == EditorInfo.IME_ACTION_NEXT)) {
+                        if (checkSpendKey()) {
+                            etWalletRestoreHeight.requestFocus();
+                        }
+                        return true;
                     }
-                    return true;
+                    return false;
                 }
-                return false;
             });
         }
         if (!type.equals(TYPE_NEW)) {
             etWalletRestoreHeight.setVisibility(View.VISIBLE);
-            etWalletRestoreHeight.getEditText().setOnEditorActionListener((v, actionId, event) -> {
-                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                    Helper.hideKeyboard(getActivity());
-                    generateWallet();
-                    return true;
+            etWalletRestoreHeight.getEditText().setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                    if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN))
+                            || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                        Helper.hideKeyboard(getActivity());
+                        generateWallet();
+                        return true;
+                    }
+                    return false;
                 }
-                return false;
             });
         }
         bGenerate.setOnClickListener(v -> {

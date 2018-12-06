@@ -22,9 +22,9 @@ import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.CardView;
 import android.text.Editable;
-import android.text.Html;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.Patterns;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,7 +39,10 @@ import com.m2049r.xmrwallet.data.BarcodeData;
 import com.m2049r.xmrwallet.data.TxData;
 import com.m2049r.xmrwallet.model.Wallet;
 import com.m2049r.xmrwallet.util.Helper;
+import com.m2049r.xmrwallet.util.OpenAliasHelper;
 import com.m2049r.xmrwallet.util.UserNotes;
+
+import java.util.ArrayList;
 
 import timber.log.Timber;
 
@@ -77,6 +80,8 @@ public class SendAddressWizardFragment extends SendWizardFragment {
     private View tvPaymentIdIntegrated;
     private View llPaymentId;
 
+    private boolean resolvingOA = false;
+
     OnScanListener onScanListener;
 
     public interface OnScanListener {
@@ -95,19 +100,26 @@ public class SendAddressWizardFragment extends SendWizardFragment {
 
         etAddress = (TextInputLayout) view.findViewById(R.id.etAddress);
         etAddress.getEditText().setRawInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
-        etAddress.getEditText().setOnEditorActionListener((v, actionId, event) -> {
-            if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_NEXT)) {
-                if (checkAddress()) {
-                    if (llPaymentId.getVisibility() == View.VISIBLE) {
-                        etPaymentId.requestFocus();
-                    } else {
-                        etDummy.requestFocus();
-                        Helper.hideKeyboard(getActivity());
+        etAddress.getEditText().setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN))
+                        || (actionId == EditorInfo.IME_ACTION_NEXT)) {
+                    String dnsOA = dnsFromOpenAlias(etAddress.getEditText().getText().toString());
+                    Timber.d("OpenAlias is %s", dnsOA);
+                    if (dnsOA != null) {
+                        processOpenAlias(dnsOA);
+                    } else if (checkAddress()) {
+                        if (llPaymentId.getVisibility() == View.VISIBLE) {
+                            etPaymentId.requestFocus();
+                        } else {
+                            etDummy.requestFocus();
+                            Helper.hideKeyboard(getActivity());
+                        }
                     }
+                    return true;
                 }
-                return true;
+                return false;
             }
-            return false;
         });
         etAddress.getEditText().addTextChangedListener(new TextWatcher() {
             @Override
@@ -138,7 +150,8 @@ public class SendAddressWizardFragment extends SendWizardFragment {
         etPaymentId.getEditText().setRawInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
         etPaymentId.getEditText().setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_NEXT)) {
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN))
+                        || (actionId == EditorInfo.IME_ACTION_NEXT)) {
                     if (checkPaymentId()) {
                         etNotes.requestFocus();
                     }
@@ -169,7 +182,8 @@ public class SendAddressWizardFragment extends SendWizardFragment {
         etNotes.getEditText().setRawInputType(InputType.TYPE_CLASS_TEXT);
         etNotes.getEditText().setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN))
+                        || (actionId == EditorInfo.IME_ACTION_DONE)) {
                     etDummy.requestFocus();
                     Helper.hideKeyboard(getActivity());
                     return true;
@@ -192,6 +206,36 @@ public class SendAddressWizardFragment extends SendWizardFragment {
             tvNfc.setVisibility(View.VISIBLE);
 
         return view;
+    }
+
+    private void processOpenAlias(String dnsOA) {
+        if (resolvingOA) return; // already resolving - just wait
+        if (dnsOA != null) {
+            resolvingOA = true;
+            etAddress.setError(getString(R.string.send_address_resolve_openalias));
+            OpenAliasHelper.resolve(dnsOA, new OpenAliasHelper.OnResolvedListener() {
+                @Override
+                public void onResolved(BarcodeData barcode) {
+                    resolvingOA = false;
+                    if (barcode != null) {
+                        Timber.d("DNSSEC=%b, %s", barcode.isSecure, barcode.address);
+                        processScannedData(barcode);
+                        etDummy.requestFocus();
+                        Helper.hideKeyboard(getActivity());
+                    } else {
+                        etAddress.setError(getString(R.string.send_address_not_openalias));
+                        Timber.d("NO LOKI OPENALIAS TXT FOUND");
+                    }
+                }
+
+                @Override
+                public void onFailure() {
+                    resolvingOA = false;
+                    etAddress.setError(getString(R.string.send_address_not_openalias));
+                    Timber.e("OA FAILED");
+                }
+            });
+        } // else ignore
     }
 
     private boolean checkAddressNoError() {
@@ -231,12 +275,21 @@ public class SendAddressWizardFragment extends SendWizardFragment {
         return ok;
     }
 
+    private void shakeAddress() {
+        etAddress.startAnimation(Helper.getShakeAnimation(getContext()));
+    }
+
     @Override
     public boolean onValidateFields() {
         boolean ok = true;
         if (!checkAddressNoError()) {
-            etAddress.startAnimation(Helper.getShakeAnimation(getContext()));
+            shakeAddress();
             ok = false;
+            String dnsOA = dnsFromOpenAlias(etAddress.getEditText().getText().toString());
+            Timber.d("OpenAlias is %s", dnsOA);
+            if (dnsOA != null) {
+                processOpenAlias(dnsOA);
+            }
         }
         if (!checkPaymentId()) {
             etPaymentId.startAnimation(Helper.getShakeAnimation(getContext()));
@@ -284,7 +337,12 @@ public class SendAddressWizardFragment extends SendWizardFragment {
             String scannedAddress = barcodeData.address;
             if (scannedAddress != null) {
                 etAddress.getEditText().setText(scannedAddress);
-                checkAddress();
+                if (checkAddress()) {
+                    if (!barcodeData.isSecure)
+                        etAddress.setError(getString(R.string.send_address_no_dnssec));
+                    else
+                        etAddress.setError(getString(R.string.send_address_openalias));
+                }
             } else {
                 etAddress.getEditText().getText().clear();
                 etAddress.setError(null);
@@ -314,5 +372,15 @@ public class SendAddressWizardFragment extends SendWizardFragment {
         Timber.d("onResumeFragment()");
         Helper.hideKeyboard(getActivity());
         etDummy.requestFocus();
+    }
+
+    String dnsFromOpenAlias(String openalias) {
+        Timber.d("checking openalias candidate %s", openalias);
+        if (Patterns.DOMAIN_NAME.matcher(openalias).matches()) return openalias;
+        if (Patterns.EMAIL_ADDRESS.matcher(openalias).matches()) {
+            openalias = openalias.replaceFirst("@", ".");
+            if (Patterns.DOMAIN_NAME.matcher(openalias).matches()) return openalias;
+        }
+        return null; // not an openalias
     }
 }

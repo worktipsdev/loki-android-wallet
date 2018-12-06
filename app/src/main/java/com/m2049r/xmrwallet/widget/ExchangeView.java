@@ -217,12 +217,15 @@ public class ExchangeView extends LinearLayout
             }
         });
 
-        etAmount.getEditText().setOnEditorActionListener((v, actionId, event) -> {
-            if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                doExchange();
-                return true;
+        etAmount.getEditText().setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN))
+                        || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                    doExchange();
+                    return true;
+                }
+                return false;
             }
-            return false;
         });
 
 

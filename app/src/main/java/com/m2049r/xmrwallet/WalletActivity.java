@@ -263,24 +263,28 @@ public class WalletActivity extends BaseActivity implements WalletFragment.Liste
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        toolbar.setOnButtonListener(type -> {
-            switch (type) {
-                case Toolbar.BUTTON_BACK:
-                    onDisposeRequest();
-                    onBackPressed();
-                    break;
-                case Toolbar.BUTTON_CANCEL:
-                    onDisposeRequest();
-                    WalletActivity.super.onBackPressed();
-                    break;
-                case Toolbar.BUTTON_CLOSE:
-                    finish();
-                    break;
-                case Toolbar.BUTTON_CREDITS:
-                    Toast.makeText(WalletActivity.this, getString(R.string.label_credits), Toast.LENGTH_SHORT).show();
-                case Toolbar.BUTTON_NONE:
-                default:
-                    Timber.e("Button " + type + "pressed - how can this be?");
+        toolbar.setOnButtonListener(new Toolbar.OnButtonListener() {
+            @Override
+            public void onButton(int type) {
+                switch (type) {
+                    case Toolbar.BUTTON_BACK:
+                        onDisposeRequest();
+                        onBackPressed();
+                        break;
+                    case Toolbar.BUTTON_CANCEL:
+                        onDisposeRequest();
+                        Helper.hideKeyboard(WalletActivity.this);
+                        WalletActivity.super.onBackPressed();
+                        break;
+                    case Toolbar.BUTTON_CLOSE:
+                        finish();
+                        break;
+                    case Toolbar.BUTTON_CREDITS:
+                        Toast.makeText(WalletActivity.this, getString(R.string.label_credits), Toast.LENGTH_SHORT).show();
+                    case Toolbar.BUTTON_NONE:
+                    default:
+                        Timber.e("Button " + type + "pressed - how can this be?");
+                }
             }
         });
 
@@ -884,7 +888,6 @@ public class WalletActivity extends BaseActivity implements WalletFragment.Liste
             drawer.closeDrawer(GravityCompat.START);
             return;
         }
-
         final Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
         if (fragment instanceof OnBackPressedListener) {
             if (!((OnBackPressedListener) fragment).onBackPressed()) {
@@ -990,7 +993,8 @@ public class WalletActivity extends BaseActivity implements WalletFragment.Liste
         // accept keyboard "ok"
         etRename.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN))
+                        || (actionId == EditorInfo.IME_ACTION_DONE)) {
                     Helper.hideKeyboardAlways(WalletActivity.this);
                     String newName = etRename.getText().toString();
                     dialog.cancel();

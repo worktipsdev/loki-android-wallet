@@ -541,16 +541,19 @@ public class Helper {
         });
 
         // accept keyboard "ok"
-        etPassword.getEditText().setOnEditorActionListener((v, actionId, event) -> {
-            if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                String pass = etPassword.getEditText().getText().toString();
-                if (loginTask == null) {
-                    loginTask = new LoginWalletTask(pass, false);
-                    loginTask.execute();
+        etPassword.getEditText().setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN))
+                        || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                    String pass = etPassword.getEditText().getText().toString();
+                    if (loginTask == null) {
+                        loginTask = new LoginWalletTask(pass, false);
+                        loginTask.execute();
+                    }
+                    return true;
                 }
-                return true;
+                return false;
             }
-            return false;
         });
 
         Helper.showKeyboard(openDialog);
