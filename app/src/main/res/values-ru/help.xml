@@ -2,7 +2,7 @@
 <resources>
     <string name="help_create_new"><![CDATA[
         <h1>Создать кошелёк — Новый</h1>
-        <p>Если вам нужен новый адрес Monero!</p>
+        <p>Если вам нужен новый адрес Loki!</p>
         <p>Введите уникальное имя и пароль кошелька.
         Пароль используется для защиты данных вашего кошелька на Android устройстве.
 	Необходимо использовать надёжный пароль. Лучше даже использовать фразу-пароль.</p>
@@ -22,7 +22,7 @@
 
     <string name="help_create_seed"><![CDATA[
         <h1>Создать кошелёк — Фраза</h1>
-        <p>Что делать, если у вас уже есть адрес Monero, и вы хотите восстановить транзакции из блокчейна.</p>
+        <p>Что делать, если у вас уже есть адрес Loki, и вы хотите восстановить транзакции из блокчейна.</p>
         <p>Необходимо ввести уникальные имя и пароль кошелька. Пароль используется для защиты данных вашего
 	кошелька на устройстве. Необходимо использовать надёжный пароль. Лучше даже использовать фразу-пароль.</p>
         <p>Ввести фразу в поле \"Мнемоническая фраза\".<p>
@@ -36,7 +36,7 @@
         <p>Если вы хотите восстанавить свой кошелек с помощью ключей!</p>
         <p>Необходимо ввести уникальные имя и пароль кошелька. Пароль используется для защиты данных вашего
 	кошелька на устройстве. Необходимо использовать надёжный пароль. Лучше даже использовать фразу-пароль.<p>
-        <p>Введите ваш Monero адрес в поле \"Публичный адрес\", заполните поле \"Ключ просмотра\" и  \"Ключ траты\".</p>
+        <p>Введите ваш Loki адрес в поле \"Публичный адрес\", заполните поле \"Ключ просмотра\" и  \"Ключ траты\".</p>
         <p>Если вам известен номер блока первой транзакции, который использовался с этим адресом, следует
 	ввести его в поле \"Восстановить высоту\". Если не заполнить это поле, то будет просканирован <em>весь</em> блокчейн,
 	чтобы найти транзакции, принадлежащие к вашему адресу, а это займёт <em>много</em> времени.</p>
@@ -47,7 +47,7 @@
         <p>Если вы просто хотите просматривать входящие транзакции на кошелек!</p>
         <p>Необходимо ввести уникальные имя и пароль кошелька. Пароль используется для защиты данных вашего
 	кошелька на устройстве. Необходимо использовать надёжный пароль. Лучше даже использовать фразу-пароль.<p>
-        <p>Введите ваш Monero адрес в поле \"Публичный адрес\", заполните поле \"Ключ просмотра\".</p>
+        <p>Введите ваш Loki адрес в поле \"Публичный адрес\", заполните поле \"Ключ просмотра\".</p>
         <p>Если вам известен номер блока первой транзакции, который использовался с этим адресом, следует
 	ввести его в поле \"Восстановить высоту\". Если не заполнить это поле, то будет просканирован <em>весь</em> блокчейн,
 	чтобы найти транзакции, принадлежащие к вашему адресу, а это займёт <em>много</em> времени.</p>
@@ -57,7 +57,7 @@
         <h1>Реквизиты кошелька</h1>
         <h2>Публичный адрес</h2>
         Ваш публичный адрес подобен номеру вашего банковского счёта, вы можете делиться им с кем бы то ни было,
-	не боясь потерять свои Monero. Monero будут отправлять на ваш кошелёк, используя именно этот адрес.
+	не боясь потерять свои Loki. Loki будут отправлять на ваш кошелёк, используя именно этот адрес.
         <h2>Мнемоническая фраза</h2>
         Это единственные данные, которые необходимы для восстановления вашего кошелька в будущем и получения
         доступа к вашим средствам. Поддержание безопасности и конфиденциальности очень важно,
@@ -78,7 +78,7 @@
 	После того, как новая фраза-пароль будет введена (возможно, та же, что и была до этого),
 	приложение сгенерирует CrAzYpass и таким образом защитит файлы вашего кошелька. Запишите её!
         <h3>Кошельки с CrAzYpass</h3>
-        Если вам когда-либо понадобится переустановить Monerujo (например, после изменения настроек вашего телефона
+        Если вам когда-либо понадобится переустановить Loki Wallet (например, после изменения настроек вашего телефона
 	или при появлении у вас нового телефона), или же вам захочется использовать файлы вашего кошелька на
 	другом устройстве или ПК, вы сможете использовать этот пароль восстановления,
 	чтобы снова получить доступ к вашему кошельку.<br/>
@@ -88,20 +88,20 @@
         Ваш ключ просмотра может использоваться для просмотра входящих транзакций вашего кошелька без разрешения
 	на трату средств, находящихся в кошельке.
         <h2>Ключ траты</h2>
-        Ваш ключ траты позволяет любому потратить Monero, связанные с вашим кошельком, поэтому не следует сообщать
+        Ваш ключ траты позволяет любому потратить Loki, связанные с вашим кошельком, поэтому не следует сообщать
 	кому-либо этот ключ. Как и мнемоническую фразу, его следует держать в безопасном месте.
     ]]></string>
 
     <string name="help_list"><![CDATA[
         <h1>Перечень терминов</h1>
         <h2>Удаленный узел</h2>
-        <p>Для связи с сетью Monero без загрузки и сохранения копии всего блокчейна Monerujo использует
+        <p>Для связи с сетью Loki без загрузки и сохранения копии всего блокчейна Loki Wallet использует
 	удалённый узел. Список популярных удалённых узлов  и информацию о том, как запустить собственный
-	удалённый узел, можно найти здесь: https://moneroworld.com<p>
-        <p>Monerujo имеет некоторые предустановленные удалённые узлы. Также кошелёк запоминает
+	удалённый узел, можно найти здесь: https://loki.network<p>
+        <p>Loki Wallet имеет некоторые предустановленные удалённые узлы. Также кошелёк запоминает
 	пять последних использованных узлов.</p>
         <h2>Кошельки</h2>
-        <p>Здесь вы можете посмотреть кошельки. Они находятся в папке Monerujo на внутреннем накопителе
+        <p>Здесь вы можете посмотреть кошельки. Они находятся в папке Loki Wallet на внутреннем накопителе
 	вашего устройства. Чтобы просмотреть их, можно использовать файловый менеджер. Необходимо на
 	регулярной основе создавать резервную копию этой папки для её хранения вне устройства на тот
 	случай, если устройство будет повреждено или украдено.</p>
@@ -110,11 +110,11 @@
         <h3>Подробная информация</h3>
         <p>Показать подробную информацию по кошельку, мнемонической фразе, ключам.</p>
         <h3>Получить</h3>
-        <p>Создать QR-код для получения Monero.</p>
+        <p>Создать QR-код для получения Loki.</p>
         <h3>Переименовать</h3>
         <p>Переименовать кошелёк. Резервные копии не переименовываются.</p>
         <h3>Создать резервную копию</h3>
-        <p>Создать копию кошелька в папке <tt>backups</tt> внутри Monerujo, переписав предыдущие копии.</p>
+        <p>Создать копию кошелька в папке <tt>backups</tt> внутри Loki Wallet, переписав предыдущие копии.</p>
         <h3>Архивировать</h3>
         <p>Создать резервную копию и после этого удалить кошелёк. Копия остаётся в папке <tt>backups</tt>.
 	Если необходимость в резервных копиях отсутствует, следует удалить их, используя файловый
@@ -124,15 +124,15 @@
     <string name="help_tx_details"><![CDATA[
         <h1>Детали транзакции</h1>
         <h2>Адрес назначения</h2>
-        Это публичный адрес кошелька, на который вы отправляете Monero
+        Это публичный адрес кошелька, на который вы отправляете Loki
         <h2>PaymentID</h2>
-        Вы можете использовать Payment ID для идентификации причины, по которой Monero передаётся между
+        Вы можете использовать Payment ID для идентификации причины, по которой Loki передаётся между
         двумя сторонами. Это опциональная и конфиденциальная операция. Например, она позволяет
 	коммерсантам сверить вашу транзакцию с товаром, который был приобретён вами.
         <h2>TX ID</h2>
         Это идентификатор вашей транзакции (Transaction ID). Вы можете использовать его для поиска
-	вашей транзакции через просмотр блокчейна Monero, например, через этот:
-        <a href="https://xmrchain.net/">https://xmrchain.net/</a>
+	вашей транзакции через просмотр блокчейна Loki, например, через этот:
+        <a href="https://lokiblocks.com/">https://lokiblocks.com/</a>
         <h2>TX KEY (Ключ транзакции)</h2>
         Это ваш приватный ключ транзакции. Его следует хранить в безопасном месте, так как с его помощью
 	третья сторона может идентифицировать вашу подпись в кольце, что сделает транзакцию прозрачной.
@@ -143,7 +143,7 @@
     <string name="help_send"><![CDATA[
         <h1>Отправка</h1>
         <h2>Идентификатор оплаты (Payment ID)</h2>
-        <p>Вы можете использовать Payment ID для идентификации причины, по которой Monero передаётся
+        <p>Вы можете использовать Payment ID для идентификации причины, по которой Loki передаётся
 	между двумя сторонами. Это опциональная и конфиденциальная операция. Например,
 	она позволяет коммерсантам сверить вашу транзакцию с товаром, который был приобретён вами.<p>
     ]]></string>
@@ -166,18 +166,18 @@
         <p>Street mode can be enabled/disabled in the menu or Gunther\'s head icon. In this mode, your
         balance is not shown on any screen so you can safely use your wallet on the street, a pub or
         other public place. Previous transactions are also hidden. New transactions will be shown, so
-        you can see that you have sent/received sweet Moneroj!</p>
+        you can see that you have sent/received sweet Loki!</p>
         <h2>Сканирование</h2>
-        Поскольку Monero ориентирована на подержание анонимности, всякий раз, когда вы открываете кошелёк
-	Monerujo, нам приходится сканировать блокчейн, чтобы посмотреть, были ли отправлены на ваш кошелёк
-	новые Monero. Информация сохраняется только на вашем телефоне, привязанном к вашему кошельку.
+        Поскольку Loki ориентирована на подержание анонимности, всякий раз, когда вы открываете кошелёк
+	Loki Wallet, нам приходится сканировать блокчейн, чтобы посмотреть, были ли отправлены на ваш кошелёк
+	новые Loki. Информация сохраняется только на вашем телефоне, привязанном к вашему кошельку.
 	Иногда это может занять какое-то время, так как вы не синхронизировались в течение долгого периода.
         <h2>Баланс</h2>
         <p><b>Помогите! Баланс моего кошелька куда-то исчез или не подтверждён!</b><br/>
         Не паникуйте! Если вы отправляете средства с вашего кошелька, ваш баланс временно остаётся
-	неподтверждённым. Это происходит в результате процесса обмена Monero в блокчейне и работы механизма
+	неподтверждённым. Это происходит в результате процесса обмена Loki в блокчейне и работы механизма
         сдачи. Подробности обмена можно узнать по ссылке:
-	https://getmonero.org/resources/moneropedia/change.html
+	https://loki.network
         <h2>Список транзакций</h2>
         <p>Список транзакций, проведённых с использованием этого кошелька. В кошельках просмотра можно увидеть
 	только входящие транзакции.</p>
@@ -186,14 +186,14 @@
     <string name="help_node"><![CDATA[
         <h1>Nodes</h1>
         <h2>TL;DR</h2>
-        <p>Refresh the nodes list by pulling down &amp; bookmark 3&#8211;5 nodes to allow Monerujo
+        <p>Refresh the nodes list by pulling down &amp; bookmark 3&#8211;5 nodes to allow Loki Wallet
         to choose the best one for you!</p>
         <h2>What&apos;s a Node?</h2>
-        <p>Monerujo uses a Remote Node (sometimes also called Daemon) to communicate with
-        the Monero Network without having to download and store a copy of the
+        <p>Loki Wallet uses a Remote Node (sometimes also called Daemon) to communicate with
+        the Loki Network without having to download and store a copy of the
         whole blockchain itself.<p>
         <h2>Node List</h2>
-        <p>If the list is empty, you can either add new nodes manually or let Monerujo
+        <p>If the list is empty, you can either add new nodes manually or let Loki Wallet
         scan the network for you. Or both. Read on&#8230;</p>
         <p>The node list shows all currently known nodes. Additionally, the timestamp
         of the latest block known to each node is shown under the node name. An icon
@@ -202,33 +202,33 @@
         is shown next to each node.</p>
         <p>Any node in the list can be bookmarked for later use.
         Nodes which are not bookmarked will be forgotten.<p>
-        <p>Monerujo will choose the optimal bookmarked node each time you use it.
+        <p>Loki Wallet will choose the optimal bookmarked node each time you use it.
         It does this by checking the blockheight (how up-to-date
         is the node?) as well as the response behaviour (how fast does the node respond to requests?).</p>
-        <p>The list is sorted by these characteristics, so the top node would be the one Monerujo
+        <p>The list is sorted by these characteristics, so the top node would be the one Loki Wallet
         would choose right now. The bottom of the list would show very slow or unavailable nodes.</p>
         <h2>Add a Node</h2>
         <p>By touching the &quot;Add Node&quot; button at the bottom, you will be asked to
         enter the node details in the following dialog.
         The &quot;Address&quot; is the hostname or IP-address of the node - this is the only
         mandatory entry.
-        Enter the &quot;Port&quot; if the node runs on a non-default port (e.g. 18089).
+        Enter the &quot;Port&quot; if the node runs on a non-default port (e.g. 22020).
         You can also optionally name the node, so you can identify it easier later on.
         Some nodes require credentials to use them. Enter the provided username &amp;
         password in the appropriate fields. Now you can &quot;Test&quot; these setting.
         The &quot;Test Results&quot; will display the blockheight, response time and actual IP used.
         The result may also be an error - usually because the hostname provided is
         not reachable in a sensible amount of time or the credentials are incorrect.
-        Or the hostname/port combination does not point to an actual Monero Node!
+        Or the hostname/port combination does not point to an actual Loki Node!
         Once the test passes (no error) - you&apos;re set to press &quot;OK&quot; to save &amp;
         bookmark this node.</p>
         <h2>Scan for Nodes</h2>
-        <p>Additionally, you can scan the network for nodes. Monerujo will start
-        scanning the network for Remote Nodes on port 18089. It begins by asking your
-        bookmarked nodes for other peers in the Monero P2P network and then continues
+        <p>Additionally, you can scan the network for nodes. Loki Wallet will start
+        scanning the network for Remote Nodes on port 22020. It begins by asking your
+        bookmarked nodes for other peers in the Loki P2P network and then continues
         by asking those for their peers, and so on. If you have no bookmarked nodes
         (or they don&apos;t tell us about their peers),
-        Monerujo will go straight to the Monero seed nodes hardcoded into Monero. The
+        Loki Wallet will go straight to the Loki seed nodes hardcoded into Loki. The
         scan stops when it finds 10 remote nodes in total.</p>
     ]]></string>
 </resources>

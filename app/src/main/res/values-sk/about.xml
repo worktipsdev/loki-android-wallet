@@ -27,8 +27,6 @@
         <p>Iné osobné data nie sú zbierané a spracovávané.</p>
         <p>Pokiaľ používaš (voliteľnú) funkciu zmenárne, Loki Wallet vyhľadá výmenný kurz cez verejné API portálu coinmarketcap.com.
         Pre viac detailov pozri zásady ochrany osobných údajov na https://coinmarketcap.com/privacy kde je uvedené aké dáta zbierajú</p>
-        Pre viac detailov pozri zásady ochrany osobných údajov na https://xmr.to/ . Loki Wallet im posiela cieľovú BTC
-        addresu príjemcu a posielané množstvo. Tvoju IP bude tiež možné zaznamenať. </p>
         <h2>Povolenia</h2>
         <ul>
         <li>INTERNET : Pripojiť do Loki siete cez vzdialený Loki uzol</li>

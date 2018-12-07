@@ -42,7 +42,7 @@
             style="@style/MoneroText.Small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="128.130.233.151:18089" />
+            tools:text="128.130.233.151:22020" />
     </LinearLayout>
 
     <ImageView

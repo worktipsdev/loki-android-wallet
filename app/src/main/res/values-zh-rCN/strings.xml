@@ -35,7 +35,7 @@
     <string name="info_paymentid_intergrated">已加入付款ID</string>
     <string name="info_prepare_tx">正在准备你的交易</string>
 
-    <string name="label_send_progress_create_tx">正在准备 Monero 交易</string>
+    <string name="label_send_progress_create_tx">正在准备 Loki 交易</string>
 
     <string name="text_retry">点选以重试</string>
     <string name="text_noretry_monero">我们卡住了!</string>

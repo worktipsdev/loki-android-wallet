@@ -2,7 +2,7 @@
 <resources>
     <string name="help_create_new"><![CDATA[
         <h1>Creează Portofel - Nou</h1>
-        <p>Doar dacă ai nevoie de o adresă nouă pentru Monero!</p>
+        <p>Doar dacă ai nevoie de o adresă nouă pentru Loki!</p>
         <p>Introdu un nume unic al portofelului și o parolă. Parola este folosită pentru a securiza informațiile portofelului
 		de pe dispozitiv. Folosește o parola dificilă - folosește chiar o frază.</p>
         <h2>Notează-ți Semnătura Mnemonică!</h2>
@@ -19,7 +19,7 @@
 
     <string name="help_create_seed"><![CDATA[
         <h1>Creează Portofel prin Semnătură</h1>
-        <p>În cazul în care deții deja o adresă de portofel pentru Monero și dorești să îți recuperați tranzacțiile din baza
+        <p>În cazul în care deții deja o adresă de portofel pentru Loki și dorești să îți recuperați tranzacțiile din baza
 		de date distribuită (blockchain)</p>
         <p>Introdu un nume unic al portofelului și o parolă. Parola este folosită pentru a securiza informațiile portofelului
 		de pe dispozitiv. Folosește o parola dificilă - folosește chiar o frază.</p>
@@ -35,7 +35,7 @@
         <p>Doar dacă încercați recuperarea portofelului folosind cheile de acces!</p>
         <p>Introdu un nume unic al portofelului și o parolă. Parola este folosită pentru a securiza informațiile
 		portofelului de pe dispozitiv. Folosește o parola dificilă - folosește chiar o frază.<p>
-        <p>Introdu adresa portofelului tău Monero în câmpul \"Adresă publică\" , completeaza câmpul \"Cheie vizualizare\" 
+        <p>Introdu adresa portofelului tău Loki în câmpul \"Adresă publică\" , completeaza câmpul \"Cheie vizualizare\" 
 		și  \"Cheie consum\".</p>
         <p>În cazul în care ști monoblocul în care a fost procesată prima ta tranzacție folosind această adresa,
 		te rugăm să o introduci în câmpul \"Număr monobloc\" - lasând acest câmp liber, aplicația va scana
@@ -48,7 +48,7 @@
         <p>Doar în cazul în care doriți să vizualizați tranzacțiile primite!</p>
         <p>Introdu un nume unic al portofelului și o parolă. Parola este folosită pentru a securiza informațiile
 		portofelului de pe dispozitiv. Folosește o parola dificilă - folosește chiar o frază.<p>
-        <p>Introdu adresa portofelului tău Monero în câmpul \"Adresă publică\" și completeaza câmpul
+        <p>Introdu adresa portofelului tău Loki în câmpul \"Adresă publică\" și completeaza câmpul
 		\"Cheie vizualizare\".</p>
         <p>În cazul în care ști monoblocul în care a fost procesată prima ta tranzacție folosind această adresa,
 		te rugăm să o introduci în câmpul \"Număr monobloc\" - dacă lași acest câmp liber, aplicația va scana 
@@ -60,7 +60,7 @@
         <h1>Detaliile Portofelului</h1>
         <h2>Adresa Publică</h2>
         Adresa publică a protofelului reprezintă, ca și exemplu, un cont bancar, număr pe care îl poți împărtăși
-		cu oricine fără a avea teama de a pierde din balanța Monero. Oricine poate trimite Monero către portofelul
+		cu oricine fără a avea teama de a pierde din balanța Loki. Oricine poate trimite Loki către portofelul
 		tău folosind această adresă.
         <h2>Semnătura Mnemonică</h2>
         Aceasta este singura informație necesară pentru recuperarea portofelului tău într-un moment ulterior
@@ -71,21 +71,21 @@
         Cheia ta de vizualizare poate fi folosită pentru a monitoriza tranzacțiile primite fără a da permisiunea
 		de a cheltui fondurile aflate în portofelul tău.
         <h2>Cheie consum</h2>
-        Cheia ta de consum permite oricui să cheltuie fondurile Monero asociate cu portofelul tău, așa că nu
+        Cheia ta de consum permite oricui să cheltuie fondurile Loki asociate cu portofelul tău, așa că nu
 		divulga nimănui această cheie și păstreaz-o în siguranță precum Semnătura Mnemonică.
     ]]></string>
 
     <string name="help_list"><![CDATA[
         <h1>Lista Portofelelor</h1>
         <h2>Nod</h2>
-        <p>Monerujo folosește un dispozitiv la distanță (remote node) pentru a comunica cu Rețeaua Monero
+        <p>Loki Wallet folosește un dispozitiv la distanță (remote node) pentru a comunica cu Rețeaua Loki
 		fără a descărca și a stoca o copie a întregii baze de date distribuite (blockchain). Poți găsi o listă
 		populară de noduri de asamblare aflate la distanța, sau despre cum să creezi un nod de asamblare personal,
-		la adresa https://moneroworld.com/<p>
-        <p>Monerujo vine cu o listă presetată de noduri de asamblare aflate la distanță (remote nodes).
-		De asemenea Monerujo reține ultimele cinci noduri folosite.</p>
+		la adresa https://loki.network/<p>
+        <p>Loki Wallet vine cu o listă presetată de noduri de asamblare aflate la distanță (remote nodes).
+		De asemenea Loki Wallet reține ultimele cinci noduri folosite.</p>
         <h2>Portofele</h2>
-        <p>Aici poți observa portofelele tale. Ele sunt locate în dosarul <tt>monerujo</tt> aflat în
+        <p>Aici poți observa portofelele tale. Ele sunt locate în dosarul <tt>loki-wallet</tt> aflat în
 		memoria internă a dispozitivului tău. 
 		Ai posibilitatea dea a utiliza o aplicație de explorare a fișierelor pentru a le vedea.
 		Ar trebui să efectuezo copii de siguranță ale acestui dosar, în mod regulat pe alte dispozitive,
@@ -95,11 +95,11 @@
         <h3>Detalii</h3>
         <p>Arată detaliile portofelului, Semnătură &amp; chei de acces.</p>
         <h3>Primește</h3>
-        <p>Creează un cod QR pentru a primi Monero.</p>
+        <p>Creează un cod QR pentru a primi Loki.</p>
         <h3>Redenumește</h3>
         <p>Redenumește portofelul. Copiile de securitate (backups) nu sunt redenumite în această operație.</p>
         <h3>Copie de securitate</h3>
-        <p>Creează o copie de securitate în dosarul <tt>backups</tt> aflat în dosarul <tt>monerujo</tt> 
+        <p>Creează o copie de securitate în dosarul <tt>backups</tt> aflat în dosarul <tt>loki-wallet</tt> 
 		resciind copiile anterioare.</p>
         <h3>Arhivează</h3>
         <p>Efectuează o copie de securitate și șterge fișierul portofelului pe urmă. Copia va rămâne
@@ -110,15 +110,15 @@
     <string name="help_tx_details"><![CDATA[
         <h1>Detaliile tranzacției</h1>
         <h2>Destinație</h2>
-        Aceasta este adresa publică la care tu ai trimis Monero
+        Aceasta este adresa publică la care tu ai trimis Loki
         <h2>PaymentID</h2>
         Poți utiliza un ID de plată pentru a identifica suma trimisă între două terțe,
 		acest lucru este complet opțional și privat. Ca exemplu, poate permite identificare
 		într-o activitate comercială pentru a reconcilia pentru un produs pe care l-ați achiziționat.
         <h2>TX ID</h2>
         Acesta este ID-ul Tranzacției și poate fi folosit pentru a identifica tranzacția ta obfuscată
-		pe un explorator al bazei de date distribuită (Blockchain) a Monero, ca cel
-		aflat la acest link <a href="https://xmrchain.net/">https://xmrchain.net/</a>
+		pe un explorator al bazei de date distribuită (Blockchain) a Loki, ca cel
+		aflat la acest link <a href="https://lokiblocks.com/">https://lokiblocks.com/</a>
         <h2>TX KEY (Cheia Tranzacției)</h2>
         Aceasta este cheia privată a tranzacției, aceasta este privată și trebuie păstrată ca atare,
 		această cheie permite unei terțe părți să dezvăluie care din semnăturile formate într-un inel
@@ -153,19 +153,19 @@
         <p>Street mode can be enabled/disabled in the menu or Gunther\'s head icon. In this mode, your
         balance is not shown on any screen so you can safely use your wallet on the street, a pub or
         other public place. Previous transactions are also hidden. New transactions will be shown, so
-        you can see that you have sent/received sweet Moneroj!</p>
+        you can see that you have sent/received sweet Loki!</p>
         <h2>Scanarea</h2>
-        Deoarece Monero păstrează lucrurile într-un mod privat, de fiecare dată când deschizi
-		portofelul Monerujo, noi scanăm baza de date distribuită (blockchain) pentru a vedea dacă
-		ai primit Monero în portofel, această metodă stochează doar informații relevante portofelului tău.
+        Deoarece Loki păstrează lucrurile într-un mod privat, de fiecare dată când deschizi
+		portofelul Loki Wallet, noi scanăm baza de date distribuită (blockchain) pentru a vedea dacă
+		ai primit Loki în portofel, această metodă stochează doar informații relevante portofelului tău.
 		Câteodată este necesar un timp îndelungat pentru această operație în cazul în care nu ai fost
 		sincronizat pentru o perioadă îndelungată.
         <h2>Balanța</h2>
         <p><b>Ajutor! Balanța portofelului meu a dispărut sau este neconfirmată!</b><br/>
         Nu te panica! În momentul în care trimițo fonduri din portofelul tău, o parte din balanța
 		va fi arătată ca și neconfirmată. Acest lucru se întâmplă ca urmare a modului în care este
-		schimbat Monero în baza de date distribuită și modul în care se face schimbul.
-		Citește mai multe despre schimb la adresa https://getmonero.org/resources/moneropedia/change.html
+		schimbat Loki în baza de date distribuită și modul în care se face schimbul.
+		Citește mai multe despre schimb la adresa https://loki.network
         <h2>Lista tranzacțiilor</h2>
         <p>O listă a tranzacțiilor portofelului. În portofele create folosind cheia de vizualizare,
 		doar tranzacțiile primite vor fi afișate.</p>
@@ -174,14 +174,14 @@
     <string name="help_node"><![CDATA[
         <h1>Nodes</h1>
         <h2>TL;DR</h2>
-        <p>Refresh the nodes list by pulling down &amp; bookmark 3&#8211;5 nodes to allow Monerujo
+        <p>Refresh the nodes list by pulling down &amp; bookmark 3&#8211;5 nodes to allow Loki Wallet
         to choose the best one for you!</p>
         <h2>What&apos;s a Node?</h2>
-        <p>Monerujo uses a Remote Node (sometimes also called Daemon) to communicate with
-        the Monero Network without having to download and store a copy of the
+        <p>Loki Wallet uses a Remote Node (sometimes also called Daemon) to communicate with
+        the Loki Network without having to download and store a copy of the
         whole blockchain itself.<p>
         <h2>Node List</h2>
-        <p>If the list is empty, you can either add new nodes manually or let Monerujo
+        <p>If the list is empty, you can either add new nodes manually or let Loki Wallet
         scan the network for you. Or both. Read on&#8230;</p>
         <p>The node list shows all currently known nodes. Additionally, the timestamp
         of the latest block known to each node is shown under the node name. An icon
@@ -190,33 +190,33 @@
         is shown next to each node.</p>
         <p>Any node in the list can be bookmarked for later use.
         Nodes which are not bookmarked will be forgotten.<p>
-        <p>Monerujo will choose the optimal bookmarked node each time you use it.
+        <p>Loki Wallet will choose the optimal bookmarked node each time you use it.
         It does this by checking the blockheight (how up-to-date
         is the node?) as well as the response behaviour (how fast does the node respond to requests?).</p>
-        <p>The list is sorted by these characteristics, so the top node would be the one Monerujo
+        <p>The list is sorted by these characteristics, so the top node would be the one Loki Wallet
         would choose right now. The bottom of the list would show very slow or unavailable nodes.</p>
         <h2>Add a Node</h2>
         <p>By touching the &quot;Add Node&quot; button at the bottom, you will be asked to
         enter the node details in the following dialog.
         The &quot;Address&quot; is the hostname or IP-address of the node - this is the only
         mandatory entry.
-        Enter the &quot;Port&quot; if the node runs on a non-default port (e.g. 18089).
+        Enter the &quot;Port&quot; if the node runs on a non-default port (e.g. 22020).
         You can also optionally name the node, so you can identify it easier later on.
         Some nodes require credentials to use them. Enter the provided username &amp;
         password in the appropriate fields. Now you can &quot;Test&quot; these setting.
         The &quot;Test Results&quot; will display the blockheight, response time and actual IP used.
         The result may also be an error - usually because the hostname provided is
         not reachable in a sensible amount of time or the credentials are incorrect.
-        Or the hostname/port combination does not point to an actual Monero Node!
+        Or the hostname/port combination does not point to an actual Loki Node!
         Once the test passes (no error) - you&apos;re set to press &quot;OK&quot; to save &amp;
         bookmark this node.</p>
         <h2>Scan for Nodes</h2>
-        <p>Additionally, you can scan the network for nodes. Monerujo will start
-        scanning the network for Remote Nodes on port 18089. It begins by asking your
-        bookmarked nodes for other peers in the Monero P2P network and then continues
+        <p>Additionally, you can scan the network for nodes. Loki Wallet will start
+        scanning the network for Remote Nodes on port 22020. It begins by asking your
+        bookmarked nodes for other peers in the Loki P2P network and then continues
         by asking those for their peers, and so on. If you have no bookmarked nodes
         (or they don&apos;t tell us about their peers),
-        Monerujo will go straight to the Monero seed nodes hardcoded into Monero. The
+        Loki Wallet will go straight to the Loki seed nodes hardcoded into Loki. The
         scan stops when it finds 10 remote nodes in total.</p>
     ]]></string>
 </resources>

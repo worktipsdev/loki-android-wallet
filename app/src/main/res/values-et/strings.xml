@@ -35,7 +35,7 @@
     <string name="info_paymentid_intergrated">Makse ID integreeritud</string>
     <string name="info_prepare_tx">Valmistan ülekannet ette</string>
 
-    <string name="label_send_progress_create_tx">Valmistan ette Monero ülekannet</string>
+    <string name="label_send_progress_create_tx">Valmistan ette Loki ülekannet</string>
 
     <string name="label_send_txid">Ülekande ID</string>
     <string name="label_send_address">Sihtkoha address</string>
@@ -92,7 +92,7 @@
 
     <string name="xmr_unconfirmed_amount">+ %1$s LOKI kinnitamata</string>
 
-    <string name="service_description">monerujo teenus</string>
+    <string name="service_description">Loki Wallet teenus</string>
 
     <string name="status_synced">Uuendatud:</string>
     <string name="status_remaining">Plokki veel</string>
@@ -119,10 +119,10 @@
         <strong>Sõrmejäljega avamine</strong>
         <p>With fingerprint authentication enabled, you can view wallet balance and receive funds
         without entering password.</p>
-        <p>But for additional security, monerujo will still require you to enter password when
+        <p>But for additional security, Loki Wallet will still require you to enter password when
         viewing wallet details or sending funds.</p>
         <strong>Turvahoiatus</strong>
-        <p>Finally, monerujo wants to remind you that anyone who can get your fingerprint will be
+        <p>Finally, Loki Wallet wants to remind you that anyone who can get your fingerprint will be
         able to peep into your wallet balance.</p>
         <p>For instance, a malicious user around you can open your wallet when you are asleep.</p>
         <strong>Oled kindel, et soovid selle aktiveerida?</strong>
@@ -166,8 +166,8 @@
     <string name="send_amount_hint">0.00</string>
     <string name="send_notes_hint">Privaatsed kommentaarid (valikuline)</string>
     <string name="send_generate_paymentid_hint">Genereeri</string>
-    <string name="send_send_label">Saada mu kallid Monerod teele</string>
-    <string name="send_send_timed_label">Saada mu kallid Monerod (%1$s)</string>
+    <string name="send_send_label">Saada mu kallid Loki teele</string>
+    <string name="send_send_timed_label">Saada mu kallid Loki (%1$s)</string>
     <string name="send_qr_invalid">See pole QR kood</string>
     <string name="send_qr_address_invalid">See pole sobiv QR kood</string>
     <string name="send_address_invalid">See pole sobiv aadress</string>

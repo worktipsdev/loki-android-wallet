@@ -35,7 +35,7 @@
     <string name="info_paymentid_intergrated">Fizetési azonosító integrálva</string>
     <string name="info_prepare_tx">Tranzakció előkészítése</string>
 
-    <string name="label_send_progress_create_tx">Monero-tranzakció előkészítése</string>
+    <string name="label_send_progress_create_tx">Loki-tranzakció előkészítése</string>
 
     <string name="text_retry">Koppints az újrapróbálkozáshoz</string>
     <string name="text_noretry_monero">Itt most elakadtunk!</string>
@@ -95,7 +95,7 @@
 
     <string name="xmr_unconfirmed_amount">+ %1$s LOKI függőben</string>
 
-    <string name="service_description">monerujo szolgáltatás</string>
+    <string name="service_description">Loki Wallet szolgáltatás</string>
 
     <string name="status_synced">Szinkronizálva:</string>
     <string name="status_remaining">blokk van hátra</string>
@@ -122,10 +122,10 @@
         <strong>Ujjlenyomat-azonosítás</strong>
         <p>Az ujjlenyomat-azonosítás engedélyezésével jelszó megadása nélkül tekintheted meg a
         tárcaegyenleget és fogadhatsz pénzösszegeket.</p>
-        <p>A további biztonság érdekében ugyanakkor a monerujo továbbra is jelszót fog kérni a
+        <p>A további biztonság érdekében ugyanakkor a Loki Wallet továbbra is jelszót fog kérni a
         tárca részletes adatainak megtekintése és a pénzküldés esetén.</p>
         <strong>Biztonsági figyelmeztetés</strong>
-        <p>A monerujo felhívja a figyelmed arra, hogy az ujjlenyomatoddal rendelkező személy(ek)
+        <p>A Loki Wallet felhívja a figyelmed arra, hogy az ujjlenyomatoddal rendelkező személy(ek)
         megtekinthetik a tárcaegyenleged.</p>
         <p>Egy rosszhiszemű személy például megnyithatja a tárcádat míg te alszol.</p>
         <strong>Biztosan engedélyezni szeretnéd ezt a funckiót?</strong>
@@ -168,8 +168,8 @@
     <string name="send_amount_hint">0.00</string>
     <string name="send_notes_hint">Privát közlemény (opcionális)</string>
     <string name="send_generate_paymentid_hint">Generálás</string>
-    <string name="send_send_label">Édes, drága Monero elköltése</string>
-    <string name="send_send_timed_label">Édes, drága Monero elköltése (%1$s)</string>
+    <string name="send_send_label">Édes, drága Loki elköltése</string>
+    <string name="send_send_timed_label">Édes, drága Loki elköltése (%1$s)</string>
     <string name="send_qr_invalid">Ez nem egy QR-kód</string>
     <string name="send_address_invalid">Érvénytelen cím</string>
     <string name="send_qr_address_invalid">Érvénytelen QR-kód</string>

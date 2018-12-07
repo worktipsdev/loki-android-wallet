@@ -34,9 +34,6 @@
         nyilvános API-ján keresztül kéri le az árfolyamot.
         A kéréseid során történő adatgyűjtés módjával kapcsolatban tekintsd meg az adatvédelmi
         irányelveiket a https://coinmarketcap.com/privacy weboldalon.</p>
-        használod. Részletes adatvédelmi irányelveiket a https://xmr.to/ weboldalon tekintheted meg.
-        A Loki Wallet számukra a kedvezményezett BTC-címet és a küldeni kívánt mennyiséget közli meg,
-        ám az IP-címed is begyűjthető.</p>
         <h2>Applikációengedélyek</h2>
         <ul>
         <li>INTERNET : csatlakozás a Loki-hálózathoz egy Loki daemon csomóponton keresztül</li>

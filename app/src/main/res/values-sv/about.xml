@@ -34,8 +34,6 @@
         Läs deras sekretesspolicy på https://www.kraken.com/legal/privacy för
         detaljer om hur data i dina begär är samlade (speciellt
         sektionen "Information We Collect Automatically").</p>
-        Läs deras sekretesspolicy för detaljer på https://xmr.to/. Loki Wallet skickar de BTC-
-        destination adressen och mängden. Din IP kan även samlas.</p>
         <h2>App-behörigheter</h2>
         <ul>
         <li>INTERNET : Anslut till Loki-nätverket via en Loki Daemon nod</li>
