@@ -37,21 +37,10 @@
     <string name="info_paymentid_intergrated">Payment ID integrated</string>
     <string name="info_prepare_tx">Preparing your transaction</string>
 
-    <string name="label_send_progress_xmrto_create">Creating XMR.TO Order</string>
-    <string name="label_send_progress_xmrto_query">Querying XMR.TO Order</string>
     <string name="label_send_progress_create_tx">Preparing Monero Transaction</string>
-
-    <string name="label_send_progress_queryparms">Querying XMR.TO parameters</string>
-
-    <string name="label_generic_xmrto_error">XMR.TO ERROR</string>
-    <string name="text_generic_xmrto_error">Code: %1$d</string>
 
     <string name="text_retry">Touch to retry</string>
     <string name="text_noretry_monero">Now we\'re stuck here!</string>
-    <string name="text_noretry">Uh-oh, XMR.TO does not seem be available right now!</string>
-
-    <string name="text_send_btc_amount">%1$s BTC = %2$s XMR</string>
-    <string name="text_send_btc_rate">(Rate: %1$s BTC/XMR)</string>
 
     <string name="label_send_settings_advanced">Advanced:</string>
 
@@ -131,7 +120,7 @@
     <string name="message_copy_txid">Transaction ID copied to clipboard!</string>
     <string name="message_nocopy">Copy disabled for security reasons!</string>
 
-    <string name="message_exchange_failed">Cannot get exchange rate!\nUse LOKI/LOKI or try again</string>
+    <string name="message_exchange_failed">Cannot get exchange rate!\nUse Loki or try again</string>
 
     <string name="generate_title">Create Wallet</string>
     <string name="generate_name_hint">Wallet Name</string>
@@ -184,7 +173,7 @@
     <string name="generate_check_address">Enter valid Address</string>
     <string name="generate_check_mnemonic">Enter your 25 word seed</string>
 
-    <string name="send_address_hint">Receiver\'s XMR/BTC Address or OpenAlias</string>
+    <string name="send_address_hint">Receiver\'s Loki Address or OpenAlias</string>
     <string name="send_paymentid_hint">Payment ID (optional)</string>
     <string name="send_amount_hint">0.00</string>
     <string name="send_notes_hint">Private Notes (optional)</string>

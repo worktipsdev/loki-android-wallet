@@ -112,7 +112,7 @@
     <string name="message_copy_txid">ID de Transaction copié !</string>
     <string name="message_nocopy">Copie désactivée par sécurité !</string>
 
-    <string name="message_exchange_failed">Taux de change introuvable !\nUtilisez LOKI/LOKI ou essayez à nouveau</string>
+    <string name="message_exchange_failed">Taux de change introuvable !\nUtilisez Loki ou essayez à nouveau</string>
 
     <string name="generate_title">Créer un Portefeuille</string>
     <string name="generate_name_hint">Nom du Portefeuille</string>
@@ -280,7 +280,7 @@
     <string name="send_address_openalias">Sécurisé OpenAlias &#x2714;</string>
     <string name="send_address_resolve_openalias">Résolution OpenAlias&#8230;</string>
     <string name="send_address_no_dnssec">OpenAlias sans DNSSEC - l\'adresse pourrait être usurpée !</string>
-    <string name="send_address_hint">Adresse ou OpenAlias XMR/BTC du Destinataire</string>
+    <string name="send_address_hint">Adresse ou OpenAlias Loki du Destinataire</string>
 
     <string name="status_wallet_connect_wrongversion">Version du Nœud incompatible - merci de mettre à jour !</string>
 

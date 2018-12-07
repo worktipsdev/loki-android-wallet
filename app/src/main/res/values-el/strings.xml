@@ -34,8 +34,7 @@
     <string name="info_paymentid_intergrated">ID πληρωμής ενσωματωμένο</string>
     <string name="info_prepare_tx">Προετοιμασία της συναλλαγής σου</string>
 
-    <string name="label_send_progress_xmrto_create">Δημιουργία εντολής με XMR.TO</string>
-    <string name="label_send_progress_xmrto_query">Αίτηση εντολής στο XMR.TO</string>
+ 
     <string name="label_send_progress_create_tx">Προετοιμασά συναλλαγής Monero</string>
 
     <string name="text_retry">Πάτησε για να προσπαθήσεις ξανά</string>
@@ -105,7 +104,7 @@
     <string name="message_copy_txid">Το ID συναλλαγής αντιγράφηκε στο πρόχειρο!</string>
     <string name="message_nocopy">Η αντιγραφή είναι απενεργοποιημένη για λόγους ασφαλείας!</string>
 
-    <string name="message_exchange_failed">Δεν είναι δυνατή η συναλλαγματική ισοτιμία! Χρησιμοποίησε LOKI/LOKI ή προσπάθησε ξανά</string>
+    <string name="message_exchange_failed">Δεν είναι δυνατή η συναλλαγματική ισοτιμία! Χρησιμοποίησε Loki ή προσπάθησε ξανά</string>
 
     <string name="generate_title">Δημιουργία Πορτοφολιού</string>
     <string name="generate_name_hint">Όνομα Πορτοφολιού</string>
@@ -161,7 +160,7 @@
     <string name="send_fee_label">Κόμιστρο</string>
     <string name="send_total_label">Σύνολο</string>
 
-    <string name="send_amount">%1$s XMR</string>
+    <string name="send_amount">%1$s LOKI</string>
     <string name="send_fee">+%1$s Κόμιστρο</string>
 
     <string name="send_create_tx_error_title">Σφάλμα Δημιουργίας Συναλλαγής</string>
@@ -197,7 +196,7 @@
 
     <string name="receive_amount_too_big">Μέγιστο %1$s</string>
     <string name="receive_amount_negative">Ελάχιστο 0</string>
-    <string name="receive_amount_nan">XMR δεν υπάρχει αριθμός</string>
+    <string name="receive_amount_nan">LOKI δεν υπάρχει αριθμός</string>
 
     <string name="details_alert_message">Θα εμφανιστούν τώρα ευαίσθητα δεδομένα. \nΠρόσεχε ποιος είναι πίσω σου!</string>
     <string name="details_alert_yes">Είμαι ασφαλής</string>

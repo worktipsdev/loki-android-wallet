@@ -11,7 +11,7 @@
         m2049r, baltsar777, anhdres, keejef,
         rehrar, EarlOfEgo, crtlib et al.
         <br/><br/>
-        <a href="https://wallet.loki.network/">wallet.loki.network</a>
+        <a href="loki.network">loki.network</a>
         ]]></string>
 
     <string name="privacy_policy"><![CDATA[
@@ -46,7 +46,7 @@
         <h2>Cambios a esta Política de Privacidad</h2>
         <p>Es posible que actualicemos esta política de privacidad de vez en cuando. Le
         notificaremos de cualquier cambio publicando la nueva política de privacidad en la app
-        y en el sitio web (wallet.loki.network)
+        y en el sitio web (loki.network)
         Le aconsejamos que revise esta política de privacidad periódicamente para cualquier
         cambio.
         <p>Esta Política de Privacidad fue actualizada por última vez: 10 de Noviembre de 2017.
@@ -54,7 +54,7 @@
         <h2>Contáctanos</h2>
         <p>Si tiene cualquier cuestión sobre nuestra política de privacidad,
         o sobre como sus datos están siendo recolectados y procesados,
-        por favor escríbanos a privacy@wallet.loki.network
+        por favor escríbanos a team@loki.network
         </p>
         ]]></string>
 </resources>

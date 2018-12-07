@@ -113,7 +113,7 @@
     <string name="message_copy_txid">交易ID 已复制至剪贴簿!</string>
     <string name="message_nocopy">因安全性因素已停用复制功能!</string>
 
-    <string name="message_exchange_failed">无法取得汇率!\n使用 LOKI/LOKI 或重试</string>
+    <string name="message_exchange_failed">无法取得汇率!\n使用 Loki 或重试</string>
 
     <string name="generate_title">建立钱包</string>
     <string name="generate_name_hint">钱包名称</string>

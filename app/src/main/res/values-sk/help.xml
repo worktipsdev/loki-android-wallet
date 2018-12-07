@@ -145,36 +145,10 @@
 
     <string name="help_send"><![CDATA[
         <h1>Poslať</h1>
-        <h2>Adresa Príjemcu</h2>
-        <p>Toto je verejná adresa peňaženky kam posielaš Monero. Môžeš ju kopírovať zo schránky, skenovať QR kód alebo vložiť manuálne.
-		Trikrát sa uisti, že neposielaš mince na zlú adresu.</p>
-        <p>Okrem posielana  XMR, môžeš posielať BTC cez sllužbu XMR.TO (pozri https://xmr.to).  
-		Pozri sekciu posielanie BTC nižšie.</p>
         <h2>ID Platby</h2>
         <p>ID Platby môžeš použiť na identifikáciu platby medzi dvoma stranami.
 		Nie je to síce povinný, ale je to súkromný údaj.
         Môžeš tak napríklad prepojiť kupovaný tovar so svojim biznisom.<p>
-        <h1>Posielanie BTC</h1>
-        <h2>XMR.TO</h2>
-        <p>XMR.TO je služba tretej strany, ktorá umožňuje zámenu z Monero na Bitcoin.
-        Používame XMR.TO API na integráciu Bitcoin platieb do Monerujo. Prosím mrkni na 
-		https://xmr.to a rozhodni sa sám, či je to naozaj služba, ktorú chceš používať.
-		Tím Monerujo nie je nijako spojený so službou XMR.TO a teda nemôže pomôcť s prípadnými problémami s touto službou.</p>
-        <h2>XMR.TO Výmenný Kurz<h2>
-        <p>Na obrazovke \"Množstvo\" uvidíš aktuálne parametre služby XMR.TO, vrátane aktuálneho kurzu BTC, hornej a dolnej hranice.
-		Podotýkame, že tento kurz nie je garantovaný.
-		Tiež tam možno vidieť množstvo BTC, ktoré budú zamieňané instantne bez čakania na potvrdenia v Monero sieti. 
-	    (pozri XMR.TO FAQ ). XMR.TO si neúčtuje ďalšie extra poplatky za transakciu. - No nie je to cool?</p>
-        <h2>XMR.TO Objednávka<h2>
-        <p>Na obrazovke \"Potvrdiť\", uvidíš aktuálnu objednávku v XMR.TO. Táto objednávka je platná iba obmedzený čas - ako si môžeš všimnúť odpočítavanie na tlačítku \"Minúť\". 
-		Výmenný kurz sa môže líšiť od toho, ktorý bol na predošlých obrazovkách.</p>
-        <h2>XMR.TO Tajný Kľúč<h2>
-        <p>Keďže Monerujo dbá len na tú časť transakcie, ktorá pracuje s Monero, 
-		tento XMR.TO Tajný Kľúč sa môže využívať na sledovanie Bitcoinovej časti transakcie a objednávky
-		na domovskej stránke XMR.TO</p>
-        <p>Ber na vedomie, že tento Tajný Kľúč je platný iba 24 hodín od začiatku transakcie!</p>
-        <h2>XMR.TO Odpočítavanie!</h2>
-        <p>Akonáhle odpočítavanie dosiahne nulu, budeš potrebovať nový kľúč z XMR.TO návratom na predchádzajúci krok a obrazovku \"Potvrdiť\" .</p>
     ]]></string>
 
     <string name="help_wallet"><![CDATA[

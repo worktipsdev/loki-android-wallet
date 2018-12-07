@@ -100,7 +100,7 @@
     <string name="message_copy_txid">ID tranzacție copiată la clipboard!</string>
     <string name="message_nocopy">Copierea dezactivată din motive de securitate!</string>
 
-    <string name="message_exchange_failed">Nu pot accesa rata de schimb!\nFolosește LOKI/LOKI sau reîncearcă</string>
+    <string name="message_exchange_failed">Nu pot accesa rata de schimb!\nFolosește Loki sau reîncearcă</string>
 
     <string name="generate_title">Creează portofel</string>
     <string name="generate_name_hint">Nume portofel</string>

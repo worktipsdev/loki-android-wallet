@@ -112,7 +112,7 @@
     <string name="message_copy_txid">Tranzakcióazonosító vágólapra másolva!</string>
     <string name="message_nocopy">A másolás biztonsági okokból tiltásra került!</string>
 
-    <string name="message_exchange_failed">Nem sikerült az árfolyam lekérése!\nHasználj LOKI/LOKI-t vagy próbáld újra</string>
+    <string name="message_exchange_failed">Nem sikerült az árfolyam lekérése!\nHasználj Loki-t vagy próbáld újra</string>
 
     <string name="generate_title">Tárcalétrehozás</string>
     <string name="generate_name_hint">Tárca neve</string>

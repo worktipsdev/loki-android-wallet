@@ -112,7 +112,7 @@
     <string name="message_copy_txid">Transaktions-ID kopierades till urklipp!</string>
     <string name="message_nocopy">Kopiering är inaktiverad av säkerhetskäl!</string>
 
-    <string name="message_exchange_failed">Det gick inte att hämta växelkurs!\nAnvänd LOKI/LOKI eller försök igen</string>
+    <string name="message_exchange_failed">Det gick inte att hämta växelkurs!\nAnvänd Loki eller försök igen</string>
 
     <string name="generate_title">Skapa plånbok</string>
     <string name="generate_name_hint">Plånbokens namn</string>

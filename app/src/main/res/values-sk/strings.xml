@@ -109,7 +109,7 @@
     <string name="message_copy_txid">ID Transakcie skopírované do schránky!</string>
     <string name="message_nocopy">Kopírovanie vypnuté z bezpečnostných dôvodov!</string>
 
-    <string name="message_exchange_failed">Neviem získať výmenný kurz!\nSkús LOKI/LOKI alebo vyskúšaj neskôr</string>
+    <string name="message_exchange_failed">Neviem získať výmenný kurz!\nSkús Loki alebo vyskúšaj neskôr</string>
 
     <string name="generate_title">Vytvor Peňaženku</string>
     <string name="generate_name_hint">Názov Peňaženky</string>

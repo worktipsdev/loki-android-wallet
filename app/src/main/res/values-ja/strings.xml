@@ -40,7 +40,6 @@
 
     <string name="text_retry">タッチして再試行</string>
     <string name="text_noretry_monero">私達はここで立ち往生のようです!</string>
-    <string name="text_noretry">あーあ、 XMR.TO は現在利用不能のようです!</string>
 
     <string name="label_send_txid">取引ID</string>
     <string name="label_send_address">送金先アドレス</string>
@@ -117,7 +116,7 @@
     <string name="message_copy_txid">取引IDがクリップボードにコピーされました!</string>
     <string name="message_nocopy">セキュリティ上の理由でコピーは無効化されています!</string>
 
-    <string name="message_exchange_failed">取引レートを取得できません!\nLOKI/LOKI を使うかもう一度試してください</string>
+    <string name="message_exchange_failed">取引レートを取得できません!\nLoki を使うかもう一度試してください</string>
 
     <string name="generate_title">ウォレット作成</string>
     <string name="generate_name_hint">ウォレットの名前</string>
@@ -230,7 +229,7 @@
 
     <string name="receive_amount_too_big">最大. %1$s</string>
     <string name="receive_amount_negative">最小. 0</string>
-    <string name="receive_amount_nan">XMR が数字ではありません</string>
+    <string name="receive_amount_nan">LOKI が数字ではありません</string>
 
     <string name="details_alert_message">機密データは表示されません\n背後に人がいないことを確認してください!</string>
     <string name="details_alert_yes">私は安全です</string>
@@ -242,7 +241,7 @@
     <string name="archive_alert_no">いいえ、結構です!</string>
 
     <string-array name="currency" translatable="false">
-        <item>XMR</item>
+        <item>LOKI</item>
         <item>EUR</item>
         <item>USD</item>
         <item>JPY</item>

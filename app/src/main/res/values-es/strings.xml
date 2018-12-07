@@ -107,7 +107,7 @@
     <string name="message_copy_address">¡Dirección del monedero copiada al portapapeles!</string>
     <string name="message_nocopy">¡La copia está desactivada por motivos de seguridad!</string>
 
-    <string name="message_exchange_failed">¡No se ha podido obtener la tasa de cambio!\nUsa LOKI/LOKI o inténtalo de nuevo</string>
+    <string name="message_exchange_failed">¡No se ha podido obtener la tasa de cambio!\nUsa Loki o inténtalo de nuevo</string>
 
     <string name="generate_title">Crear monedero</string>
     <string name="generate_name_hint">Nombre del monedero</string>
@@ -278,7 +278,7 @@
     <string name="send_address_openalias">OpenAlias secure &#x2714;</string>
     <string name="send_address_resolve_openalias">Resolving OpenAlias&#8230;</string>
     <string name="send_address_no_dnssec">OpenAlias without DNSSEC - address may be spoofed</string>
-    <string name="send_address_hint">Receiver\'s XMR/BTC Address or OpenAlias</string>
+    <string name="send_address_hint">Receiver\'s Loki Address or OpenAlias</string>
 
     <string name="status_wallet_connect_wrongversion">Node version incompatible - please upgrade!</string>
 

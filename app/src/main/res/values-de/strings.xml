@@ -112,7 +112,7 @@
     <string name="message_copy_txid">Transaktions-ID in Zwischenablage kopiert!</string>
     <string name="message_nocopy">Kopieren aus Sicherheitsgründen deaktiviert!</string>
 
-    <string name="message_exchange_failed">Umtausch-Rate nicht verfügbar!\nNutze LOKI/LOKI oder versuche es noch einmal</string>
+    <string name="message_exchange_failed">Umtausch-Rate nicht verfügbar!\nNutze Loki oder versuche es noch einmal</string>
 
     <string name="generate_title">Wallet erstellen</string>
     <string name="generate_name_hint">Wallet Name</string>
@@ -268,7 +268,7 @@
     <string name="send_address_openalias">OpenAlias sicher &#x2714;</string>
     <string name="send_address_resolve_openalias">Löse OpenAlias auf&#8230;</string>
     <string name="send_address_no_dnssec">OpenAlias ohne DNSSEC - Adresse kann gefälscht sein!</string>
-    <string name="send_address_hint">Empfänger XMR/BTC Adresse oder OpenAlias</string>
+    <string name="send_address_hint">Empfänger Loki Adresse oder OpenAlias</string>
 
     <string name="progress_nfc_write">Schreibe Tag</string>
     <string name="nfc_write_failed">Schreiben des Tags fehlgeschlagen!</string>

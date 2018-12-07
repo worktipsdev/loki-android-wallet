@@ -107,7 +107,7 @@
     <string name="message_copy_txid">ID транзакции копирован в буфер обмена!</string>
     <string name="message_nocopy">Копирование недоступно по соображениям безопасности!</string>
 
-    <string name="message_exchange_failed">Не удается получить курс обмена!\nИспользуйте LOKI/LOKI или повторите попытку</string>
+    <string name="message_exchange_failed">Не удается получить курс обмена!\nИспользуйте Loki или повторите попытку</string>
 
     <string name="generate_title">Создать кошелек</string>
     <string name="generate_name_hint">Имя кошелька</string>

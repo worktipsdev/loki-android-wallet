@@ -111,7 +111,7 @@
     <string name="message_copy_txid">Transaksjons-ID kopiert til utklippstavle!</string>
     <string name="message_nocopy">Kopiering skrudd av for sikkerhetsgrunner!</string>
 
-    <string name="message_exchange_failed">Kan ikke hente vekslingskurs!\nBruk LOKI/LOKI eller prøv igjen</string>
+    <string name="message_exchange_failed">Kan ikke hente vekslingskurs!\nBruk Loki eller prøv igjen</string>
 
     <string name="generate_title">Lag lommebok</string>
     <string name="generate_name_hint">Lommeboknavn</string>
@@ -278,7 +278,7 @@
     <string name="send_address_openalias">OpenAlias secure &#x2714;</string>
     <string name="send_address_resolve_openalias">Resolving OpenAlias&#8230;</string>
     <string name="send_address_no_dnssec">OpenAlias without DNSSEC - address may be spoofed</string>
-    <string name="send_address_hint">Receiver\'s XMR/BTC Address or OpenAlias</string>
+    <string name="send_address_hint">Receiver\'s Loki Address or OpenAlias</string>
 
     <string name="status_wallet_connect_wrongversion">Node version incompatible - please upgrade!</string>
 

@@ -110,7 +110,7 @@
     <string name="message_copy_txid">ID da transacção copiado para a área de transferência!</string>
     <string name="message_nocopy">Copiar está desactivo por razões de segurança!</string>
 
-    <string name="message_exchange_failed">Não foi possível obter a taxa de conversão!\nUsa LOKI/LOKI ou tenta outra vez</string>
+    <string name="message_exchange_failed">Não foi possível obter a taxa de conversão!\nUsa Loki ou tenta outra vez</string>
 
     <string name="generate_title">Criar Carteira</string>
     <string name="generate_name_hint">Nome da Carteira</string>
@@ -281,7 +281,7 @@
     <string name="send_address_openalias">OpenAlias secure &#x2714;</string>
     <string name="send_address_resolve_openalias">Resolving OpenAlias&#8230;</string>
     <string name="send_address_no_dnssec">OpenAlias without DNSSEC - address may be spoofed</string>
-    <string name="send_address_hint">Receiver\'s XMR/BTC Address or OpenAlias</string>
+    <string name="send_address_hint">Receiver\'s Loki Address or OpenAlias</string>
 
     <string name="status_wallet_connect_wrongversion">Node version incompatible - please upgrade!</string>
 

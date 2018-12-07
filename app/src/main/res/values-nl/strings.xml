@@ -37,7 +37,6 @@
 
     <string name="text_retry">Opnieuw proberen</string>
     <string name="text_noretry_monero">Nu zitten we vast…</string>
-    <string name="text_noretry">Oeps, XMR.TO is op dit moment niet beschikbaar.</string>
 
     <string name="label_send_txid">Transactie-ID</string>
     <string name="label_send_address">Doeladres</string>
@@ -111,7 +110,7 @@
     <string name="message_copy_txid">Transactie-ID gekopieerd naar klembord!</string>
     <string name="message_nocopy">Kopiëren uitgeschakeld voor de veiligheid!</string>
 
-    <string name="message_exchange_failed">Kan wisselkoers niet ophalen!\nGebruik LOKI/LOKI of probeer opnieuw</string>
+    <string name="message_exchange_failed">Kan wisselkoers niet ophalen!\nGebruik Loki of probeer opnieuw</string>
 
     <string name="generate_title">Portemonnee maken</string>
     <string name="generate_name_hint">Naam portemonnee</string>

@@ -112,7 +112,7 @@
     <string name="message_copy_txid">交易ID 已複製至剪貼簿！</string>
     <string name="message_nocopy">因安全因素已停用複製功能！</string>
 
-    <string name="message_exchange_failed">無法取得匯率！\n使用 LOKI/LOKI 或重試</string>
+    <string name="message_exchange_failed">無法取得匯率！\n使用 Loki 或重試</string>
 
     <string name="generate_title">建立錢包</string>
     <string name="generate_name_hint">錢包名稱</string>
@@ -275,7 +275,7 @@
     <string name="send_address_openalias">這個 OpenAlias 已確認安全可用 &#x2714;</string>
     <string name="send_address_resolve_openalias">正在解析 OpenAlias &#8230;</string>
     <string name="send_address_no_dnssec">這個 OpenAlias 沒有使用 DNSSEC - 地址有被欺騙的風險</string>
-    <string name="send_address_hint">收款者的 XMR/BTC 地址或 OpenAlias</string>
+    <string name="send_address_hint">收款者的 Loki 地址或 OpenAlias</string>
 
     <string name="status_wallet_connect_wrongversion">節點版本不相容 - 請盡速更新！</string>
 
