@@ -44,6 +44,8 @@ import com.m2049r.xmrwallet.model.WalletManager;
 import com.m2049r.xmrwallet.util.Helper;
 import com.m2049r.xmrwallet.util.LocaleHelper;
 
+import junit.framework.Assert;
+
 import timber.log.Timber;
 
 public class WalletService extends Service {
