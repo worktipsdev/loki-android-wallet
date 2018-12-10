@@ -51,12 +51,6 @@ public class Notice {
                             R.string.help_node,
                             1)
             );
-            notices.add(
-                    new Notice(NOTICE_SHOW_LEDGER,
-                            R.string.info_ledger_enabled,
-                            R.string.help_create_ledger,
-                            1)
-            );
         }
     }
 

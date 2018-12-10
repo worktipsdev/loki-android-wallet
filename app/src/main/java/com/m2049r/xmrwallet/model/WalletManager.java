@@ -56,9 +56,9 @@ public class WalletManager {
     static public String addressPrefix(NetworkType networkType) {
         switch (networkType) {
             case NetworkType_Testnet:
-                return "9A-";
+                return "T6-";
             case NetworkType_Mainnet:
-                return "4-";
+                return "L-";
             case NetworkType_Stagenet:
                 return "5-";
             default:

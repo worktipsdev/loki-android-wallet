@@ -23,16 +23,8 @@ import java.util.Collections;
 import java.util.Set;
 
 public class AppPreferences {
-    private static final String DEFAULT_DAEMONLIST_MAINNET =
-            "doopool.xyz:22020;pool.loki.hashvault.pro;daemons.cryptopool.space;node.loki-pool.com:18081;node.lokipool.cloud:18081";
-
-    private static final String DEFAULT_DAEMONLIST_STAGENET =
-            "nari.blockfoundry.org:10610";
-
     private static final String PREFERENCES_NAME = "loki_wallet_prefs";
     private static final String PREF_WALLETS_SET = "wallets_set";
-    private static final String PREF_DAEMON_STAGENET = "daemon_stagenet";
-    private static final String PREF_DAEMON_MAINNET = "daemon_mainnet";
     private static final String PREF_BALANCE_HIDDEN = "balance_hidden";
 
     public static void setBalanceHidden(Context context, boolean hidden) {
@@ -41,22 +33,6 @@ public class AppPreferences {
 
     public static boolean getBalanceHidden(Context context) {
         return getPrefs(context).getBoolean(PREF_BALANCE_HIDDEN, false);
-    }
-
-    public static void setMainnetDaemons(Context context, String serialized) {
-        getEditor(context).putString(PREF_DAEMON_MAINNET, serialized).apply();
-    }
-
-    public static void setStagenetDaemons(Context context, String serialized) {
-        getEditor(context).putString(PREF_DAEMON_STAGENET, serialized).apply();
-    }
-
-    public static String getMainnetDaemons(Context context) {
-        return getPrefs(context).getString(PREF_DAEMON_MAINNET, DEFAULT_DAEMONLIST_MAINNET);
-    }
-
-    public static String getStagenetDaemons(Context context) {
-        return getPrefs(context).getString(PREF_DAEMON_STAGENET, DEFAULT_DAEMONLIST_STAGENET);
     }
 
     public static Set<String> getWallets(Context context) {

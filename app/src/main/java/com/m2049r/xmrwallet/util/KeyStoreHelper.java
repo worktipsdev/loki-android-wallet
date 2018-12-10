@@ -51,6 +51,7 @@ import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.security.auth.x500.X500Principal;
+import javax.security.cert.Certificate;
 
 import timber.log.Timber;
 
@@ -240,23 +241,32 @@ public class KeyStoreHelper {
         Timber.d("M Keys created");
     }
 
-    private static KeyStore.PrivateKeyEntry getPrivateKeyEntry(String alias) {
-        try {
-            KeyStore ks = KeyStore
-                    .getInstance(SecurityConstants.KEYSTORE_PROVIDER_ANDROID_KEYSTORE);
-            ks.load(null);
-            KeyStore.Entry entry = ks.getEntry(alias, null);
+    private static class PrivatePublicKey {
+        PrivateKey privateKey;
+        PublicKey publicKey;
 
-            if (entry == null) {
+        PrivatePublicKey(PrivateKey priv, PublicKey pub) {
+            privateKey = priv;
+            publicKey = pub;
+        }
+    };
+
+    private static PrivatePublicKey getPrivatePublicKeys(String alias) {
+        try {
+            KeyStore ks = KeyStore .getInstance(SecurityConstants.KEYSTORE_PROVIDER_ANDROID_KEYSTORE);
+            ks.load(null);
+
+            PrivateKey privateKey = (PrivateKey) ks.getKey(alias, null);
+
+            if (privateKey == null) {
                 Timber.w("No key found under alias: %s", alias);
                 return null;
             }
 
-            if (!(entry instanceof KeyStore.PrivateKeyEntry)) {
-                Timber.w("Not an instance of a PrivateKeyEntry");
-                return null;
-            }
-            return (KeyStore.PrivateKeyEntry) entry;
+            PublicKey publicKey = ks.getCertificate(alias).getPublicKey();
+            PrivatePublicKey ppk = new PrivatePublicKey(privateKey, publicKey);
+            return ppk;
+
         } catch (IOException | NoSuchAlgorithmException | CertificateException
                 | UnrecoverableEntryException | KeyStoreException ex) {
             throw new IllegalStateException(ex);
@@ -265,7 +275,7 @@ public class KeyStoreHelper {
 
     private static byte[] encrypt(String alias, byte[] data) {
         try {
-            PublicKey publicKey = getPrivateKeyEntry(alias).getCertificate().getPublicKey();
+            PublicKey publicKey = getPrivatePublicKeys(alias).publicKey;
             Cipher cipher = Cipher.getInstance(SecurityConstants.CIPHER_RSA_ECB_PKCS1);
 
             cipher.init(Cipher.ENCRYPT_MODE, publicKey);
@@ -279,12 +289,11 @@ public class KeyStoreHelper {
 
     private static byte[] decrypt(String alias, byte[] data) {
         try {
-            KeyStore.PrivateKeyEntry pke = getPrivateKeyEntry(alias);
-            if (pke == null) return null;
-            PrivateKey privateKey = pke.getPrivateKey();
+            PrivatePublicKey ppk = getPrivatePublicKeys(alias);
+            if (ppk == null) return null;
             Cipher cipher = Cipher.getInstance(SecurityConstants.CIPHER_RSA_ECB_PKCS1);
 
-            cipher.init(Cipher.DECRYPT_MODE, privateKey);
+            cipher.init(Cipher.DECRYPT_MODE, ppk.privateKey);
             return cipher.doFinal(data);
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException |
                 IllegalBlockSizeException | BadPaddingException ex) {
@@ -302,11 +311,11 @@ public class KeyStoreHelper {
      */
     private static byte[] signData(String alias, byte[] data) throws NoSuchAlgorithmException,
             InvalidKeyException, SignatureException {
-        KeyStore.PrivateKeyEntry pke = getPrivateKeyEntry(alias);
-        if (pke == null) return null;
-        PrivateKey privateKey = getPrivateKeyEntry(alias).getPrivateKey();
+
+        PrivatePublicKey ppk = getPrivatePublicKeys(alias);
+        if (ppk == null) return null;
         Signature s = Signature.getInstance(SecurityConstants.SIGNATURE_SHA256withRSA);
-        s.initSign(privateKey);
+        s.initSign(ppk.privateKey);
         s.update(data);
         return s.sign();
     }
@@ -330,11 +339,17 @@ public class KeyStoreHelper {
             return false;
         }
 
-        KeyStore.PrivateKeyEntry keyEntry = getPrivateKeyEntry(alias);
-        Signature s = Signature.getInstance(SecurityConstants.SIGNATURE_SHA256withRSA);
-        s.initVerify(keyEntry.getCertificate());
-        s.update(data);
-        return s.verify(signature);
+        try {
+            KeyStore ks = KeyStore.getInstance(SecurityConstants.KEYSTORE_PROVIDER_ANDROID_KEYSTORE);
+            ks.load(null);
+
+            Signature s = Signature.getInstance(SecurityConstants.SIGNATURE_SHA256withRSA);
+            s.initVerify(ks.getCertificate(alias));
+            s.update(data);
+            return s.verify(signature);
+        } catch (IOException | CertificateException | KeyStoreException ex) {
+            throw new IllegalStateException(ex);
+        }
     }
 
     public interface SecurityConstants {

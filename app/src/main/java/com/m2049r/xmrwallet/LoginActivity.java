@@ -87,8 +87,11 @@ public class LoginActivity extends BaseActivity
     static final int DAEMON_TIMEOUT = 500; // daemon must respond in 500ms
 
     private static final String NODES_PREFS_NAME = "nodes";
-    private static final String PREF_DAEMON_STAGENET = "daemon_stagenet";
     private static final String PREF_DAEMON_MAINNET = "daemon_mainnet";
+    private static final String PREF_DAEMON_STAGENET = "daemon_stagenet";
+    private static final String DEFAULT_DAEMONLIST_MAINNET = "doopool.xyz:22020;pool.loki.hashvault.pro:22023;daemons.cryptopool.space:22023;node.loki-pool.com:18081;uk.loki.cash:22020";
+    private static final String DEFAULT_DAEMONLIST_STAGENET = "nari.blockfoundry.org:10610/stagenet";
+
 
     private NodeInfo node = null;
 
@@ -153,10 +156,12 @@ public class LoginActivity extends BaseActivity
             SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
             switch (WalletManager.getInstance().getNetworkType()) {
                 case NetworkType_Mainnet:
+                    loadLegacyList(DEFAULT_DAEMONLIST_MAINNET);
                     loadLegacyList(sharedPref.getString(PREF_DAEMON_MAINNET, null));
                     sharedPref.edit().remove(PREF_DAEMON_MAINNET).apply();
                     break;
                 case NetworkType_Stagenet:
+                    loadLegacyList(DEFAULT_DAEMONLIST_STAGENET);
                     loadLegacyList(sharedPref.getString(PREF_DAEMON_STAGENET, null));
                     sharedPref.edit().remove(PREF_DAEMON_STAGENET).apply();
                     break;

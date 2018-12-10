@@ -22,6 +22,7 @@ import com.burgstaller.okhttp.digest.CachingAuthenticator;
 import com.burgstaller.okhttp.digest.Credentials;
 import com.burgstaller.okhttp.digest.DigestAuthenticator;
 import com.m2049r.levin.scanner.Dispatcher;
+import com.m2049r.xmrwallet.model.NetworkType;
 import com.m2049r.xmrwallet.util.OkHttpHelper;
 
 import org.json.JSONException;
@@ -45,8 +46,6 @@ import okhttp3.ResponseBody;
 import timber.log.Timber;
 
 public class NodeInfo extends Node {
-    final static public int MIN_MAJOR_VERSION = 9;
-
     private long height = 0;
     private long timestamp = 0;
     private int majorVersion = 0;
@@ -143,7 +142,14 @@ public class NodeInfo extends Node {
     }
 
     public boolean isValid() {
-        return isSuccessful() && (majorVersion >= MIN_MAJOR_VERSION) && (responseTime < Double.MAX_VALUE);
+
+        boolean versionValid;
+        if (getNetworkType() == NetworkType.NetworkType_Stagenet && majorVersion >= 8)
+            versionValid = true;
+        else
+            versionValid = (majorVersion > 9);
+
+        return isSuccessful() && versionValid && (responseTime < Double.MAX_VALUE);
     }
 
     static public Comparator<NodeInfo> BestNodeComparator = new Comparator<NodeInfo>() {
