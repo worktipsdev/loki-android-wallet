@@ -147,7 +147,7 @@ public class NodeInfo extends Node {
         if (getNetworkType() == NetworkType.NetworkType_Stagenet && majorVersion >= 8)
             versionValid = true;
         else
-            versionValid = (majorVersion > 9);
+            versionValid = (majorVersion >= 9);
 
         return isSuccessful() && versionValid && (responseTime < Double.MAX_VALUE);
     }
