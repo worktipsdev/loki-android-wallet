@@ -97,19 +97,19 @@ RUN cd /opt/android/libsodium \
 
 # Building Loki from the latest commit on Android branch, this should be kept up to date with master
 # with the necessary fixes by crtlib and m2049r to build for mobile.
-# ARG LOKI_COMMIT_HASH=173c009010d22cfedf70d0d1a57ee9dfb539e07d
-# RUN cd /opt/android \
-#     && git clone -b LokiAndroidWallet https://github.com/doy-lee/loki.git --recursive --depth=1 \
-#     && cd loki \
-#     && test `git rev-parse HEAD` = ${LOKI_COMMIT_HASH} || exit 1 \
-#     && mkdir -p build/release \
-#     && ./build-all-arch.sh
+ARG LOKI_COMMIT_HASH=ee1aeaec80c2724738c3e72370d9ec07ed8a63ef
+RUN cd /opt/android \
+    && git clone -b LokiAndroidWallet https://github.com/doy-lee/loki.git --recursive --depth=1 \
+    && cd loki \
+    && test `git rev-parse HEAD` = ${LOKI_COMMIT_HASH} || exit 1 \
+    && mkdir -p build/release \
+    && ./build-all-arch.sh
 
 # Uncomment this section to use loki from the docker directory if you want to
 # easily build a custom version not depending on the specified branch above and
 # comment out the section above that pulls from github.
-ADD loki /opt/android/loki
-RUN cd /opt/android/loki \
-     && rm -rf build \
-     && mkdir -p build/release \
-     && ./build-all-arch.sh
+# ADD loki /opt/android/loki
+# RUN cd /opt/android/loki \
+#      && rm -rf build \
+#      && mkdir -p build/release \
+#      && ./build-all-arch.sh
