@@ -1,7 +1,20 @@
 FROM debian:jessie
 
-RUN apt-get update && apt-get install -y unzip automake build-essential curl cmake file pkg-config git python libtool
+RUN apt-get update && apt-get install -y unzip automake build-essential curl file pkg-config git python libtool
 WORKDIR /opt/android
+
+#Cmake
+ARG CMAKE_VERSION=3.12.1
+ARG CMAKE_VERSION_DOT=v3.12
+ARG CMAKE_HASH=c53d5c2ce81d7a957ee83e3e635c8cda5dfe20c9d501a4828ee28e1615e57ab2
+RUN set -ex \
+    && curl -s -O https://cmake.org/files/${CMAKE_VERSION_DOT}/cmake-${CMAKE_VERSION}.tar.gz \
+    && echo "${CMAKE_HASH}  cmake-${CMAKE_VERSION}.tar.gz" | sha256sum -c \
+    && tar -xzf cmake-${CMAKE_VERSION}.tar.gz \
+    && cd cmake-${CMAKE_VERSION} \
+    && ./configure \
+    && make \
+    && make install
 
 ENV ANDROID_NDK_REVISION 17b
 ENV BOOST_VERSION 1_67_0
@@ -65,9 +78,26 @@ RUN cd boost_${BOOST_VERSION} \
     && ln -sf ../include /opt/android/build/boost/x86 \
     && ln -sf ../include /opt/android/build/boost/x86_64
 
+# Sodium
+ARG SODIUM_VERSION=1.0.16
+ARG SODIUM_HASH=675149b9b8b66ff44152553fb3ebf9858128363d
+RUN set -ex \
+    && cd /opt/android \
+    && git clone https://github.com/jedisct1/libsodium.git -b ${SODIUM_VERSION} --depth=1 \
+    && cd libsodium \
+    && test `git rev-parse HEAD` = ${SODIUM_HASH} || exit 1 \
+    && ./autogen.sh
+
+## Building Sodium
+RUN cd /opt/android/libsodium \
+    && PATH=/opt/android/tool/arm/arm-linux-androideabi/bin:/opt/android/tool/arm/bin:$PATH ; CFLAGS="-fPIC" CXXFLAGS="-fPIC" ./configure --prefix=/opt/android/build/libsodium/arm --host=arm-linux-androideabi --enable-static --disable-shared && make && make install && make clean \
+    && PATH=/opt/android/tool/arm64/aarch64-linux-android/bin:/opt/android/tool/arm64/bin:$PATH ; CFLAGS="-fPIC" CXXFLAGS="-fPIC" ./configure --prefix=/opt/android/build/libsodium/arm64 --host=aarch64-linux-android --enable-static --disable-shared && make && make install && make clean \
+    && PATH=/opt/android/tool/x86/i686-linux-android/bin:/opt/android/tool/x86/bin:$PATH ; CFLAGS="-fPIC" CXXFLAGS="-fPIC" ./configure --prefix=/opt/android/build/libsodium/x86 --host=i686-linux-android --enable-static --disable-shared && make && make install && make clean \
+    && PATH=/opt/android/tool/x86_64/x86_64-linux-android/bin:/opt/android/tool/x86_64/bin:$PATH ; CFLAGS="-fPIC" CXXFLAGS="-fPIC" ./configure --prefix=/opt/android/build/libsodium/x86_64 --host=x86_64-linux-android --enable-static --disable-shared && make && make install && make clean
+
 # Building Loki from the latest commit on Android branch, this should be kept up to date with master
 # with the necessary fixes by crtlib and m2049r to build for mobile.
-ARG LOKI_COMMIT_HASH=173c009010d22cfedf70d0d1a57ee9dfb539e07d
+ARG LOKI_COMMIT_HASH=ee1aeaec80c2724738c3e72370d9ec07ed8a63ef
 RUN cd /opt/android \
     && git clone -b LokiAndroidWallet https://github.com/doy-lee/loki.git --recursive --depth=1 \
     && cd loki \

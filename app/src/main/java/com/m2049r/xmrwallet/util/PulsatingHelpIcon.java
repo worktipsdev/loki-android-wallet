@@ -12,8 +12,6 @@ import android.widget.ImageView;
 
 import com.m2049r.xmrwallet.R;
 
-import junit.framework.Assert;
-
 public class PulsatingHelpIcon {
 
     private static final float SCALE_VALUE = 1.2f;
@@ -32,8 +30,6 @@ public class PulsatingHelpIcon {
         mMenu = menu;
         mMenuItemId = menuItemId;
         mHelpMenu = menu.findItem(menuItemId);
-
-        Assert.assertNotNull(mHelpMenu);
         startAnimation();
     }
 

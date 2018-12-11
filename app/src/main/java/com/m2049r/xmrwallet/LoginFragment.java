@@ -17,13 +17,13 @@
 package com.m2049r.xmrwallet;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,27 +32,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.m2049r.xmrwallet.data.NodeInfo;
+import com.m2049r.xmrwallet.layout.NodeInfoAdapter;
 import com.m2049r.xmrwallet.layout.WalletInfoAdapter;
-import com.m2049r.xmrwallet.model.NetworkType;
 import com.m2049r.xmrwallet.model.WalletManager;
 import com.m2049r.xmrwallet.util.AppPreferences;
 import com.m2049r.xmrwallet.util.Helper;
 import com.m2049r.xmrwallet.util.KeyStoreHelper;
-import com.m2049r.xmrwallet.util.NodeList;
 import com.m2049r.xmrwallet.util.Notice;
-import com.m2049r.xmrwallet.widget.DropDownEditText;
 import com.m2049r.xmrwallet.widget.Toolbar;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -67,10 +65,11 @@ public class LoginFragment extends Fragment implements WalletInfoAdapter.OnInter
     private List<WalletManager.WalletInfo> walletList = new ArrayList<>();
     private List<WalletManager.WalletInfo> displayedList = new ArrayList<>();
 
-    private EditText etDummy;
     private ImageView ivGunther;
-    private DropDownEditText etDaemonAddress;
-    private ArrayAdapter<String> nodeAdapter;
+    private TextView tvNodeName;
+    private TextView tvNodeAddress;
+    private View pbNode;
+    private View llNode;
 
     private Listener activityCallback;
 
@@ -78,7 +77,7 @@ public class LoginFragment extends Fragment implements WalletInfoAdapter.OnInter
     public interface Listener {
         File getStorageRoot();
 
-        boolean onWalletSelected(String wallet, String daemon);
+        boolean onWalletSelected(String wallet, boolean streetmode);
 
         void onWalletDetails(String wallet);
 
@@ -92,14 +91,19 @@ public class LoginFragment extends Fragment implements WalletInfoAdapter.OnInter
 
         void onAddWallet(String type);
 
+        void onNodePrefs();
+
         void showNet();
 
         void setToolbarButton(int type);
 
         void setTitle(String title);
 
-        void setNetworkType(NetworkType networkType);
+        void setNode(NodeInfo node);
 
+        Set<NodeInfo> getFavouriteNodes();
+
+        boolean hasLedger();
     }
 
     @Override
@@ -116,17 +120,17 @@ public class LoginFragment extends Fragment implements WalletInfoAdapter.OnInter
     @Override
     public void onPause() {
         Timber.d("onPause()");
-        savePrefs();
         super.onPause();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        Timber.d("onResume()");
+        Timber.d("onResume() %s", activityCallback.getFavouriteNodes().size());
         activityCallback.setTitle(null);
         activityCallback.setToolbarButton(Toolbar.BUTTON_CREDITS);
         activityCallback.showNet();
+        findBestNode();
     }
 
     @Override
@@ -135,18 +139,20 @@ public class LoginFragment extends Fragment implements WalletInfoAdapter.OnInter
         Timber.d("onCreateView");
         View view = inflater.inflate(R.layout.fragment_login, container, false);
 
-        ivGunther = (ImageView) view.findViewById(R.id.ivGunther);
-        fabScreen = (FrameLayout) view.findViewById(R.id.fabScreen);
-        fab = (FloatingActionButton) view.findViewById(R.id.fab);
-        fabNew = (FloatingActionButton) view.findViewById(R.id.fabNew);
-        fabView = (FloatingActionButton) view.findViewById(R.id.fabView);
-        fabKey = (FloatingActionButton) view.findViewById(R.id.fabKey);
-        fabSeed = (FloatingActionButton) view.findViewById(R.id.fabSeed);
+        ivGunther = view.findViewById(R.id.ivGunther);
+        fabScreen = view.findViewById(R.id.fabScreen);
+        fab = view.findViewById(R.id.fab);
+        fabNew = view.findViewById(R.id.fabNew);
+        fabView = view.findViewById(R.id.fabView);
+        fabKey = view.findViewById(R.id.fabKey);
+        fabSeed = view.findViewById(R.id.fabSeed);
+        fabLedger = view.findViewById(R.id.fabLedger);
 
-        fabNewL = (RelativeLayout) view.findViewById(R.id.fabNewL);
-        fabViewL = (RelativeLayout) view.findViewById(R.id.fabViewL);
-        fabKeyL = (RelativeLayout) view.findViewById(R.id.fabKeyL);
-        fabSeedL = (RelativeLayout) view.findViewById(R.id.fabSeedL);
+        fabNewL = view.findViewById(R.id.fabNewL);
+        fabViewL = view.findViewById(R.id.fabViewL);
+        fabKeyL = view.findViewById(R.id.fabKeyL);
+        fabSeedL = view.findViewById(R.id.fabSeedL);
+        fabLedgerL = view.findViewById(R.id.fabLedgerL);
 
         fab_pulse = AnimationUtils.loadAnimation(getContext(), R.anim.fab_pulse);
         fab_open_screen = AnimationUtils.loadAnimation(getContext(), R.anim.fab_open_screen);
@@ -160,74 +166,68 @@ public class LoginFragment extends Fragment implements WalletInfoAdapter.OnInter
         fabView.setOnClickListener(this);
         fabKey.setOnClickListener(this);
         fabSeed.setOnClickListener(this);
+        fabLedger.setOnClickListener(this);
         fabScreen.setOnClickListener(this);
 
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
+        RecyclerView recyclerView = view.findViewById(R.id.list);
         registerForContextMenu(recyclerView);
         this.adapter = new WalletInfoAdapter(getActivity(), this);
         recyclerView.setAdapter(adapter);
 
-        etDummy = (EditText) view.findViewById(R.id.etDummy);
+        ViewGroup llNotice = view.findViewById(R.id.llNotice);
+        Notice.showAll(llNotice, ".*_login");
 
-        ViewGroup llNotice = (ViewGroup) view.findViewById(R.id.llNotice);
-        Notice.showAll(llNotice,".*_login");
-
-        etDaemonAddress = (DropDownEditText) view.findViewById(R.id.etDaemonAddress);
-        nodeAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line);
-        etDaemonAddress.setAdapter(nodeAdapter);
+        pbNode = view.findViewById(R.id.pbNode);
+        llNode = view.findViewById(R.id.llNode);
+        llNode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (activityCallback.getFavouriteNodes().isEmpty())
+                    activityCallback.onNodePrefs();
+                else
+                    findBestNode();
+            }
+        });
+        tvNodeName = view.findViewById(R.id.tvNodeName);
+        tvNodeAddress = view.findViewById(R.id.tvNodeAddress);
+        view.findViewById(R.id.ibOption).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (activityCallback != null)
+                    activityCallback.onNodePrefs();
+            }
+        });
 
         Helper.hideKeyboard(getActivity());
 
-        etDaemonAddress.setThreshold(0);
-        etDaemonAddress.setOnClickListener(v -> {
-            etDaemonAddress.showDropDown();
-            Helper.showKeyboard(getActivity());
-        });
-
-        etDaemonAddress.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus && !getActivity().isFinishing() && etDaemonAddress.isLaidOut()) {
-                etDaemonAddress.showDropDown();
-                Helper.showKeyboard(getActivity());
-            }
-        });
-
-        etDaemonAddress.setOnEditorActionListener((v, actionId, event) -> {
-            if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                Helper.hideKeyboard(getActivity());
-                etDummy.requestFocus();
-                return true;
-            }
-            return false;
-        });
-
-        etDaemonAddress.setOnItemClickListener((parent, arg1, pos, id) -> {
-            Helper.hideKeyboard(getActivity());
-            etDummy.requestFocus();
-
-        });
-
-        loadPrefs();
+        loadList();
 
         return view;
     }
 
     // Callbacks from WalletInfoAdapter
+
+    // Wallet touched
     @Override
     public void onInteraction(final View view, final WalletManager.WalletInfo infoItem) {
-        String addressPrefix = addressPrefix();
+        String addressPrefix = WalletManager.getInstance().addressPrefix();
         if (addressPrefix.indexOf(infoItem.address.charAt(0)) < 0) {
             Toast.makeText(getActivity(), getString(R.string.prompt_wrong_net), Toast.LENGTH_LONG).show();
             return;
         }
+        openWallet(infoItem.name, false);
+    }
 
-        if (activityCallback.onWalletSelected(infoItem.name, getDaemon())) {
-            savePrefs();
-        }
+    private void openWallet(String name, boolean streetmode) {
+        activityCallback.onWalletSelected(name, streetmode);
     }
 
     @Override
     public boolean onContextInteraction(MenuItem item, WalletManager.WalletInfo listItem) {
         switch (item.getItemId()) {
+            case R.id.action_streetmode:
+                openWallet(listItem.name, true);
+                break;
             case R.id.action_info:
                 showInfo(listItem.name);
                 break;
@@ -249,22 +249,9 @@ public class LoginFragment extends Fragment implements WalletInfoAdapter.OnInter
         return true;
     }
 
-    private String addressPrefix() {
-        switch (WalletManager.getInstance().getNetworkType()) {
-            case NetworkType_Testnet:
-                return "T";
-            case NetworkType_Mainnet:
-                return "L";
-            case NetworkType_Stagenet:
-                return "5";
-            default:
-                throw new IllegalStateException("Unsupported Network: " + WalletManager.getInstance().getNetworkType());
-        }
-    }
-
     private void filterList() {
         displayedList.clear();
-        String addressPrefix = addressPrefix();
+        String addressPrefix = WalletManager.getInstance().addressPrefix();
         for (WalletManager.WalletInfo s : walletList) {
             if (addressPrefix.indexOf(s.address.charAt(0)) >= 0) displayedList.add(s);
         }
@@ -323,85 +310,13 @@ public class LoginFragment extends Fragment implements WalletInfoAdapter.OnInter
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.list_menu, menu);
-        menu.findItem(R.id.action_stagenet).setChecked(stagenetCheckMenu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    private boolean stagenetCheckMenu = BuildConfig.DEBUG;
-
-    public boolean onStagenetMenuItem() {
-        boolean lastState = stagenetCheckMenu;
-        setNet(!lastState, true); // set and save
-        return !lastState;
-    }
-
-    public void setNet(boolean stagenetChecked, boolean save) {
-        this.stagenetCheckMenu = stagenetChecked;
-        NetworkType net = stagenetChecked ? NetworkType.NetworkType_Stagenet : NetworkType.NetworkType_Mainnet;
-        activityCallback.setNetworkType(net);
-        activityCallback.showNet();
-        if (save) {
-            savePrefs(true); // use previous state as we just clicked it
-        }
-        if (stagenetChecked) {
-            setDaemon(daemonStageNet);
-        } else {
-            setDaemon(daemonMainNet);
-        }
-        loadList();
-    }
-
-    private NodeList daemonStageNet;
-    private NodeList daemonMainNet;
-
-    void loadPrefs() {
-        daemonMainNet = new NodeList(AppPreferences.getMainnetDaemons(getContext()));
-        daemonStageNet = new NodeList(AppPreferences.getStagenetDaemons(getContext()));
-
-        setNet(stagenetCheckMenu, false);
-    }
-
-    void savePrefs() {
-        savePrefs(false);
-    }
-
-    void savePrefs(boolean usePreviousNetState) {
-        Timber.d("SAVE / %s", usePreviousNetState);
-        // save the daemon address for the net
-        boolean stagenet = stagenetCheckMenu ^ usePreviousNetState;
-        String daemon = getDaemon();
-        if (stagenet) {
-            daemonStageNet.setRecent(daemon);
-        } else {
-            daemonMainNet.setRecent(daemon);
-        }
-
-        AppPreferences.setMainnetDaemons(getContext(), daemonMainNet.toString());
-        AppPreferences.setStagenetDaemons(getContext(), daemonStageNet.toString());
-    }
-
-    String getDaemon() {
-        return etDaemonAddress.getText().toString().trim();
-    }
-
-    void setDaemon(NodeList nodeList) {
-        Timber.d("setDaemon() %s", nodeList.toString());
-        String[] nodes = nodeList.getNodes().toArray(new String[0]);
-        nodeAdapter.clear();
-        nodeAdapter.addAll(nodes);
-        etDaemonAddress.getText().clear();
-        if (nodes.length > 0) {
-            etDaemonAddress.setText(nodes[0]);
-        }
-        etDaemonAddress.dismissDropDown();
-        etDummy.requestFocus();
-        Helper.hideKeyboard(getActivity());
-    }
-
     private boolean isFabOpen = false;
-    private FloatingActionButton fab, fabNew, fabView, fabKey, fabSeed;
+    private FloatingActionButton fab, fabNew, fabView, fabKey, fabSeed, fabLedger;
     private FrameLayout fabScreen;
-    private RelativeLayout fabNewL, fabViewL, fabKeyL, fabSeedL;
+    private RelativeLayout fabNewL, fabViewL, fabKeyL, fabSeedL, fabLedgerL;
     private Animation fab_open, fab_close, rotate_forward, rotate_backward, fab_open_screen, fab_close_screen;
     private Animation fab_pulse;
 
@@ -410,32 +325,53 @@ public class LoginFragment extends Fragment implements WalletInfoAdapter.OnInter
     }
 
     public void animateFAB() {
-        if (isFabOpen) {
-            fabScreen.setVisibility(View.INVISIBLE);
+        if (isFabOpen) { // close the fab
             fabScreen.setClickable(false);
             fabScreen.startAnimation(fab_close_screen);
             fab.startAnimation(rotate_backward);
-            fabNewL.startAnimation(fab_close);
-            fabNew.setClickable(false);
-            fabViewL.startAnimation(fab_close);
-            fabView.setClickable(false);
-            fabKeyL.startAnimation(fab_close);
-            fabKey.setClickable(false);
-            fabSeedL.startAnimation(fab_close);
-            fabSeed.setClickable(false);
+            if (fabLedgerL.getVisibility() == View.VISIBLE) {
+                fabLedgerL.startAnimation(fab_close);
+                fabLedger.setClickable(false);
+            } else {
+                fabNewL.startAnimation(fab_close);
+                fabNew.setClickable(false);
+                fabViewL.startAnimation(fab_close);
+                fabView.setClickable(false);
+                fabKeyL.startAnimation(fab_close);
+                fabKey.setClickable(false);
+                fabSeedL.startAnimation(fab_close);
+                fabSeed.setClickable(false);
+            }
             isFabOpen = false;
-        } else {
+        } else { // open the fab
             fabScreen.setClickable(true);
             fabScreen.startAnimation(fab_open_screen);
             fab.startAnimation(rotate_forward);
-            fabNewL.startAnimation(fab_open);
-            fabNew.setClickable(true);
-            fabViewL.startAnimation(fab_open);
-            fabView.setClickable(true);
-            fabKeyL.startAnimation(fab_open);
-            fabKey.setClickable(true);
-            fabSeedL.startAnimation(fab_open);
-            fabSeed.setClickable(true);
+            if (activityCallback.hasLedger()) {
+                fabLedgerL.setVisibility(View.VISIBLE);
+                fabNewL.setVisibility(View.GONE);
+                fabViewL.setVisibility(View.GONE);
+                fabKeyL.setVisibility(View.GONE);
+                fabSeedL.setVisibility(View.GONE);
+
+                fabLedgerL.startAnimation(fab_open);
+                fabLedger.setClickable(true);
+            } else {
+                fabLedgerL.setVisibility(View.GONE);
+                fabNewL.setVisibility(View.VISIBLE);
+                fabViewL.setVisibility(View.VISIBLE);
+                fabKeyL.setVisibility(View.VISIBLE);
+                fabSeedL.setVisibility(View.VISIBLE);
+
+                fabNewL.startAnimation(fab_open);
+                fabNew.setClickable(true);
+                fabViewL.startAnimation(fab_open);
+                fabView.setClickable(true);
+                fabKeyL.startAnimation(fab_open);
+                fabKey.setClickable(true);
+                fabSeedL.startAnimation(fab_open);
+                fabSeed.setClickable(true);
+            }
             isFabOpen = true;
         }
     }
@@ -443,6 +379,7 @@ public class LoginFragment extends Fragment implements WalletInfoAdapter.OnInter
     @Override
     public void onClick(View v) {
         int id = v.getId();
+        Timber.d("onClick %d/%d", id, R.id.fabLedger);
         switch (id) {
             case R.id.fab:
                 animateFAB();
@@ -464,9 +401,81 @@ public class LoginFragment extends Fragment implements WalletInfoAdapter.OnInter
                 animateFAB();
                 activityCallback.onAddWallet(GenerateFragment.TYPE_SEED);
                 break;
+            case R.id.fabLedger:
+                Timber.d("FAB_LEDGER");
+                animateFAB();
+                activityCallback.onAddWallet(GenerateFragment.TYPE_LEDGER);
+                break;
             case R.id.fabScreen:
                 animateFAB();
                 break;
         }
+    }
+
+    public void findBestNode() {
+        new AsyncFindBestNode().execute();
+    }
+
+    private class AsyncFindBestNode extends AsyncTask<Void, Void, NodeInfo> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pbNode.setVisibility(View.VISIBLE);
+            llNode.setVisibility(View.INVISIBLE);
+            activityCallback.setNode(null);
+        }
+
+        @Override
+        protected NodeInfo doInBackground(Void... params) {
+            List<NodeInfo> nodesToTest = new ArrayList<>(activityCallback.getFavouriteNodes());
+            Timber.d("testing best node from %d", nodesToTest.size());
+            if (nodesToTest.isEmpty()) return null;
+            for (NodeInfo node : nodesToTest) {
+                node.testRpcService(); // TODO: do this in parallel?
+                // no: it's better if it looks like it's doing something
+            }
+            Collections.sort(nodesToTest, NodeInfo.BestNodeComparator);
+            NodeInfo bestNode = nodesToTest.get(0);
+            if (bestNode.isValid())
+                return nodesToTest.get(0);
+            else
+                return null;
+        }
+
+        @Override
+        protected void onPostExecute(NodeInfo result) {
+            if (!isAdded()) return;
+            pbNode.setVisibility(View.INVISIBLE);
+            llNode.setVisibility(View.VISIBLE);
+            activityCallback.setNode(result);
+            if (result != null) {
+                Timber.d("found a good node %s", result.toString());
+                showNode(result);
+            } else {
+                if (!activityCallback.getFavouriteNodes().isEmpty()) {
+                    tvNodeName.setText(getResources().getText(R.string.node_refresh_hint));
+                    tvNodeName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_refresh_black_24dp, 0, 0, 0);
+                    tvNodeAddress.setText(null);
+                    tvNodeAddress.setVisibility(View.GONE);
+                } else {
+                    tvNodeName.setText(getResources().getText(R.string.node_create_hint));
+                    tvNodeName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                    tvNodeAddress.setText(null);
+                    tvNodeAddress.setVisibility(View.GONE);
+                }
+            }
+        }
+
+        @Override
+        protected void onCancelled(NodeInfo result) { //TODO: cancel this on exit from fragment
+            Timber.d("cancelled with %s", result);
+        }
+    }
+
+    private void showNode(NodeInfo nodeInfo) {
+        tvNodeName.setText(nodeInfo.getName());
+        tvNodeName.setCompoundDrawablesWithIntrinsicBounds(NodeInfoAdapter.getPingIcon(nodeInfo), 0, 0, 0);
+        tvNodeAddress.setText(nodeInfo.getAddress());
+        tvNodeAddress.setVisibility(View.VISIBLE);
     }
 }

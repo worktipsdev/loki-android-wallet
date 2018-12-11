@@ -12,8 +12,10 @@ else
 fi
 
 orig_path=$PATH
-packages=(boost openssl monero)
-archs=(arm arm64 x86 x86_64)
+packages=(boost openssl monero libsodium)
+
+# archs=(arm arm64 x86 x86_64)
+archs=(x86)
 
 for arch in ${archs[@]}; do
     case ${arch} in
@@ -33,8 +35,9 @@ for arch in ${archs[@]}; do
 			exit 16
             ;;
     esac
-	
+
 	for package in ${packages[@]}; do
+    INPUT_DIR=`pwd`/build/build/$package
 		OUTPUT_DIR=`pwd`/$package/lib/$xarch
 		mkdir -p $OUTPUT_DIR
 		rm -f $OUTPUT_DIR/*.a

@@ -111,10 +111,10 @@ public class TransactionInfoAdapter extends RecyclerView.Adapter<TransactionInfo
 
         ViewHolder(View itemView) {
             super(itemView);
-            tvAmount = (TextView) itemView.findViewById(R.id.tx_amount);
-            tvFee = (TextView) itemView.findViewById(R.id.tx_fee);
-            tvPaymentId = (TextView) itemView.findViewById(R.id.tx_paymentid);
-            tvDateTime = (TextView) itemView.findViewById(R.id.tx_datetime);
+            tvAmount = itemView.findViewById(R.id.tx_amount);
+            tvFee = itemView.findViewById(R.id.tx_fee);
+            tvPaymentId = itemView.findViewById(R.id.tx_paymentid);
+            tvDateTime = itemView.findViewById(R.id.tx_datetime);
         }
 
         private String getDateTime(long time) {

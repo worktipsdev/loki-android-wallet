@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 m2049r et al.
+ * Copyright (c) 2017-2018 m2049r et al.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,20 +18,20 @@ package com.m2049r.xmrwallet.service.exchange.coinmarketcap;
 
 import android.support.annotation.NonNull;
 
-import com.m2049r.xmrwallet.service.exchange.api.BaseExchangeRate;
 import com.m2049r.xmrwallet.service.exchange.api.ExchangeException;
+import com.m2049r.xmrwallet.service.exchange.api.ExchangeRate;
+import com.m2049r.xmrwallet.service.exchange.api.BaseExchangeRate;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 class ExchangeRateImpl extends BaseExchangeRate {
-
-    private static final String PAYLOAD_PRICE_KEY = "price";
-    private static final String PAYLOAD_QUOTES_KEY = "quotes";
-    private static final String PAYLOAD_SYMBOL_KEY = "symbol";
 
     @Override
     public String getServiceName() {
@@ -43,10 +43,9 @@ class ExchangeRateImpl extends BaseExchangeRate {
     }
 
     ExchangeRateImpl(final JSONObject jsonObject, final boolean swapAssets) throws JSONException, ExchangeException {
-        super();
         try {
-            final String baseC = jsonObject.getString(PAYLOAD_SYMBOL_KEY);
-            final JSONObject quotes = jsonObject.getJSONObject(PAYLOAD_QUOTES_KEY);
+            final String baseC = jsonObject.getString("symbol");
+            final JSONObject quotes = jsonObject.getJSONObject("quotes");
             final Iterator<String> keys = quotes.keys();
             String key = null;
             // get key which is not USD unless it is the only one
@@ -58,7 +57,7 @@ class ExchangeRateImpl extends BaseExchangeRate {
             baseCurrency = swapAssets ? quoteC : baseC;
             quoteCurrency = swapAssets ? baseC : quoteC;
             JSONObject quote = quotes.getJSONObject(key);
-            double price = quote.getDouble(PAYLOAD_PRICE_KEY);
+            double price = quote.getDouble("price");
             this.rate = swapAssets ? (1d / price) : price;
         } catch (NoSuchElementException ex) {
             throw new ExchangeException(ex.getLocalizedMessage());

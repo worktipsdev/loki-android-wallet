@@ -6,7 +6,6 @@
 
     <string name="menu_share">Condividi</string>
     <string name="menu_help">Aiuto</string>
-    <string name="menu_info">Dettagli</string>
     <string name="menu_receive">Ricevi</string>
     <string name="menu_rename">Rinomina &#8230;</string>
     <string name="menu_archive">Archivia</string>
@@ -30,9 +29,9 @@
     <string name="label_send_done">Fatto</string>
 
     <string name="label_receive_info_gen_qr_code">Tocca per il codice QR</string>
-    <string name="info_send_prio_fees">Priorità più alta = Commissioni più alte</string>
 
     <string name="info_crazypass_enabled">CrAzYpass abilitato, tocca per maggiori informazioni.</string>
+    <string name="info_ledger_enabled">Ledger abilitato, tocca per maggiori informazioni.</string>
 
 
     <string name="info_paymentid_intergrated">ID pagamento integrato</string>
@@ -48,11 +47,11 @@
     <string name="backup_progress">Backup in corso</string>
     <string name="archive_progress">Archiviazione in corso</string>
     <string name="rename_progress">Rinomina in corso</string>
-    <string name="open_progress">Controllando connessione con daemon</string>
     <string name="changepw_progress">Modifica password in corso</string>
 
     <string name="service_progress">Rimettendo le cose a posto &#8230;\nPuò richiedere del tempo!</string>
 
+    <string name="backup_success">Backup effettuato con successo</string>
     <string name="backup_failed">Backup fallito!</string>
     <string name="archive_failed">Archiviazione fallita!</string>
     <string name="rename_failed">Rinomina fallita!</string>
@@ -60,13 +59,11 @@
     <string name="changepw_success">Password cambiata</string>
 
     <string name="label_daemon">Nodo</string>
-    <string name="prompt_daemon">([&lt;utente&gt;:&lt;password&gt;@]&lt;daemon&gt;[:&lt;porta&gt;])</string>
     <string name="status_wallet_loading">Caricando portafoglio &#8230;</string>
     <string name="status_wallet_unloaded">Portafoglio salvato</string>
     <string name="status_wallet_unload_failed">Salvataggio portafoglio fallito!</string>
     <string name="status_wallet_connecting">In connessione &#8230;</string>
     <string name="status_wallet_connect_failed">Connessione con il nodo fallita!\nControlla username/password</string>
-    <string name="status_wallet_connect_timeout">Connessione con il nodo scaduta!\nProva di nuovo o provane un altro.</string>
     <string name="status_wallet_node_invalid">Nodo invalido!\nProvane un altro.</string>
     <string name="status_wallet_connect_ioex">Impossibile raggiungere il nodo!\nProva di nuovo o provane un altro.</string>
 
@@ -81,7 +78,7 @@
     <string name="prompt_changepw">Nuova passphrase per %1$s</string>
     <string name="prompt_changepwB">Ripeti passphrase per %1$s</string>
     <string name="prompt_password">Password per %1$s</string>
-    <string name="prompt_fingerprint_auth">Puoi aprire il portafoglio anche usando la tua impronta digitale./nTocca il sensore.</string>
+    <string name="prompt_fingerprint_auth">Puoi aprire il portafoglio anche usando la tua impronta digitale.\nTocca il sensore.</string>
     <string name="prompt_send_password">Conferma Password</string>
     <string name="prompt_open_wallet">Aprendo il portafoglio&#8230;</string>
     <string name="bad_fingerprint">Impronta digitale non riconosciuta. Prova di nuovo.</string>
@@ -115,7 +112,7 @@
     <string name="message_copy_txid">ID transazione copiato negli appunti!</string>
     <string name="message_nocopy">Copia disabilitata per ragioni di sicurezza!</string>
 
-    <string name="message_exchange_failed">Impossibile recuperare il tasso di cambio!\nUsa LOKI/LOKI o prova di nuovo</string>
+    <string name="message_exchange_failed">Impossibile recuperare il tasso di cambio!\nUsa Loki o prova di nuovo</string>
 
     <string name="generate_title">Crea portafoglio</string>
     <string name="generate_name_hint">Nome del portafoglio</string>
@@ -123,7 +120,7 @@
     <string name="generate_fingerprint_hint">Permetti di aprire il portafoglio usando la tua impronta digitale</string>
     <string name="generate_fingerprint_warn">[<![CDATA[
         <strong>Autenticazione tramite impronta digitale</strong>
-        <p>Abilitando l\'autenticazione tramite impronta digitale, puoi visualizzare il tuo bilancio e ricevere fondi
+        <p>Abilitando l\'autenticazione tramite impronta digitale, puoi visualizzare il tuo saldo e ricevere fondi
         senza inserire la password.</p>
         <p>Per sicurezza aggiuntiva, Loki Wallet richiederà comunque di inserire la password per visualizzare i dettagli
         del tuo portafoglio o inviare denaro.</p>
@@ -143,7 +140,6 @@
     <string name="generate_wallet_dot">Non può iniziare con .</string>
     <string name="generate_wallet_creating">Portafoglio in creazione</string>
     <string name="generate_wallet_created">Portafoglio creato</string>
-    <string name="generate_wallet_create_failed">Creazione del portafoglio fallita</string>
 
     <string name="generate_restoreheight_error">Inserisci un numero o una data (AAAA-MM-GG)</string>
 
@@ -168,7 +164,6 @@
     <string name="generate_check_address">Inserisci un indirizzo valido</string>
     <string name="generate_check_mnemonic">Inserisci il tuo seed di 25 parole</string>
 
-    <string name="send_address_hint">Indirizzo LOKI del ricevente</string>
     <string name="send_paymentid_hint">ID pagamento (opzionale)</string>
     <string name="send_amount_hint">0,00</string>
     <string name="send_notes_hint">Note private (opzionali)</string>
@@ -183,7 +178,6 @@
     <string name="send_available">Saldo: %1$s LOKI</string>
     <string name="send_address_title">Indirizzo</string>
     <string name="send_amount_title">Ammontare</string>
-    <string name="send_settings_title">Impostazioni</string>
     <string name="send_confirm_title">Conferma</string>
     <string name="send_success_title">Fatto</string>
 
@@ -220,7 +214,6 @@
     <string name="tx_pending">IN ATTESA</string>
     <string name="tx_failed">FALLITA</string>
 
-    <string name="receive_paymentid_hint">ID pagamento (opzionale)</string>
     <string name="receive_amount_hint">Ammontare</string>
     <string name="receive_cannot_open">Impossibile aprire il portafoglio!</string>
     <string name="receive_paymentid_invalid">16 o 64 caratteri esadecimali (0&#8211;9,a&#8211;f)</string>
@@ -229,8 +222,6 @@
     <string name="receive_amount_too_big">Max. %1$s</string>
     <string name="receive_amount_negative">Min. 0</string>
     <string name="receive_amount_nan">LOKI non è un numero</string>
-
-    <string name="receive_title">Ricevi</string>
 
     <string name="details_alert_message">Verranno ora mostrati dati sensibili.\nGuardati alle spalle!</string>
     <string name="details_alert_yes">Sono al sicuro</string>
@@ -241,24 +232,84 @@
     <string name="archive_alert_yes">Sì, procedi!</string>
     <string name="archive_alert_no">No grazie!</string>
 
-    <string-array name="priority">
-        <item>Priority Default</item>
-        <item>Priority Bassa</item>
-        <item>Priority Media</item>
-        <item>Priority Alta</item>
-    </string-array>
-
     <string name="fab_create_new">Crea un nuovo portafoglio</string>
     <string name="fab_restore_viewonly">Recupera un portafoglio solo-visualizzazione</string>
     <string name="fab_restore_key">Recupera un portafoglio dalle chiavi private</string>
     <string name="fab_restore_seed">Recupera un portafoglio da un seed di 25 parole</string>
 
     <string name="accounts_drawer_new">Crea Account</string>
-    <string name="accounts_drawer_title">Accounts</string>
     <string name="accounts_new">Aggiunto nuovo account #%1$d</string>
     <string name="tx_account">Account #</string>
 
     <string name="send_sweepall">Manda tutti i fondi confermati in questo account!</string>
-    <string name="tx_subaddress">Subaddress #%1$d</string>
-    <string name="generate_address_label_sub">Subaddress pubblico #%1$d</string>
+    <string name="tx_subaddress">Sottoindirizzo #%1$d</string>
+    <string name="generate_address_label_sub">Sottoindirizzo pubblico #%1$d</string>
+
+    <string name="menu_language">Lingua</string>
+    <string name="language_system_default">Usa lingua di sistema</string>
+
+    <string name="fab_restore_ledger">Ripristina da Ledger Nano S</string>
+
+    <string name="progress_ledger_progress">In comunicazione con Ledger</string>
+    <string name="progress_ledger_confirm">Conferma su Ledger richiesta!</string>
+    <string name="progress_ledger_lookahead">Recuperando subaddresses</string>
+    <string name="progress_ledger_verify">Verificando le chiavi</string>
+    <string name="progress_ledger_opentx">Folli calcoli matematici</string>
+    <string name="progress_ledger_mlsag">Hashing in corso</string>
+    <string name="open_wallet_ledger_missing">(Ri)connetti il dispositivo Ledger</string>
+
+    <string name="accounts_progress_new">Creando account</string>
+
+    <string name="toast_ledger_attached">%1$s allegati</string>
+    <string name="toast_ledger_detached">%1$s allegati</string>
+
+    <string name="progress_nfc_write">Scrivendo tag</string>
+    <string name="nfc_write_failed">Scrittura tag fallita!</string>
+    <string name="nfc_write_successful">Scrittura tag riuscita</string>
+    <string name="nfc_tag_unsupported">La tag non supporta NDEF!</string>
+    <string name="nfc_tag_size">La Tag fornisce %1$d bytes, ma ne servono %2$d!</string>
+    <string name="nfc_tag_read_undef">Non capisco la tag!</string>
+    <string name="nfc_tag_read_what">Non capisco cosa mi hai chiesto!</string>
+    <string name="nfc_tag_read_success">Lettura tag riuscita</string>
+    <string name="nfc_tag_tap">NFC disponibile!</string>
+
+    <string name="receive_desc_hint">Descrizione (opzionale)</string>
+
+    <string name="send_address_not_openalias">Indirizzo OpenAlias non disponibile</string>
+    <string name="send_address_openalias">OpenAlias sicuro &#x2714;</string>
+    <string name="send_address_resolve_openalias">Risolvendo OpenAlias&#8230;</string>
+    <string name="send_address_no_dnssec">OpenAlias senza DNSSEC - L\'indirizzo potrebbe essere rubato</string>
+    <string name="send_address_hint"> Indirizzo Loki del ricevente o OpenAlias</string>
+
+    <string name="status_wallet_connect_wrongversion">Versione del nodo incompatibile - si prega di aggiornare!</string>
+
+    <string name="menu_info">Mostra i segreti!</string>
+    <string name="menu_streetmode">Modalità strada</string>
+
+    <string name="info_nodes_enabled">Node-o-matiC abilitato, tocca per maggiori informazioni.</string>
+    <string name="node_height">Ultimo blocco aggiornato: %1$s</string>
+    <string name="label_nodes">Nodi</string>
+    <string name="node_name_hint">Nome nodo (opzionale)</string>
+    <string name="node_address_hint">Nome host</string>
+    <string name="node_port_hint">Porta</string>
+    <string name="node_user_hint">Nome utente (opzionale)</string>
+    <string name="node_pass_hint">Password (opzionale)</string>
+    <string name="node_host_unresolved">Host non risolvibile</string>
+    <string name="node_host_empty">Abbiamo bisogno di questo!</string>
+    <string name="node_port_numeric">Deve essere numerico</string>
+    <string name="node_port_range">Deve essere 1&#8211;65535</string>
+    <string name="node_fab_add">Aggiungi nodo</string>
+    <string name="node_refresh_hint">Tocca per aggiornare!</string>
+    <string name="node_test_error">ERRORE CONNESSIONE %1$d</string>
+    <string name="node_general_error">ERRORE CONNESSIONE</string>
+    <string name="node_auth_error">AUTENTICAZIONE FALLITA</string>
+    <string name="node_result_label">Risultato del test:</string>
+    <string name="node_result">Altezza: %1$s (v%2$d), Ping: %3$.0fms, IP: %4$s</string>
+    <string name="node_testing">Controllo IP: %1$s &#8230;</string>
+    <string name="node_refresh_wait">Attendi il termine della scansione</string>
+    <string name="node_create_hint">Tocca per selezionare o aggiungere nodi</string>
+    <string name="node_pull_hint">Aggiungi nodi manualmente o tira giù per effettuare scansione</string>
+    <string name="node_scanning">Scansione rete&#8230;</string>
+    <string name="node_nobookmark">Aggiunti automaticamente ai segnalibri i %1$d nodi migliori</string>
+    <string name="label_test">Effettua Test</string><!--note: as in "Test a network connection"-->
 </resources>

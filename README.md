@@ -14,11 +14,8 @@ Help us translate Loki Wallet!
 You may lose all your Loki if you use this App. Be cautious when spending on the mainnet.
 
 ### Random Notes
-- currently only android32 (runs on 64-bit as well)
-- works on the stagenet & mainnet
-- sync is slow due to 32-bit architecture
+- works on the mainnet & stagenet
 - use your own daemon - it's easy
-- screen stays on until first sync is complete
 
 ### TODO
 - see issues on github
@@ -30,6 +27,6 @@ functionality these models don't have.
 - Also note, that on some devices the backups will only be visible on a PC over USB after a reboot of the device (it's an Android bug/feature)
 
 ### HOW TO BUILD
-If you want to build yourself (recommended) check out [the instructions](doc/BUILDING-external-libs.md)
+See [the instructions](doc/BUILDING-external-libs.md)
 
 Then, fire up Android Studio and build the APK.

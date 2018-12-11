@@ -65,6 +65,7 @@ git clone https://github.com/m2049r/android-openssl.git
 wget https://github.com/openssl/openssl/archive/OpenSSL_1_0_2l.tar.gz
 cd android-openssl
 tar xfz ../OpenSSL_1_0_2l.tar.gz
+PATH="${PATH}:/opt/android/tool/arm/bin/:/opt/android/tool/arm64/bin/:/opt/android/tool/x86/bin/:/opt/android/tool/x86_64/bin" \
 ANDROID_NDK_ROOT=/opt/android/ndk ./build-all-arch.sh
 ```
 
@@ -102,6 +103,17 @@ wget https://sourceforge.net/projects/boost/files/boost/1.67.0/boost_1_67_0.tar.
 tar xfz boost_1_67_0.tar.gz
 cd boost_1_67_0
 ./bootstrap.sh
+```
+Comment out ```using ::fgetpos;``` & ```using ::fsetpos;``` in ```cstdio```.
+```
+sed -ibackup "s|using ::fgetpos;|//using ::fgetpos;|" /opt/android/tool/arm/include/c++/4.9.x/cstdio
+sed -ibackup "s|using ::fsetpos;|//using ::fsetpos;|" /opt/android/tool/arm/include/c++/4.9.x/cstdio
+sed -ibackup "s|using ::fgetpos;|//using ::fgetpos;|" /opt/android/tool/arm64/include/c++/4.9.x/cstdio
+sed -ibackup "s|using ::fsetpos;|//using ::fsetpos;|" /opt/android/tool/arm64/include/c++/4.9.x/cstdio
+sed -ibackup "s|using ::fgetpos;|//using ::fgetpos;|" /opt/android/tool/x86/include/c++/4.9.x/cstdio
+sed -ibackup "s|using ::fsetpos;|//using ::fsetpos;|" /opt/android/tool/x86/include/c++/4.9.x/cstdio
+sed -ibackup "s|using ::fgetpos;|//using ::fgetpos;|" /opt/android/tool/x86_64/include/c++/4.9.x/cstdio
+sed -ibackup "s|using ::fsetpos;|//using ::fsetpos;|" /opt/android/tool/x86_64/include/c++/4.9.x/cstdio
 ```
 
 Then build & install to ```/opt/android/build/boost``` with

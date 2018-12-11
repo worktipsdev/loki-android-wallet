@@ -37,6 +37,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.m2049r.xmrwallet.OnBackPressedListener;
+import com.m2049r.xmrwallet.OnUriScannedListener;
 import com.m2049r.xmrwallet.R;
 import com.m2049r.xmrwallet.data.BarcodeData;
 import com.m2049r.xmrwallet.data.PendingTx;
@@ -56,10 +57,11 @@ import timber.log.Timber;
 public class SendFragment extends Fragment
         implements SendAddressWizardFragment.Listener,
         SendAmountWizardFragment.Listener,
-        SendSettingsWizardFragment.Listener,
         SendConfirmWizardFragment.Listener,
         SendSuccessWizardFragment.Listener,
-        OnBackPressedListener {
+        OnBackPressedListener, OnUriScannedListener {
+
+    final static public int MIXIN = 9;
 
     private Listener activityCallback;
 
@@ -67,6 +69,8 @@ public class SendFragment extends Fragment
         SharedPreferences getPrefs();
 
         long getTotalFunds();
+
+        boolean isStreetMode();
 
         void onPrepareSend(String tag, TxData data);
 
@@ -83,6 +87,8 @@ public class SendFragment extends Fragment
         void setTitle(String title);
 
         void setSubtitle(String subtitle);
+
+        void setOnUriScannedListener(OnUriScannedListener onUriScannedListener);
     }
 
     private EditText etDummy;
@@ -105,18 +111,18 @@ public class SendFragment extends Fragment
         final View view = inflater.inflate(R.layout.fragment_send, container, false);
 
         llNavBar = view.findViewById(R.id.llNavBar);
-        bDone = (Button) view.findViewById(R.id.bDone);
+        bDone = view.findViewById(R.id.bDone);
 
-        dotBar = (DotBar) view.findViewById(R.id.dotBar);
-        bPrev = (Button) view.findViewById(R.id.bPrev);
-        bNext = (Button) view.findViewById(R.id.bNext);
+        dotBar = view.findViewById(R.id.dotBar);
+        bPrev = view.findViewById(R.id.bPrev);
+        bNext = view.findViewById(R.id.bNext);
         arrowPrev = getResources().getDrawable(R.drawable.ic_navigate_prev_white_24dp);
         arrowNext = getResources().getDrawable(R.drawable.ic_navigate_next_white_24dp);
 
-        ViewGroup llNotice = (ViewGroup) view.findViewById(R.id.llNotice);
-        Notice.showAll(llNotice,".*_send");
+        ViewGroup llNotice = view.findViewById(R.id.llNotice);
+        Notice.showAll(llNotice, ".*_send");
 
-        spendViewPager = (SpendViewPager) view.findViewById(R.id.pager);
+        spendViewPager = view.findViewById(R.id.pager);
         pagerAdapter = new SpendPagerAdapter(getChildFragmentManager());
         spendViewPager.setOffscreenPageLimit(pagerAdapter.getCount()); // load & keep all pages in cache
         spendViewPager.setAdapter(pagerAdapter);
@@ -166,7 +172,7 @@ public class SendFragment extends Fragment
 
         updatePosition(0);
 
-        etDummy = (EditText) view.findViewById(R.id.etDummy);
+        etDummy = view.findViewById(R.id.etDummy);
         etDummy.setRawInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
         etDummy.requestFocus();
         Helper.hideKeyboard(getActivity());
@@ -209,10 +215,17 @@ public class SendFragment extends Fragment
         Timber.d("onAttach %s", context);
         super.onAttach(context);
         if (context instanceof Listener) {
-            this.activityCallback = (Listener) context;
+            activityCallback = (Listener) context;
+            activityCallback.setOnUriScannedListener(this);
         } else {
             throw new ClassCastException(context.toString() + " must implement Listener");
         }
+    }
+
+    @Override
+    public void onDetach() {
+        activityCallback.setOnUriScannedListener(null);
+        super.onDetach();
     }
 
     private SpendViewPager spendViewPager;
@@ -229,13 +242,24 @@ public class SendFragment extends Fragment
         }
     }
 
+    @Override
+    public boolean onUriScanned(BarcodeData barcodeData) {
+        if (spendViewPager.getCurrentItem() == SpendPagerAdapter.POS_ADDRESS) {
+            final SendWizardFragment fragment = pagerAdapter.getFragment(SpendPagerAdapter.POS_ADDRESS);
+            if (fragment instanceof SendAddressWizardFragment) {
+                ((SendAddressWizardFragment) fragment).processScannedData(barcodeData);
+                return true;
+            }
+        }
+        return false;
+    }
+
     public class SpendPagerAdapter extends FragmentStatePagerAdapter {
         private static final int POS_ADDRESS = 0;
         private static final int POS_AMOUNT = 1;
-        private static final int POS_SETTINGS = 2;
-        private static final int POS_CONFIRM = 3;
-        private static final int POS_SUCCESS = 4;
-        private int numPages = 4;
+        private static final int POS_CONFIRM = 2;
+        private static final int POS_SUCCESS = 3;
+        private int numPages = 3;
 
         SparseArray<WeakReference<SendWizardFragment>> myFragments = new SparseArray<>();
 
@@ -284,8 +308,6 @@ public class SendFragment extends Fragment
                     return SendAddressWizardFragment.newInstance(SendFragment.this);
                 case POS_AMOUNT:
                     return SendAmountWizardFragment.newInstance(SendFragment.this);
-                case POS_SETTINGS:
-                    return SendSettingsWizardFragment.newInstance(SendFragment.this);
                 case POS_CONFIRM:
                     return SendConfirmWizardFragment.newInstance(SendFragment.this);
                 case POS_SUCCESS:
@@ -304,8 +326,6 @@ public class SendFragment extends Fragment
                     return getString(R.string.send_address_title);
                 case POS_AMOUNT:
                     return getString(R.string.send_amount_title);
-                case POS_SETTINGS:
-                    return getString(R.string.send_settings_title);
                 case POS_CONFIRM:
                     return getString(R.string.send_confirm_title);
                 case POS_SUCCESS:
@@ -318,7 +338,8 @@ public class SendFragment extends Fragment
         @Override
         public int getItemPosition(Object object) {
             Timber.d("getItemPosition %s", String.valueOf(object));
-            if ((object instanceof SendAddressWizardFragment) || (object instanceof SendSettingsWizardFragment)) {
+            if (object instanceof SendAddressWizardFragment) {
+                // keep these pages
                 return POSITION_UNCHANGED;
             } else {
                 return POSITION_NONE;
@@ -342,7 +363,13 @@ public class SendFragment extends Fragment
     }
 
     @Override
+    public BarcodeData getBarcodeData() {
+        return barcodeData;
+    }
+
+    @Override
     public BarcodeData popBarcodeData() {
+        Timber.d("POPPED");
         BarcodeData data = barcodeData;
         barcodeData = null;
         return data;
@@ -438,12 +465,11 @@ public class SendFragment extends Fragment
     public void onSendTransactionFailed(final String error) {
         Timber.d("error=%s", error);
         committedTx = null;
-        Toast.makeText(getContext(), getString(R.string.status_transaction_failed, error), Toast.LENGTH_SHORT).show();
-        enableNavigation();
-        final SendConfirm fragment = getSendConfirm();
-        if (fragment != null) {
-            fragment.sendFailed();
+        final SendConfirm confirm = getSendConfirm();
+        if (confirm != null) {
+            confirm.sendFailed(getString(R.string.status_transaction_failed, error));
         }
+        enableNavigation();
     }
 
     @Override

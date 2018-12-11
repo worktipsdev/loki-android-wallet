@@ -30,13 +30,13 @@ public class RestoreHeightTest {
 
     @Test
     public void pre2014() {
-        assertTrue(getHeight("2013-12-01") == 1);
-        assertTrue(getHeight("1958-12-01") == 1);
+        assertTrue(getHeight("2013-12-01") == 0);
+        assertTrue(getHeight("1958-12-01") == 0);
     }
 
     @Test
     public void zero() {
-        assertTrue(getHeight("2014-04-27") == 1);
+        assertTrue(getHeight("2014-04-27") == 0);
     }
 
     @Test
@@ -79,8 +79,7 @@ public class RestoreHeightTest {
 
     private boolean isInRange(long n, long min, long max) {
         if (n > max) return false;
-        if (n < min) return false;
-        return true;
+        return n >= min;
     }
 
     private long getHeight(String date) {
