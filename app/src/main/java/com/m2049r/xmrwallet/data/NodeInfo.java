@@ -22,6 +22,7 @@ import com.burgstaller.okhttp.digest.CachingAuthenticator;
 import com.burgstaller.okhttp.digest.Credentials;
 import com.burgstaller.okhttp.digest.DigestAuthenticator;
 import com.m2049r.levin.scanner.Dispatcher;
+import com.m2049r.xmrwallet.model.NetworkType;
 import com.m2049r.levin.scanner.LevinPeer;
 import com.m2049r.xmrwallet.util.OkHttpHelper;
 
@@ -139,13 +140,7 @@ public class NodeInfo extends Node {
     }
 
     public boolean isValid() {
-
-        boolean versionValid;
-        if (getNetworkType() == NetworkType.NetworkType_Stagenet && majorVersion >= 8)
-            versionValid = true;
-        else
-            versionValid = (majorVersion >= 9);
-
+        boolean versionValid = (majorVersion >= 11);
         return isSuccessful() && versionValid && (responseTime < Double.MAX_VALUE);
     }
 
