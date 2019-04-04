@@ -278,7 +278,6 @@
     <string name="send_address_openalias">OpenAlias secure &#x2714;</string>
     <string name="send_address_resolve_openalias">Resolving OpenAlias&#8230;</string>
     <string name="send_address_no_dnssec">OpenAlias without DNSSEC - address may be spoofed</string>
-    <string name="send_address_hint">Receiver\'s LOKI Address or OpenAlias</string>
 
     <string name="status_wallet_connect_wrongversion">Node version incompatible - please upgrade!</string>
 
@@ -313,4 +312,6 @@
     <string name="label_test">Test</string><!--note: as in "Test a network connection"-->
 
     <string name="backup_success">Backup successful</string>
+    <string name="send_address_hint">Receiver</string>
+    <string name="street_sweep_amount">EVERYTHING!</string> <!-- as in: "everything in the account" = "all the money" -->
 </resources>

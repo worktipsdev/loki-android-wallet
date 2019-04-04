@@ -163,7 +163,6 @@
     <string name="generate_check_address">Escreva um endereço válido</string>
     <string name="generate_check_mnemonic">Escreva a semente de 25 palavras</string>
 
-    <string name="send_address_hint">Endereço de destino LOKI</string>
     <string name="send_paymentid_hint">ID do pagamento (opcional)</string>
     <string name="send_amount_hint">0.00</string>
     <string name="send_notes_hint">Notas (opcional)</string>
@@ -303,4 +302,6 @@
     <string name="label_test">Testar</string><!--note: as in "Test a network connection"-->
 
     <string name="backup_success">Backup feito com successo</string>
+    <string name="send_address_hint">Receiver</string>
+    <string name="street_sweep_amount">EVERYTHING!</string> <!-- as in: "everything in the account" = "all the money" -->
 </resources>

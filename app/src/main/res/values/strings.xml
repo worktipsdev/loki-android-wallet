@@ -173,7 +173,6 @@
     <string name="generate_check_address">Enter valid Address</string>
     <string name="generate_check_mnemonic">Enter your 25 word seed</string>
 
-    <string name="send_address_hint">Receiver\'s Loki Address or OpenAlias</string>
     <string name="send_paymentid_hint">Payment ID (optional)</string>
     <string name="send_amount_hint">0.00</string>
     <string name="send_notes_hint">Private Notes (optional)</string>
@@ -362,4 +361,6 @@
     <string name="node_scanning">Scanning network&#8230;</string>
     <string name="node_nobookmark">Automatically bookmarked best %1$d nodes</string>
     <string name="label_test">Test</string><!--note: as in "Test a network connection"-->
+    <string name="send_address_hint">Receiver</string>
+    <string name="street_sweep_amount">EVERYTHING!</string>
 </resources>

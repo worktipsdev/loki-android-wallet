@@ -278,7 +278,6 @@
     <string name="send_address_openalias">OpenAlias asegurado &#x2714;</string>
     <string name="send_address_resolve_openalias">Resolviendo OpenAlias&#8230;</string>
     <string name="send_address_no_dnssec">OpenAlias sin DNSSEC - la drección puede ser falsificada</string>
-    <string name="send_address_hint">Dirección Loki del receptor u OpenAlias</string>
 
     <string name="status_wallet_connect_wrongversion">Versión de nodo incompatible - ¡por favor actualiza!</string>
 
@@ -311,4 +310,7 @@
     <string name="node_scanning">Escaneando la red&#8230;</string>
     <string name="node_nobookmark">Mejores %1$d nodos marcados automáticamente</string>
     <string name="label_test">Probar</string><!--note: as in "Test a network connection"-->
+    <!-- please verify this means "Receiver" or "Recipient" as in "Receiver in the transaction" -->
+    <string name="send_address_hint">Receptor</string>
+    <string name="street_sweep_amount">EVERYTHING!</string> <!-- as in: "everything in the account" = "all the money" -->
 </resources>

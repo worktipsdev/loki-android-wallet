@@ -166,7 +166,6 @@
     <string name="generate_check_address">有効なアドレスを入力してください</string>
     <string name="generate_check_mnemonic">25 単語のシードを入力してください</string>
 
-    <string name="send_address_hint">受け取り手の LOKI アドレスまたは OpenAlias</string>
     <string name="send_paymentid_hint">ペイメントID (オプション)</string>
     <string name="send_amount_hint">0.00</string>
     <string name="send_notes_hint">プライベートノート (オプション)</string>
@@ -356,4 +355,7 @@
     <string name="label_test">テスト</string><!--note: as in "Test a network connection"-->
 
     <string name="backup_success">バックアップ成功</string>
+    <!-- please verify this means "Receiver" or "Recipient" as in "Receiver in the transaction" -->
+    <string name="send_address_hint">受け取り手</string>
+    <string name="street_sweep_amount">EVERYTHING!</string> <!-- as in: "everything in the account" = "all the money" -->
 </resources>
