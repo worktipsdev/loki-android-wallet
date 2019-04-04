@@ -309,5 +309,5 @@
     <string name="label_test">測試節點</string>
     <!-- please verify this means "Receiver" or "Recipient" as in "Receiver in the transaction" -->
     <string name="send_address_hint">收款者</string>
-    <string name="street_sweep_amount">EVERYTHING!</string> <!-- as in: "everything in the account" = "all the money" -->
+    <string name="street_sweep_amount">全部！</string>
 </resources>
