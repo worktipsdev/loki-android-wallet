@@ -26,14 +26,14 @@
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/wallet_activity_name"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="behind" />
 
         <activity
             android:name=".LoginActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/app_name"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait">
+            android:screenOrientation="locked">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -69,5 +69,14 @@
             android:exported="false"
             android:label="Loki Wallet Service" />
 
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.m2049r.xmrwallet.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths" />
+        </provider>
     </application>
 </manifest>
