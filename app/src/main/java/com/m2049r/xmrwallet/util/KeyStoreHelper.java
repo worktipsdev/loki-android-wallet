@@ -241,21 +241,11 @@ public class KeyStoreHelper {
         Timber.d("M Keys created");
     }
 
-    private static class PrivatePublicKey {
-        PrivateKey privateKey;
-        PublicKey publicKey;
-
-        PrivatePublicKey(PrivateKey priv, PublicKey pub) {
-            privateKey = priv;
-            publicKey = pub;
-        }
-    };
-
-    private static PrivatePublicKey getPrivatePublicKeys(String alias) {
+    private static PrivateKey getPrivateKey(String alias) {
         try {
             KeyStore ks = KeyStore .getInstance(SecurityConstants.KEYSTORE_PROVIDER_ANDROID_KEYSTORE);
             ks.load(null);
-
+            //KeyStore.Entry entry = ks.getEntry(alias, null);
             PrivateKey privateKey = (PrivateKey) ks.getKey(alias, null);
 
             if (privateKey == null) {
@@ -263,19 +253,35 @@ public class KeyStoreHelper {
                 return null;
             }
 
-            PublicKey publicKey = ks.getCertificate(alias).getPublicKey();
-            PrivatePublicKey ppk = new PrivatePublicKey(privateKey, publicKey);
-            return ppk;
-
+            return privateKey;
         } catch (IOException | NoSuchAlgorithmException | CertificateException
                 | UnrecoverableEntryException | KeyStoreException ex) {
             throw new IllegalStateException(ex);
         }
     }
 
+    private static PublicKey getPublicKey(String alias) {
+        try {
+            KeyStore ks = KeyStore
+                    .getInstance(SecurityConstants.KEYSTORE_PROVIDER_ANDROID_KEYSTORE);
+            ks.load(null);
+
+            PublicKey publicKey = ks.getCertificate(alias).getPublicKey();
+
+            if (publicKey == null) {
+                Timber.w("No public key");
+                return null;
+            }
+            return publicKey;
+        } catch (IOException | NoSuchAlgorithmException | CertificateException
+                | KeyStoreException ex) {
+            throw new IllegalStateException(ex);
+        }
+    }
+
     private static byte[] encrypt(String alias, byte[] data) {
         try {
-            PublicKey publicKey = getPrivatePublicKeys(alias).publicKey;
+            PublicKey publicKey = getPublicKey(alias);
             Cipher cipher = Cipher.getInstance(SecurityConstants.CIPHER_RSA_ECB_PKCS1);
 
             cipher.init(Cipher.ENCRYPT_MODE, publicKey);
@@ -289,11 +295,11 @@ public class KeyStoreHelper {
 
     private static byte[] decrypt(String alias, byte[] data) {
         try {
-            PrivatePublicKey ppk = getPrivatePublicKeys(alias);
-            if (ppk == null) return null;
+            PrivateKey privateKey = getPrivateKey(alias);
+            if (privateKey == null) return null;
             Cipher cipher = Cipher.getInstance(SecurityConstants.CIPHER_RSA_ECB_PKCS1);
 
-            cipher.init(Cipher.DECRYPT_MODE, ppk.privateKey);
+            cipher.init(Cipher.DECRYPT_MODE, privateKey);
             return cipher.doFinal(data);
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException |
                 IllegalBlockSizeException | BadPaddingException ex) {
@@ -311,45 +317,12 @@ public class KeyStoreHelper {
      */
     private static byte[] signData(String alias, byte[] data) throws NoSuchAlgorithmException,
             InvalidKeyException, SignatureException {
-
-        PrivatePublicKey ppk = getPrivatePublicKeys(alias);
-        if (ppk == null) return null;
+        PrivateKey privateKey = getPrivateKey(alias);
+        if (privateKey == null) return null;
         Signature s = Signature.getInstance(SecurityConstants.SIGNATURE_SHA256withRSA);
-        s.initSign(ppk.privateKey);
+        s.initSign(privateKey);
         s.update(data);
         return s.sign();
-    }
-
-    /**
-     * Given some data and a signature, uses the key pair stored in the Android
-     * Key Store to verify that the data was signed by this application, using
-     * that key pair.
-     *
-     * @param data      The data to be verified.
-     * @param signature The signature provided for the data.
-     * @return A boolean value telling you whether the signature is valid or
-     * not.
-     */
-    private static boolean verifyData(String alias, byte[] data, byte[] signature)
-            throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
-
-        // Make sure the signature string exists
-        if (signature == null) {
-            Timber.w("Invalid signature.");
-            return false;
-        }
-
-        try {
-            KeyStore ks = KeyStore.getInstance(SecurityConstants.KEYSTORE_PROVIDER_ANDROID_KEYSTORE);
-            ks.load(null);
-
-            Signature s = Signature.getInstance(SecurityConstants.SIGNATURE_SHA256withRSA);
-            s.initVerify(ks.getCertificate(alias));
-            s.update(data);
-            return s.verify(signature);
-        } catch (IOException | CertificateException | KeyStoreException ex) {
-            throw new IllegalStateException(ex);
-        }
     }
 
     public interface SecurityConstants {

@@ -97,6 +97,11 @@ public class LoginActivity extends BaseActivity
     Set<NodeInfo> favouriteNodes = new HashSet<>();
 
     @Override
+    public NodeInfo getNode() {
+        return node;
+    }
+
+    @Override
     public void setNode(NodeInfo node) {
         if ((node != null) && (node.getNetworkType() != WalletManager.getInstance().getNetworkType()))
             throw new IllegalArgumentException("network type does not match");
@@ -270,7 +275,11 @@ public class LoginActivity extends BaseActivity
         } else {
             Timber.i("Waiting for permissions");
         }
-        processUsbIntent(getIntent());
+
+        // try intents
+        Intent intent = getIntent();
+        if (!processUsbIntent(intent))
+            processUriIntent(intent);
     }
 
     boolean checkServiceRunning() {
@@ -707,6 +716,10 @@ public class LoginActivity extends BaseActivity
         intent.putExtra(WalletActivity.REQUEST_PW, walletPassword);
         intent.putExtra(WalletActivity.REQUEST_FINGERPRINT_USED, fingerprintUsed);
         intent.putExtra(WalletActivity.REQUEST_STREETMODE, streetmode);
+        if (uri != null) {
+            intent.putExtra(WalletActivity.REQUEST_URI, uri);
+            uri = null; // use only once
+        }
         startActivity(intent);
     }
 
@@ -1206,6 +1219,12 @@ public class LoginActivity extends BaseActivity
             case R.id.action_language:
                 onChangeLocale();
                 return true;
+            case R.id.action_ledger_seed:
+                Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+                if (f instanceof GenerateFragment) {
+                    ((GenerateFragment) f).convertLedgerSeed();
+                }
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -1338,30 +1357,31 @@ public class LoginActivity extends BaseActivity
     };
 
     private void connectLedger(UsbManager usbManager, final UsbDevice usbDevice) {
-        try {
-            Ledger.connect(usbManager, usbDevice);
-            registerDetachReceiver();
-            onLedgerAction();
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(LoginActivity.this,
-                            getString(R.string.toast_ledger_attached, usbDevice.getProductName()),
-                            Toast.LENGTH_SHORT)
-                            .show();
-                }
-            });
-        } catch (IOException ex) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(LoginActivity.this,
-                            getString(R.string.open_wallet_ledger_missing),
-                            Toast.LENGTH_SHORT)
-                            .show();
-                }
-            });
-        }
+        if (Ledger.ENABLED)
+            try {
+                Ledger.connect(usbManager, usbDevice);
+                registerDetachReceiver();
+                onLedgerAction();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(LoginActivity.this,
+                                getString(R.string.toast_ledger_attached, usbDevice.getProductName()),
+                                Toast.LENGTH_SHORT)
+                                .show();
+                    }
+                });
+            } catch (IOException ex) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(LoginActivity.this,
+                                getString(R.string.open_wallet_ledger_missing),
+                                Toast.LENGTH_SHORT)
+                                .show();
+                    }
+                });
+            }
     }
 
     @Override
@@ -1370,7 +1390,7 @@ public class LoginActivity extends BaseActivity
         processUsbIntent(intent);
     }
 
-    private void processUsbIntent(Intent intent) {
+    private boolean processUsbIntent(Intent intent) {
         String action = intent.getAction();
         if (UsbManager.ACTION_USB_DEVICE_ATTACHED.equals(action)) {
             synchronized (this) {
@@ -1382,6 +1402,21 @@ public class LoginActivity extends BaseActivity
                         connectLedger(usbManager, device);
                     }
                 }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private String uri = null;
+
+    private void processUriIntent(Intent intent) {
+        String action = intent.getAction();
+        if (Intent.ACTION_VIEW.equals(action)) {
+            synchronized (this) {
+                uri = intent.getDataString();
+                Timber.d("URI Intent %s", uri);
+                HelpFragment.display(getSupportFragmentManager(), R.string.help_uri);
             }
         }
     }

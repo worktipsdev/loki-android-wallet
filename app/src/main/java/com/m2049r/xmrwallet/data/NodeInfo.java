@@ -23,6 +23,7 @@ import com.burgstaller.okhttp.digest.Credentials;
 import com.burgstaller.okhttp.digest.DigestAuthenticator;
 import com.m2049r.levin.scanner.Dispatcher;
 import com.m2049r.xmrwallet.model.NetworkType;
+import com.m2049r.levin.scanner.LevinPeer;
 import com.m2049r.xmrwallet.util.OkHttpHelper;
 
 import org.json.JSONException;
@@ -98,19 +99,16 @@ public class NodeInfo extends Node {
         super(nodeString);
     }
 
-    public NodeInfo(InetSocketAddress socketAddress) {
-        super(socketAddress);
+    public NodeInfo(LevinPeer levinPeer) {
+        super(levinPeer.getSocketAddress());
+    }
+
+    public NodeInfo(InetSocketAddress address) {
+        super(address);
     }
 
     public NodeInfo() {
         super();
-    }
-
-    public NodeInfo(InetSocketAddress peerAddress, long height, int majorVersion, double respTime) {
-        super(peerAddress);
-        this.height = height;
-        this.majorVersion = majorVersion;
-        this.responseTime = respTime;
     }
 
     public long getHeight() {
@@ -142,13 +140,7 @@ public class NodeInfo extends Node {
     }
 
     public boolean isValid() {
-
-        boolean versionValid;
-        if (getNetworkType() == NetworkType.NetworkType_Stagenet && majorVersion >= 8)
-            versionValid = true;
-        else
-            versionValid = (majorVersion >= 9);
-
+        boolean versionValid = (majorVersion >= 11);
         return isSuccessful() && versionValid && (responseTime < Double.MAX_VALUE);
     }
 
@@ -255,7 +247,7 @@ public class NodeInfo extends Node {
         return false;
     }
 
-    static final private int[] TEST_PORTS = {18089}; // check only opt-in port
+    static final private int[] TEST_PORTS = {18081}; // check only opt-in port
 
     public boolean findRpcService() {
         // if already have an rpcPort, use that

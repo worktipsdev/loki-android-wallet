@@ -173,7 +173,6 @@
     <string name="generate_check_address">Enter valid Address</string>
     <string name="generate_check_mnemonic">Enter your 25 word seed</string>
 
-    <string name="send_address_hint">Receiver\'s Loki Address or OpenAlias</string>
     <string name="send_paymentid_hint">Payment ID (optional)</string>
     <string name="send_amount_hint">0.00</string>
     <string name="send_notes_hint">Private Notes (optional)</string>
@@ -252,39 +251,39 @@
 
     <string-array name="currency" translatable="false">
         <item>LOKI</item>
-        <item>EUR</item>
-        <item>USD</item>
-        <item>JPY</item>
-        <item>GBP</item>
-        <item>CHF</item>
-        <item>CAD</item>
-        <item>AUD</item>
-        <item>ZAR</item>
+        <!-- <item>EUR</item> -->
+        <!-- <item>USD</item> -->
+        <!-- <item>JPY</item> -->
+        <!-- <item>GBP</item> -->
+        <!-- <item>CHF</item> -->
+        <!-- <item>CAD</item> -->
+        <!-- <item>AUD</item> -->
+        <!-- <item>ZAR</item> -->
 
-        <item>BRL</item>
-        <item>CLP</item>
-        <item>CNY</item>
-        <item>CZK</item>
-        <item>DKK</item>
-        <item>HKD</item>
-        <item>HUF</item>
-        <item>IDR</item>
-        <item>ILS</item>
-        <item>INR</item>
-        <item>KRW</item>
-        <item>MXN</item>
-        <item>MYR</item>
-        <item>NOK</item>
-        <item>NZD</item>
-        <item>PHP</item>
-        <item>PKR</item>
-        <item>PLN</item>
-        <item>RUB</item>
-        <item>SEK</item>
-        <item>SGD</item>
-        <item>THB</item>
-        <item>TRY</item>
-        <item>TWD</item>
+        <!-- <item>BRL</item> -->
+        <!-- <item>CLP</item> -->
+        <!-- <item>CNY</item> -->
+        <!-- <item>CZK</item> -->
+        <!-- <item>DKK</item> -->
+        <!-- <item>HKD</item> -->
+        <!-- <item>HUF</item> -->
+        <!-- <item>IDR</item> -->
+        <!-- <item>ILS</item> -->
+        <!-- <item>INR</item> -->
+        <!-- <item>KRW</item> -->
+        <!-- <item>MXN</item> -->
+        <!-- <item>MYR</item> -->
+        <!-- <item>NOK</item> -->
+        <!-- <item>NZD</item> -->
+        <!-- <item>PHP</item> -->
+        <!-- <item>PKR</item> -->
+        <!-- <item>PLN</item> -->
+        <!-- <item>RUB</item> -->
+        <!-- <item>SEK</item> -->
+        <!-- <item>SGD</item> -->
+        <!-- <item>THB</item> -->
+        <!-- <item>TRY</item> -->
+        <!-- <item>TWD</item> -->
     </string-array>
 
     <string name="fab_create_new">Create new wallet</string>
@@ -362,4 +361,12 @@
     <string name="node_scanning">Scanning network&#8230;</string>
     <string name="node_nobookmark">Automatically bookmarked best %1$d nodes</string>
     <string name="label_test">Test</string><!--note: as in "Test a network connection"-->
+    <string name="send_address_hint">Receiver</string>
+    <string name="street_sweep_amount">EVERYTHING!</string>
+
+    <string name="menu_ledger_seed">Convert Ledger Seed</string>
+    <string name="prompt_ledger_seed">Ledger Seed Words</string>
+    <string name="prompt_ledger_phrase">Ledger Passphrase (advanced)</string>
+    <string name="bad_ledger_seed">Invalid Ledger Seed!</string>
+    <string name="prompt_ledger_seed_warn">Entering you Ledger Seed here is a major security risk!</string>
 </resources>

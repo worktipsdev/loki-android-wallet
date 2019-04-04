@@ -27,10 +27,12 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.m2049r.xmrwallet.BuildConfig;
 import com.m2049r.xmrwallet.R;
 import com.m2049r.xmrwallet.data.TxData;
 import com.m2049r.xmrwallet.model.PendingTransaction;
@@ -209,11 +211,16 @@ public class SendConfirmWizardFragment extends SendWizardFragment implements Sen
         if (pendingTransaction != null) {
             llConfirmSend.setVisibility(View.VISIBLE);
             bSend.setEnabled(true);
-            tvTxAmount.setText(Wallet.getDisplayAmount(pendingTransaction.getAmount()));
             tvTxFee.setText(Wallet.getDisplayAmount(pendingTransaction.getFee()));
-            //tvTxDust.setText(Wallet.getDisplayAmount(pendingTransaction.getDust()));
-            tvTxTotal.setText(Wallet.getDisplayAmount(
-                    pendingTransaction.getFee() + pendingTransaction.getAmount()));
+            if (getActivityCallback().isStreetMode()
+                    && (sendListener.getTxData().getAmount() == Wallet.SWEEP_ALL)) {
+                tvTxAmount.setText(getString(R.string.street_sweep_amount));
+                tvTxTotal.setText(getString(R.string.street_sweep_amount));
+            } else {
+                tvTxAmount.setText(Wallet.getDisplayAmount(pendingTransaction.getAmount()));
+                tvTxTotal.setText(Wallet.getDisplayAmount(
+                        pendingTransaction.getFee() + pendingTransaction.getAmount()));
+            }
         } else {
             llConfirmSend.setVisibility(View.GONE);
             bSend.setEnabled(false);
@@ -299,6 +306,11 @@ public class SendConfirmWizardFragment extends SendWizardFragment implements Sen
                 return false;
             }
         });
+        // set FLAG_SECURE to prevent screenshots in Release Mode
+        if (!(BuildConfig.DEBUG && BuildConfig.FLAVOR_type.equals("alpha"))) {
+            passwordDialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
+        }
+
         passwordDialog.show();
     }
 

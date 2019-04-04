@@ -270,7 +270,6 @@
     <string name="send_address_openalias">OpenAlias säkrad &#x2714;</string>
     <string name="send_address_resolve_openalias">Slår upp OpenAlias&#8230;</string>
     <string name="send_address_no_dnssec">OpenAlias utan DNSSEC - adressen kan vara förfalskad</string>
-    <string name="send_address_hint">Mottagarens LOKI-adress eller OpenAlias</string>
 
     <string name="status_wallet_connect_wrongversion">Node version incompatible - please upgrade!</string>
 
@@ -303,4 +302,13 @@
     <string name="node_scanning">Scanning network&#8230;</string>
     <string name="node_nobookmark">Automatically bookmarked best %1$d nodes</string>
     <string name="label_test">Test</string><!--note: as in "Test a network connection"-->
+    <!-- please verify this means "Receiver" or "Recipient" as in "Receiver in the transaction" -->
+    <string name="send_address_hint">Mottagaren</string>
+    <string name="street_sweep_amount">EVERYTHING!</string> <!-- as in: "everything in the account" = "all the money" -->
+
+    <string name="menu_ledger_seed">Convert Ledger Seed</string>
+    <string name="prompt_ledger_seed">Ledger Seed Words</string>
+    <string name="prompt_ledger_phrase">Ledger Passphrase (optional)</string>
+    <string name="bad_ledger_seed">Invalid Ledger Seed!</string>
+    <string name="prompt_ledger_seed_warn">Entering you Ledger Seed here is a major security risk!</string>
 </resources>
