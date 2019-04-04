@@ -275,7 +275,11 @@ public class LoginActivity extends BaseActivity
         } else {
             Timber.i("Waiting for permissions");
         }
-        processUsbIntent(getIntent());
+
+        // try intents
+        Intent intent = getIntent();
+        if (!processUsbIntent(intent))
+            processUriIntent(intent);
     }
 
     boolean checkServiceRunning() {
@@ -712,6 +716,10 @@ public class LoginActivity extends BaseActivity
         intent.putExtra(WalletActivity.REQUEST_PW, walletPassword);
         intent.putExtra(WalletActivity.REQUEST_FINGERPRINT_USED, fingerprintUsed);
         intent.putExtra(WalletActivity.REQUEST_STREETMODE, streetmode);
+        if (uri != null) {
+            intent.putExtra(WalletActivity.REQUEST_URI, uri);
+            uri = null; // use only once
+        }
         startActivity(intent);
     }
 
@@ -1375,7 +1383,7 @@ public class LoginActivity extends BaseActivity
         processUsbIntent(intent);
     }
 
-    private void processUsbIntent(Intent intent) {
+    private boolean processUsbIntent(Intent intent) {
         String action = intent.getAction();
         if (UsbManager.ACTION_USB_DEVICE_ATTACHED.equals(action)) {
             synchronized (this) {
@@ -1387,6 +1395,21 @@ public class LoginActivity extends BaseActivity
                         connectLedger(usbManager, device);
                     }
                 }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private String uri = null;
+
+    private void processUriIntent(Intent intent) {
+        String action = intent.getAction();
+        if (Intent.ACTION_VIEW.equals(action)) {
+            synchronized (this) {
+                uri = intent.getDataString();
+                Timber.d("URI Intent %s", uri);
+                HelpFragment.display(getSupportFragmentManager(), R.string.help_uri);
             }
         }
     }
