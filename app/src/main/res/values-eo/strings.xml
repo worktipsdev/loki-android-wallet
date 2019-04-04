@@ -317,4 +317,10 @@
 
     <string name="send_address_hint">Ricevanto</string>
     <string name="street_sweep_amount">ĈIO!</string>
+
+    <string name="menu_ledger_seed">Convert Ledger Seed</string>
+    <string name="prompt_ledger_seed">Ledger Seed Words</string>
+    <string name="prompt_ledger_phrase">Ledger Passphrase (optional)</string>
+    <string name="bad_ledger_seed">Invalid Ledger Seed!</string>
+    <string name="prompt_ledger_seed_warn">Entering you Ledger Seed here is a major security risk!</string>
 </resources>
