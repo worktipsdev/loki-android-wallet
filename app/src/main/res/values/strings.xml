@@ -326,7 +326,7 @@
     <string name="nfc_tag_read_undef">I don\'t understand the Tag!</string>
     <string name="nfc_tag_read_what">I don\'t know what you want!</string>
     <string name="nfc_tag_read_success">Reading Tag successful</string>
-    <string name="nfc_tag_tap">NFC Available!</string>
+    <string name="nfc_tag_tap">NFC via Sticker Tag Available !</string>
 
     <string name="unknown_amount" translatable="false">\?\?\?</string>
 

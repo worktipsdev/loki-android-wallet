@@ -269,7 +269,7 @@
     <string name="nfc_tag_read_undef">Ma ei oska seda silti lugeda!</string>
     <string name="nfc_tag_read_what">Ma ei tea, mida sa tahad!</string>
     <string name="nfc_tag_read_success">Sildi lugemine õnnestus</string>
-    <string name="nfc_tag_tap">NFC on saadaval!</string>
+    <string name="nfc_tag_tap">NFC on via Sticker Tag saadaval!</string>
 
     <string name="status_wallet_connect_wrongversion">Serveri versioon ei sobi - palun uuenda!</string>
 

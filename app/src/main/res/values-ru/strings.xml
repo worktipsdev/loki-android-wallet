@@ -265,7 +265,7 @@
     <string name="nfc_tag_read_undef">Я не понимаю эту метку!</string>
     <string name="nfc_tag_read_what">Я не знаю, чего ты хочешь!</string>
     <string name="nfc_tag_read_success">Чтение метки завершено успешно</string>
-    <string name="nfc_tag_tap">NFC доступен!</string>
+    <string name="nfc_tag_tap">NFC via Sticker Tag доступен!</string>
 
     <string name="receive_desc_hint">Описание (необязательно)</string>
 

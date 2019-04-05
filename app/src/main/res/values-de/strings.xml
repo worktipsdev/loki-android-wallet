@@ -277,7 +277,7 @@
     <string name="nfc_tag_read_undef">Ich verstehe den Tag nicht!</string>
     <string name="nfc_tag_read_what">Ich weiß nicht, was du willst!</string>
     <string name="nfc_tag_read_success">Tag erfolgreich gelesen</string>
-    <string name="nfc_tag_tap">NFC verfügbar!</string>
+    <string name="nfc_tag_tap">NFC via Sticker Tag verfügbar!</string>
 
     <string name="status_wallet_connect_wrongversion">Node version incompatible - please upgrade!</string>
 

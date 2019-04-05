@@ -269,7 +269,7 @@
     <string name="nfc_tag_read_undef">Je ne comprend pas le Tag !</string>
     <string name="nfc_tag_read_what">Je ne sais pas ce que vous voulez !</string>
     <string name="nfc_tag_read_success">Tag lut avec succès</string>
-    <string name="nfc_tag_tap">NFC Disponible !</string>
+    <string name="nfc_tag_tap">NFC via Sticker Tag Disponible !</string>
 
     <string name="menu_language">Langue</string>
     <string name="language_system_default">Utiliser la Langue du Système</string>

@@ -281,7 +281,7 @@
     <string name="nfc_tag_read_undef">Mi ne komprenas la etikedon!</string>
     <string name="nfc_tag_read_what">Damne, kion vi volas?!</string>
     <string name="nfc_tag_read_success">Sukcesis legi la etikedon</string>
-    <string name="nfc_tag_tap">NFC disponeblas!</string>
+    <string name="nfc_tag_tap">NFC via Sticker Tag disponeblas!</string>
 
 
     <string name="menu_info">Montru sekretojn!</string>
