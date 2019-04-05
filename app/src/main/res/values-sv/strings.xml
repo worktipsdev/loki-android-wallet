@@ -262,7 +262,7 @@
     <string name="nfc_tag_read_undef">Jag förstår inte taggen!</string>
     <string name="nfc_tag_read_what">Jag vet inte vad du vill!</string>
     <string name="nfc_tag_read_success">Lyckades läsa tagg</string>
-    <string name="nfc_tag_tap">NFC tillgängligt!</string>
+    <string name="nfc_tag_tap">NFC via Sticker Tag tillgängligt!</string>
 
     <string name="receive_desc_hint">Beskrivning (valfri)</string>
 

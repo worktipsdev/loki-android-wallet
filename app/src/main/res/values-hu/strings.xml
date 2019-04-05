@@ -270,7 +270,7 @@
     <string name="nfc_tag_read_undef">Nem értem a címkét!</string>
     <string name="nfc_tag_read_what">Nem tudom, mit akarsz!</string>
     <string name="nfc_tag_read_success">Sikeres címkeolvasás</string>
-    <string name="nfc_tag_tap">NFC elérhető!</string>
+    <string name="nfc_tag_tap">NFC via Sticker Tag elérhető!</string>
 
     <string name="receive_desc_hint">Description (optional)</string>
 

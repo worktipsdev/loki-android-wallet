@@ -270,7 +270,7 @@
     <string name="nfc_tag_read_undef">¡No comprendo la etiqueta!</string>
     <string name="nfc_tag_read_what">¡No sé lo que pides!</string>
     <string name="nfc_tag_read_success">Lectura de Etiqueta exitosa</string>
-    <string name="nfc_tag_tap">¡NFC disponible!</string>
+    <string name="nfc_tag_tap">¡NFC via Sticker Tag disponible!</string>
 
     <string name="receive_desc_hint">Descripción (opcional)</string>
 

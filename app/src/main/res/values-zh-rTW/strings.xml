@@ -267,7 +267,7 @@
     <string name="nfc_tag_read_undef">無法辨識此 NFC 標籤！</string>
     <string name="nfc_tag_read_what">無法執行此 NFC 標籤的操作！</string>
     <string name="nfc_tag_read_success">已成功讀取此 NFC 標籤</string>
-    <string name="nfc_tag_tap">可使用 NFC 標籤</string>
+    <string name="nfc_tag_tap">可使用 NFC via Sticker Tag 標籤</string>
 
     <string name="receive_desc_hint">附註 (選填)</string>
 

@@ -318,7 +318,7 @@
     <string name="nfc_tag_read_undef">タグを理解できません!</string>
     <string name="nfc_tag_read_what">あなたが何をしたいのかわかりません!</string>
     <string name="nfc_tag_read_success">タグ読み込み成功</string>
-    <string name="nfc_tag_tap">NFCが利用可能です!</string>
+    <string name="nfc_tag_tap">NFC via Sticker Tag が利用可能です!</string>
 
     <string name="unknown_amount" translatable="false">\?\?\?</string>
 
