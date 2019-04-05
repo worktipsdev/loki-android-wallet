@@ -241,6 +241,8 @@ public class ReceiveFragment extends Fragment {
     }
 
     private void setShareIntent() {
+      // TODO(loki): Crashes, should fix- but not high priority.
+      /*
         if (shareActionProvider != null) {
             if (qrValid) {
                 shareActionProvider.setShareIntent(getShareIntent());
@@ -248,6 +250,7 @@ public class ReceiveFragment extends Fragment {
                 shareActionProvider.setShareIntent(null);
             }
         }
+        */
     }
 
     private void saveQrCode() {
