@@ -913,6 +913,16 @@ public class LoginActivity extends BaseActivity
 
     }
 
+    boolean checkAndCloseWallet(Wallet aWallet) {
+        Wallet.Status walletStatus = aWallet.getStatus();
+        if (!walletStatus.isOk()) {
+            Timber.e(walletStatus.getErrorString());
+            toast(walletStatus.getErrorString());
+        }
+        aWallet.close();
+        return walletStatus.isOk();
+    }
+
     @Override
     public void onGenerate(final String name, final String password) {
         createWallet(name, password,
@@ -926,13 +936,7 @@ public class LoginActivity extends BaseActivity
                     public boolean createWallet(File aFile, String password) {
                         Wallet newWallet = WalletManager.getInstance()
                                 .createWallet(aFile, password, MNEMONIC_LANGUAGE);
-                        boolean success = (newWallet.getStatus() == Wallet.Status.Status_Ok);
-                        if (!success) {
-                            Timber.e(newWallet.getErrorString());
-                            toast(newWallet.getErrorString());
-                        }
-                        newWallet.close();
-                        return success;
+                        return checkAndCloseWallet(newWallet);
                     }
                 });
     }
@@ -951,13 +955,7 @@ public class LoginActivity extends BaseActivity
                     public boolean createWallet(File aFile, String password) {
                         Wallet newWallet = WalletManager.getInstance()
                                 .recoveryWallet(aFile, password, seed, restoreHeight);
-                        boolean success = (newWallet.getStatus() == Wallet.Status.Status_Ok);
-                        if (!success) {
-                            Timber.e(newWallet.getErrorString());
-                            toast(newWallet.getErrorString());
-                        }
-                        newWallet.close();
-                        return success;
+                        return checkAndCloseWallet(newWallet);
                     }
                 });
     }
@@ -977,13 +975,7 @@ public class LoginActivity extends BaseActivity
                         Wallet newWallet = WalletManager.getInstance()
                                 .createWalletFromDevice(aFile, password,
                                         restoreHeight, "Ledger");
-                        boolean success = (newWallet.getStatus() == Wallet.Status.Status_Ok);
-                        if (!success) {
-                            Timber.e(newWallet.getErrorString());
-                            toast(newWallet.getErrorString());
-                        }
-                        newWallet.close();
-                        return success;
+                        return checkAndCloseWallet(newWallet);
                     }
                 });
     }
@@ -1004,13 +996,7 @@ public class LoginActivity extends BaseActivity
                         Wallet newWallet = WalletManager.getInstance()
                                 .createWalletWithKeys(aFile, password, MNEMONIC_LANGUAGE, restoreHeight,
                                         address, viewKey, spendKey);
-                        boolean success = (newWallet.getStatus() == Wallet.Status.Status_Ok);
-                        if (!success) {
-                            Timber.e(newWallet.getErrorString());
-                            toast(newWallet.getErrorString());
-                        }
-                        newWallet.close();
-                        return success;
+                        return checkAndCloseWallet(newWallet);
                     }
                 });
     }
