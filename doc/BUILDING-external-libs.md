@@ -1,6 +1,7 @@
 # Building external libs in Docker
 
-Builds Loki libs for all Android architectures from `https://github.com/crtlib/loki.git`, `loki_wallet` branch.
+Builds Loki libs for all Android architectures from this [Doy-lee's Repo](https://github.com/Doy-lee/loki/tree/LokiAndroidWallet).
+
 Build image from `external-libs/docker` directory:
 
 ```Shell
