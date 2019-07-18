@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.m2049r.xmrwallet.service.exchange.coinmarketcap;
+package com.m2049r.xmrwallet.service.exchange.coingecko;
 
 import com.m2049r.xmrwallet.model.Wallet;
 import com.m2049r.xmrwallet.service.exchange.api.ExchangeApi;
@@ -24,7 +24,6 @@ import com.m2049r.xmrwallet.service.exchange.api.ExchangeRate;
 
 import net.jodah.concurrentunit.Waiter;
 
-import org.json.JSONException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -87,7 +86,7 @@ public class ExchangeRateTest {
         exchangeApi.queryExchangeRate(Wallet.LOKI_SYMBOL, "USD", mockExchangeCallback);
 
         RecordedRequest request = mockWebServer.takeRequest();
-        assertEquals("/?pair=" + Wallet.LOKI_SYMBOL + "USD", request.getPath());
+        assertEquals("/price?ids=loki-network&vs_currencies=usd", request.getPath());
     }
 
     @Test
@@ -97,7 +96,7 @@ public class ExchangeRateTest {
         final String quote = "EUR";
         final double rate = 1.56;
         MockResponse jsonMockResponse = new MockResponse().setBody(
-                createMockExchangeRateResponse(base, quote, rate));
+                createMockExchangeRateResponse("loki-network", quote, rate));
         mockWebServer.enqueue(jsonMockResponse);
 
         exchangeApi.queryExchangeRate(base, quote, new ExchangeCallback() {
@@ -125,7 +124,7 @@ public class ExchangeRateTest {
         final String quote = "USD";
         final double rate = 1.56;
         MockResponse jsonMockResponse = new MockResponse().setBody(
-                createMockExchangeRateResponse(base, quote, rate));
+                createMockExchangeRateResponse("loki-network", quote, rate));
         mockWebServer.enqueue(jsonMockResponse);
 
         exchangeApi.queryExchangeRate(base, quote, new ExchangeCallback() {
@@ -187,7 +186,7 @@ public class ExchangeRateTest {
                 waiter.assertTrue(e instanceof ExchangeException);
                 ExchangeException ex = (ExchangeException) e;
                 waiter.assertTrue(ex.getCode() == 200);
-                waiter.assertEquals(ex.getErrorMsg(), "id not found");
+                waiter.assertEquals(ex.getErrorMsg(), "No price found");
                 waiter.resume();
             }
 
@@ -196,51 +195,21 @@ public class ExchangeRateTest {
     }
 
     private String createMockExchangeRateResponse(final String base, final String quote, final double rate) {
-        return "{\n" +
-                "    \"data\": {\n" +
-                "        \"id\": 328, \n" +
-                "        \"name\": \"Monero\", \n" +
-                "        \"symbol\": \"" + base + "\", \n" +
-                "        \"website_slug\": \"monero\", \n" +
-                "        \"rank\": 12, \n" +
-                "        \"circulating_supply\": 16112286.0, \n" +
-                "        \"total_supply\": 16112286.0, \n" +
-                "        \"max_supply\": null, \n" +
-                "        \"quotes\": {\n" +
-                "            \"USD\": {\n" +
-                "                \"price\": " + rate + ", \n" +
-                "                \"volume_24h\": 35763700.0, \n" +
-                "                \"market_cap\": 2559791130.0, \n" +
-                "                \"percent_change_1h\": -0.16, \n" +
-                "                \"percent_change_24h\": -3.46, \n" +
-                "                \"percent_change_7d\": 1.49\n" +
-                "            }, \n" +
-                (!"USD".equals(quote) ? (
-                        "            \"" + quote + "\": {\n" +
-                                "                \"price\": " + rate + ", \n" +
-                                "                \"volume_24h\": 30377728.701265607, \n" +
-                                "                \"market_cap\": 2174289586.0, \n" +
-                                "                \"percent_change_1h\": -0.16, \n" +
-                                "                \"percent_change_24h\": -3.46, \n" +
-                                "                \"percent_change_7d\": 1.49\n" +
-                                "            }\n") : "") +
-                "        }, \n" +
-                "        \"last_updated\": 1528492746\n" +
-                "    }, \n" +
-                "    \"metadata\": {\n" +
-                "        \"timestamp\": 1528492705, \n" +
-                "        \"error\": null\n" +
-                "    }\n" +
+        /*
+        {
+          "loki-network": {
+            "usd": 0.166536
+          }
+        }
+        */
+        return "{" +
+                    "\"" + base + "\": {" +
+                        "\"" + quote.toLowerCase() + "\":" + rate +
+                    "}" +
                 "}";
     }
 
     private String createMockExchangeRateErrorResponse() {
-        return "{\n" +
-                "    \"data\": null, \n" +
-                "    \"metadata\": {\n" +
-                "        \"timestamp\": 1525137187, \n" +
-                "        \"error\": \"id not found\"\n" +
-                "    }\n" +
-                "}";
+        return "{}";
     }
 }

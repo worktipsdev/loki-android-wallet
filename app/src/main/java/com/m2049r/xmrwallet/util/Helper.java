@@ -588,7 +588,7 @@ public class Helper {
     }
 
     static public ExchangeApi getExchangeApi() {
-        return new com.m2049r.xmrwallet.service.exchange.coinmarketcap.ExchangeApiImpl(OkHttpHelper.getOkHttpClient());
+        return new com.m2049r.xmrwallet.service.exchange.coingecko.ExchangeApiImpl(OkHttpHelper.getOkHttpClient());
     }
 
     public interface Action {

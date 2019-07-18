@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.m2049r.xmrwallet.service.exchange.coinmarketcap;
+package com.m2049r.xmrwallet.service.exchange.coingecko;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
@@ -24,9 +24,7 @@ import com.m2049r.xmrwallet.service.exchange.api.ExchangeApi;
 import com.m2049r.xmrwallet.service.exchange.api.ExchangeCallback;
 import com.m2049r.xmrwallet.service.exchange.api.ExchangeException;
 import com.m2049r.xmrwallet.service.exchange.api.ExchangeRate;
-import com.m2049r.xmrwallet.util.Helper;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -38,11 +36,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-/**
- * Currently broken, Kraken doesn't support Loki yet
- */
 public class ExchangeApiImpl implements ExchangeApi {
-    static final String CRYPTO_ID = "328";
+    static final String LOKI_CRYPTO_ID = "loki-network";
 
     @NonNull
     private final OkHttpClient okHttpClient;
@@ -58,7 +53,7 @@ public class ExchangeApiImpl implements ExchangeApi {
     }
 
     public ExchangeApiImpl(@NonNull final OkHttpClient okHttpClient) {
-        this(okHttpClient, HttpUrl.parse("https://api.coinmarketcap.com/v2/ticker/"));
+        this(okHttpClient, HttpUrl.parse("https://api.coingecko.com/api/v3/simple/price"));
     }
 
     @Override
@@ -71,16 +66,23 @@ public class ExchangeApiImpl implements ExchangeApi {
         }
 
         boolean inverse = false;
+        String symbol = baseCurrency;
         String fiat = null;
 
         if (baseCurrency.equals(Wallet.LOKI_SYMBOL)) {
+            symbol = baseCurrency;
             fiat = quoteCurrency;
             inverse = false;
         }
 
         if (quoteCurrency.equals(Wallet.LOKI_SYMBOL)) {
+            symbol = quoteCurrency;
             fiat = baseCurrency;
             inverse = true;
+        }
+
+        if (symbol.equals(Wallet.LOKI_SYMBOL)) {
+            symbol = LOKI_CRYPTO_ID;
         }
 
         if (fiat == null) {
@@ -88,10 +90,13 @@ public class ExchangeApiImpl implements ExchangeApi {
             return;
         }
 
-        final boolean swapAssets = inverse;
+        final boolean inverseRate = inverse;
+        final String symbolKey = symbol;
+        final String fiatKey = fiat.toLowerCase();
 
         final HttpUrl url = baseUrl.newBuilder()
-                .addQueryParameter("pair", Wallet.LOKI_SYMBOL + fiat)
+                .addQueryParameter("ids", symbol.toLowerCase())
+                .addQueryParameter("vs_currencies", fiat.toLowerCase())
                 .build();
 
         final Request httpRequest = createHttpRequest(url);
@@ -107,14 +112,13 @@ public class ExchangeApiImpl implements ExchangeApi {
                 if (response.isSuccessful()) {
                     try {
                         final JSONObject json = new JSONObject(response.body().string());
-                        final JSONObject metadata = json.getJSONObject("metadata");
-                        if (!metadata.isNull("error")) {
-                            final String errorMsg = metadata.getString("error");
-                            callback.onError(new ExchangeException(response.code(), errorMsg));
-                        } else {
-                            final JSONObject jsonResult = json.getJSONObject("data");
-                            reportSuccess(jsonResult, swapAssets, callback);
+                        if (!json.isNull(symbolKey)) {
+                            callback.onError(new ExchangeException(response.code(), "No price found"));
                         }
+
+                        final JSONObject price = json.getJSONObject(symbolKey);
+                        final double rate = price.getDouble(fiatKey);
+                        reportSuccess(baseCurrency, quoteCurrency, rate, inverseRate, callback);
                     } catch (JSONException ex) {
                         callback.onError(new ExchangeException(ex.getLocalizedMessage()));
                     }
@@ -123,6 +127,11 @@ public class ExchangeApiImpl implements ExchangeApi {
                 }
             }
         });
+    }
+
+    void reportSuccess(@NonNull final String baseCurrency, @NonNull final String quoteCurrency, double rate, boolean inverse, ExchangeCallback callback) {
+        final ExchangeRate exchangeRate = new ExchangeRateImpl(baseCurrency, quoteCurrency, rate, inverse);
+        callback.onSuccess(exchangeRate);
     }
 
     void reportSuccess(JSONObject jsonObject, boolean swapAssets, ExchangeCallback callback) {
