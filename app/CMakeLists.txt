@@ -143,6 +143,14 @@ add_library(version STATIC IMPORTED)
 set_target_properties(version PROPERTIES IMPORTED_LOCATION
     ${EXTERNAL_LIBS_DIR}/monero/lib/${ANDROID_ABI}/libversion.a)
 
+add_library(randomx STATIC IMPORTED)
+set_target_properties(randomx PROPERTIES IMPORTED_LOCATION
+        ${EXTERNAL_LIBS_DIR}/monero/lib/${ANDROID_ABI}/librandomx.a)
+
+add_library(net STATIC IMPORTED)
+set_target_properties(net PROPERTIES IMPORTED_LOCATION
+        ${EXTERNAL_LIBS_DIR}/monero/lib/${ANDROID_ABI}/libnet.a)
+
 #############
 # System
 #############
@@ -162,6 +170,7 @@ target_link_libraries(  monerujo
                         mnemonics
                         ringct
                         ringct_basic
+                        net
                         common
                         cncrypto
                         blockchain_db
@@ -173,6 +182,7 @@ target_link_libraries(  monerujo
                         device
                         multisig
                         version
+                        randomx
 
                         boost_chrono
                         boost_date_time

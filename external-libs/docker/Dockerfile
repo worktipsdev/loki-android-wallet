@@ -97,7 +97,7 @@ RUN cd /opt/android/libsodium \
 
 # Building Loki from the latest commit on Android branch, this should be kept up to date with master
 # with the necessary fixes by crtlib and m2049r to build for mobile.
-ARG LOKI_COMMIT_HASH=224fdd59b68db95775f81519d17e7595deea20cc
+ARG LOKI_COMMIT_HASH=d08e75a5282e8973d5e9123dad352b9902a132d9
 RUN cd /opt/android \
     && git clone -b LokiAndroidWallet https://github.com/doy-lee/loki.git --recursive --depth=1 \
     && cd loki \
