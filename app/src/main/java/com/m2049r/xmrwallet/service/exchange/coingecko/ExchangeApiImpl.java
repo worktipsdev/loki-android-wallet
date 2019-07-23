@@ -112,8 +112,9 @@ public class ExchangeApiImpl implements ExchangeApi {
                 if (response.isSuccessful()) {
                     try {
                         final JSONObject json = new JSONObject(response.body().string());
-                        if (!json.isNull(symbolKey)) {
+                        if (json.isNull(symbolKey)) {
                             callback.onError(new ExchangeException(response.code(), "No price found"));
+                            return;
                         }
 
                         final JSONObject price = json.getJSONObject(symbolKey);
