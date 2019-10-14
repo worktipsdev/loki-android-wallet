@@ -89,7 +89,7 @@ public class LoginActivity extends BaseActivity
     private static final String NODES_PREFS_NAME = "nodes";
     private static final String PREF_DAEMON_MAINNET = "daemon_mainnet";
     private static final String PREF_DAEMON_STAGENET = "daemon_stagenet";
-    private static final String DEFAULT_DAEMONLIST_MAINNET = "doopool.xyz:22020;nodes.hashvault.pro:22023;daemons.cryptopool.space:22023;node.loki-pool.com:18081;imaginary.stream:22023";
+    private static final String DEFAULT_DAEMONLIST_MAINNET = "doopool.xyz:22020;nodes.hashvault.pro:22023;imaginary.stream:22023";
     private static final String DEFAULT_DAEMONLIST_STAGENET = "nari.blockfoundry.org:10610/stagenet";
 
     private NodeInfo node = null;
