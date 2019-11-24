@@ -90,7 +90,7 @@ public class LoginActivity extends BaseActivity
     private static final String PREF_DAEMON_MAINNET = "daemon_mainnet";
     private static final String PREF_DAEMON_STAGENET = "daemon_stagenet";
     private static final String DEFAULT_DAEMONLIST_MAINNET = "doopool.xyz:22020;nodes.hashvault.pro:22023;imaginary.stream:22023";
-    private static final String DEFAULT_DAEMONLIST_STAGENET = "nari.blockfoundry.org:10610/stagenet";
+    private static final String DEFAULT_DAEMONLIST_STAGENET = "lokitestnet.com:38154";
 
     private NodeInfo node = null;
 
@@ -165,6 +165,7 @@ public class LoginActivity extends BaseActivity
                     sharedPref.edit().remove(PREF_DAEMON_MAINNET).apply();
                     break;
                 case NetworkType_Stagenet:
+                case NetworkType_Testnet:
                     loadLegacyList(DEFAULT_DAEMONLIST_STAGENET);
                     loadLegacyList(sharedPref.getString(PREF_DAEMON_STAGENET, null));
                     sharedPref.edit().remove(PREF_DAEMON_STAGENET).apply();
