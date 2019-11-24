@@ -197,6 +197,7 @@ public class WalletActivity extends BaseActivity implements WalletFragment.Liste
             uri = extras.getString(REQUEST_URI);
             connectWalletService(walletId, password);
         } else {
+            Timber.w("startWalletService: No extras passed!");
             finish();
             //throw new IllegalStateException("No extras passed! Panic!");
         }
@@ -623,7 +624,7 @@ public class WalletActivity extends BaseActivity implements WalletFragment.Liste
                 }
             }
         });
-        if ((walletStatus == null) || (Wallet.ConnectionStatus.ConnectionStatus_Connected != walletStatus.getConnectionStatus())) {
+        if ((walletStatus == null) || !walletStatus.isOk()) {
             finish();
         } else {
             haveWallet = true;
