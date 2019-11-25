@@ -67,6 +67,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
@@ -88,7 +89,7 @@ public class Helper {
     static private final String WALLET_DIR = "loki-wallet" + FLAVOR_SUFFIX;
     static private final String HOME_DIR = "loki" + FLAVOR_SUFFIX;
 
-    static public int DISPLAY_DIGITS_INFO = 9;
+    static public int DISPLAY_DIGITS_INFO = 5;
 
     static public File getWalletRoot(Context context) {
         return getStorage(context, WALLET_DIR);
@@ -187,7 +188,8 @@ public class Helper {
     }
 
     static public BigDecimal getDecimalAmount(long amount) {
-        return new BigDecimal(amount).scaleByPowerOfTen(-12);
+        // Loki - All amounts need to be divided by 10e8
+        return new BigDecimal(amount).scaleByPowerOfTen(-9);
     }
 
     static public String getDisplayAmount(long amount) {
@@ -195,36 +197,26 @@ public class Helper {
     }
 
     static public String getDisplayAmount(long amount, int maxDecimals) {
-        return getDisplayAmount(Wallet.getDisplayAmount(amount), maxDecimals);
+        // a Java bug does not strip zeros properly if the value is 0
+        if (amount == 0) return "0.00";
+        BigDecimal d = getDecimalAmount(amount)
+                .setScale(maxDecimals, BigDecimal.ROUND_HALF_UP)
+                .stripTrailingZeros();
+        if (d.scale() < 2)
+            d = d.setScale(2, BigDecimal.ROUND_UNNECESSARY);
+        return d.toPlainString();
     }
 
-    // amountString must have '.' as decimal point
-    private static String getDisplayAmount(String amountString, int maxDecimals) {
-        int lastZero = 0;
-        int decimal = 0;
-        for (int i = amountString.length() - 1; i >= 0; i--) {
-            if ((lastZero == 0) && (amountString.charAt(i) != '0')) lastZero = i + 1;
-            // TODO i18n
-            if (amountString.charAt(i) == '.') {
-                decimal = i + 1;
-                break;
-            }
-        }
-        int cutoff = Math.min(Math.max(lastZero, decimal + 2), decimal + maxDecimals);
-        return amountString.substring(0, cutoff);
-    }
-
-    static public String getFormattedAmount(double amount, boolean isXmr) {
-        // at this point selection is LOKI in case of error
+    static public String getFormattedAmount(double amount, boolean isCrypto) {
+        // at this point selection is XMR in case of error
         String displayB;
-        if (isXmr) { // LOKI
-            long xmr = Wallet.getAmountFromDouble(amount);
-            if ((xmr > 0) || (amount == 0)) {
+        if (isCrypto) {
+            if ((amount >= 0) || (amount == 0)) {
                 displayB = String.format(Locale.US, "%,.5f", amount);
             } else {
                 displayB = null;
             }
-        } else { // not LOKI
+        } else { // not crypto
             displayB = String.format(Locale.US, "%,.2f", amount);
         }
         return displayB;
