@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017-2018 m2049r et al.
+ * Copyright (c) 2017 m2049r et al.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@ import com.m2049r.xmrwallet.service.exchange.api.BaseExchangeRate;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 class ExchangeRateImpl extends BaseExchangeRate {
@@ -32,6 +31,16 @@ class ExchangeRateImpl extends BaseExchangeRate {
     @Override
     public String getServiceName() {
         return "coingecko.com";
+    }
+
+    @Override
+    public String getBaseCurrency() {
+        return baseCurrency;
+    }
+
+    @Override
+    public String getQuoteCurrency() {
+        return quoteCurrency;
     }
 
     ExchangeRateImpl(@NonNull final String baseCurrency, @NonNull final String quoteCurrency, double rate) {
@@ -43,27 +52,5 @@ class ExchangeRateImpl extends BaseExchangeRate {
         this.baseCurrency = baseCurrency;
         this.quoteCurrency = quoteCurrency;
         this.rate = price;
-    }
-
-    ExchangeRateImpl(final JSONObject jsonObject, final boolean swapAssets) throws JSONException, ExchangeException {
-        try {
-            final String baseC = jsonObject.getString("symbol");
-            final JSONObject quotes = jsonObject.getJSONObject("quotes");
-            final Iterator<String> keys = quotes.keys();
-            String key = null;
-            // get key which is not USD unless it is the only one
-            while (keys.hasNext()) {
-                key = keys.next();
-                if (!key.equals("USD")) break;
-            }
-            final String quoteC = key;
-            baseCurrency = swapAssets ? quoteC : baseC;
-            quoteCurrency = swapAssets ? baseC : quoteC;
-            JSONObject quote = quotes.getJSONObject(key);
-            double price = quote.getDouble("price");
-            this.rate = swapAssets ? (1d / price) : price;
-        } catch (NoSuchElementException ex) {
-            throw new ExchangeException(ex.getLocalizedMessage());
-        }
     }
 }

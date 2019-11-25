@@ -30,7 +30,7 @@
 
     <string name="label_receive_info_gen_qr_code">Toca para mostrar código QR</string>
 
-    <string name="info_paymentid_intergrated">ID de pago integrado</string>
+    <string name="info_paymentid_integrated">&#x2714; ID de pago integrado</string>
     <string name="info_prepare_tx">Preparando tu transacción</string>
 
     <string name="message_copy_txid">¡ID de transacción copiado al portapapeles!</string>
@@ -205,7 +205,7 @@
 
     <string name="receive_amount_hint">Monto</string>
     <string name="receive_cannot_open">¡No se ha podido abrir el monedero!</string>
-    <string name="receive_paymentid_invalid">16 o 64 caracteres hexadecimales (0&#8211;9,a&#8211;f)</string>
+    <string name="receive_paymentid_invalid">16 caracteres hexadecimales (0&#8211;9,a&#8211;f)</string>
     <string name="receive_integrated_paymentid_invalid">Debe estar vacío con una dirección integrada</string>
 
     <string name="receive_amount_too_big">Max. %1$s</string>
@@ -318,5 +318,9 @@
     <string name="prompt_ledger_seed">Ledger Seed Words</string>
     <string name="prompt_ledger_phrase">Ledger Passphrase (optional)</string>
     <string name="bad_ledger_seed">Invalid Ledger Seed!</string>
-    <string name="prompt_ledger_seed_warn">Entering you Ledger Seed here is a major security risk!</string>
+    <string name="prompt_ledger_seed_warn">Entering your Ledger Seed here is a major security risk!</string>
+
+    <string name="label_restoreheight">Altura de Restauración</string> <!-- Restore Height -->
+
+    <string name="toast_ledger_start_app">Start Monero App on %1$s</string>
 </resources>

@@ -6,7 +6,7 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.4.2'
+        classpath 'com.android.tools.build:gradle:3.5.2'
     }
 }
 
@@ -28,8 +28,7 @@ task clean(type: Delete) {
 }
 
 ext {
-    apkName = 'loki-wallet'
-    okHttpVersion = '3.9.0'
+    apkName = 'monerujo'
     okHttpVersion = '3.12.0'
     junitVersion = '4.12'
     mockitoVersion = '1.10.19'

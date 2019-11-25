@@ -231,8 +231,8 @@ public class NodeInfo extends Node {
                     if ((respBody != null) && (respBody.contentLength() < 1000)) { // sanity check
                         final JSONObject json = new JSONObject(
                                 respBody.string());
-                        final JSONObject header = json.getJSONObject(
-                                "result").getJSONObject("block_header");
+                        final JSONObject result = json.getJSONObject("result");
+                        final JSONObject header = result.getJSONObject("block_header");
                         height = header.getLong("height");
                         timestamp = header.getLong("timestamp");
                         majorVersion = header.getInt("major_version");

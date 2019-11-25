@@ -70,10 +70,6 @@ public class WalletService extends Service {
     public static final String REQUEST_CMD_SEND = "send";
     public static final String REQUEST_CMD_SEND_NOTES = "notes";
 
-    public static final String REQUEST_CMD_SETNOTE = "setnote";
-    public static final String REQUEST_CMD_SETNOTE_TX = "tx";
-    public static final String REQUEST_CMD_SETNOTE_NOTES = "notes";
-
     public static final int START_SERVICE = 1;
     public static final int STOP_SERVICE = 2;
 
@@ -225,8 +221,6 @@ public class WalletService extends Service {
 
         void onSendTransactionFailed(String error);
 
-        void onSetNotes(boolean success);
-
         void onWalletStarted(Wallet.Status walletStatus);
 
         void onWalletOpen(Wallet.Device device);
@@ -296,7 +290,7 @@ public class WalletService extends Service {
                             showProgress(10);
                             Wallet.Status walletStatus = start(walletId, walletPw);
                             if (observer != null) observer.onWalletStarted(walletStatus);
-                            if (!walletStatus.isOk()) {
+                            if ((walletStatus == null) || !walletStatus.isOk()) {
                                 errorState = true;
                                 stop();
                             }
@@ -383,26 +377,6 @@ public class WalletService extends Service {
                             myWallet.disposePendingTransaction();
                             if (observer != null) observer.onSendTransactionFailed(error);
                             return;
-                        }
-                    } else if (cmd.equals(REQUEST_CMD_SETNOTE)) {
-                        Wallet myWallet = getWallet();
-                        Timber.d("SET NOTE for wallet: %s", myWallet.getName());
-                        String txId = extras.getString(REQUEST_CMD_SETNOTE_TX);
-                        String notes = extras.getString(REQUEST_CMD_SETNOTE_NOTES);
-                        if ((txId != null) && (notes != null)) {
-                            boolean success = myWallet.setUserNote(txId, notes);
-                            if (!success) {
-                                Timber.e(myWallet.getStatus().getErrorString());
-                            }
-                            if (observer != null) observer.onSetNotes(success);
-                            if (success) {
-                                boolean rc = myWallet.store();
-                                Timber.d("wallet stored: %s with rc=%b", myWallet.getName(), rc);
-                                if (!rc) {
-                                    Timber.w("Wallet store failed: %s", myWallet.getStatus().getErrorString());
-                                }
-                                if (observer != null) observer.onWalletStored(rc);
-                            }
                         }
                     }
                 }

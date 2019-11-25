@@ -21,8 +21,10 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ClipData;
+import android.content.ClipDescription;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -56,12 +58,14 @@ import android.widget.TextView;
 import com.m2049r.xmrwallet.BuildConfig;
 import com.m2049r.xmrwallet.R;
 import com.m2049r.xmrwallet.model.Wallet;
+import com.m2049r.xmrwallet.model.NetworkType;
 import com.m2049r.xmrwallet.model.WalletManager;
 import com.m2049r.xmrwallet.service.exchange.api.ExchangeApi;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
@@ -78,7 +82,7 @@ public class Helper {
             (BuildConfig.FLAVOR.startsWith("prod") ? "" : "." + BuildConfig.FLAVOR)
                     + (BuildConfig.DEBUG ? "-debug" : "");
 
-    static public final String CRYPTO = "LOKI";
+    static public final String BASE_CRYPTO = Wallet.LOKI_SYMBOL;
     static public final String NOCRAZYPASS_FLAGFILE = ".nocrazypass";
 
     static private final String WALLET_DIR = "loki-wallet" + FLAVOR_SUFFIX;
@@ -182,6 +186,10 @@ public class Helper {
         act.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
 
+    static public BigDecimal getDecimalAmount(long amount) {
+        return new BigDecimal(amount).scaleByPowerOfTen(-12);
+    }
+
     static public String getDisplayAmount(long amount) {
         return getDisplayAmount(amount, 12);
     }
@@ -220,6 +228,18 @@ public class Helper {
             displayB = String.format(Locale.US, "%,.2f", amount);
         }
         return displayB;
+    }
+
+    // min 2 significant digits after decimal point
+    static public String getFormattedAmount(double amount) {
+        if ((amount >= 1.0d) || (amount == 0))
+            return String.format(Locale.US, "%,.2f", amount);
+        else { // amount < 1
+            int decimals = 1 - (int) Math.floor(Math.log10(amount));
+            if (decimals < 2) decimals = 2;
+            if (decimals > 12) decimals = 12;
+            return String.format(Locale.US, "%,." + decimals + "f", amount);
+        }
     }
 
     static public Bitmap getBitmap(Context context, int drawableId) {
@@ -279,6 +299,21 @@ public class Helper {
         ClipboardManager clipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText(label, text);
         clipboardManager.setPrimaryClip(clip);
+    }
+
+    static public String getClipBoardText(Context context) {
+        final ClipboardManager clipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+        try {
+            if (clipboardManager.hasPrimaryClip()
+                    && clipboardManager.getPrimaryClipDescription().hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)) {
+                final ClipData.Item item = clipboardManager.getPrimaryClip().getItemAt(0);
+                return item.getText().toString();
+            }
+        } catch (NullPointerException ex) {
+            // if we have don't find a text in the clipboard
+            return null;
+        }
+        return null;
     }
 
     static private Animation ShakeAnimation;
@@ -531,21 +566,29 @@ public class Helper {
             };
         }
 
-        openDialog.setOnShowListener(dialog -> {
-            if (fingerprintAuthAllowed && fingerprintAuthCallback != null) {
-                tvOpenPrompt.setCompoundDrawablesRelativeWithIntrinsicBounds(icFingerprint, null, null, null);
-                tvOpenPrompt.setText(context.getText(R.string.prompt_fingerprint_auth));
-                tvOpenPrompt.setVisibility(View.VISIBLE);
-                FingerprintHelper.authenticate(context, cancelSignal, fingerprintAuthCallback);
-            }
-            Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
-            button.setOnClickListener(view -> {
-                String pass = etPassword.getEditText().getText().toString();
-                if (loginTask == null) {
-                    loginTask = new LoginWalletTask(pass, false);
-                    loginTask.execute();
+        openDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                if (fingerprintAuthAllowed && fingerprintAuthCallback != null) {
+                    tvOpenPrompt.setCompoundDrawablesRelativeWithIntrinsicBounds(icFingerprint, null, null, null);
+                    tvOpenPrompt.setText(context.getText(R.string.prompt_fingerprint_auth));
+                    tvOpenPrompt.setVisibility(View.VISIBLE);
+                    FingerprintHelper.authenticate(context, cancelSignal, fingerprintAuthCallback);
+                } else {
+                    etPassword.requestFocus();
                 }
-            });
+                Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        String pass = etPassword.getEditText().getText().toString();
+                        if (loginTask == null) {
+                            loginTask = new LoginWalletTask(pass, false);
+                            loginTask.execute();
+                        }
+                    }
+                });
+            }
         });
 
         // accept keyboard "ok"
@@ -564,8 +607,7 @@ public class Helper {
             }
         });
 
-        // set FLAG_SECURE to prevent screenshots in Release Mode
-        if (!(BuildConfig.DEBUG && BuildConfig.FLAVOR_type.equals("alpha"))) {
+        if (Helper.preventScreenshot()) {
             openDialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
         }
 
@@ -604,5 +646,9 @@ public class Helper {
         } finally {
             StrictMode.setThreadPolicy(currentPolicy);
         }
+    }
+
+    static public boolean preventScreenshot() {
+        return !(BuildConfig.DEBUG || BuildConfig.FLAVOR_type.equals("alpha"));
     }
 }

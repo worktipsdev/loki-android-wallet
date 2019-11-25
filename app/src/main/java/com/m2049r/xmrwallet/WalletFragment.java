@@ -51,9 +51,8 @@ import com.m2049r.xmrwallet.widget.Toolbar;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import timber.log.Timber;
 
@@ -76,9 +75,9 @@ public class WalletFragment extends Fragment implements TransactionInfoAdapter.O
 
     private final ExchangeApi exchangeApi = Helper.getExchangeApi();
 
-    String balanceCurrency = Wallet.LOKI_SYMBOL;
+    String balanceCurrency = Helper.BASE_CRYPTO;
     double balanceRate = 1.0;
-    boolean balanceHidden = false;
+
     private List<String> dismissedTransactions = new ArrayList<>();
 
     public void resetDismissedTransactions() {
@@ -119,9 +118,12 @@ public class WalletFragment extends Fragment implements TransactionInfoAdapter.O
         ivSynced = view.findViewById(R.id.ivSynced);
 
         sCurrency = view.findViewById(R.id.sCurrency);
-        ArrayAdapter currencyAdapter = ArrayAdapter.createFromResource(getContext(), R.array.currency, R.layout.item_spinner_balance);
-        currencyAdapter.setDropDownViewResource(R.layout.item_spinner_dropdown_item);
-        sCurrency.setAdapter(currencyAdapter);
+        List<String> currencies = new ArrayList<>();
+        currencies.add(Helper.BASE_CRYPTO);
+        currencies.addAll(Arrays.asList(getResources().getStringArray(R.array.currency)));
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(getContext(), R.layout.item_spinner_balance, currencies);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        sCurrency.setAdapter(spinnerAdapter);
 
         bSend = view.findViewById(R.id.bSend);
         bReceive = view.findViewById(R.id.bReceive);
@@ -213,8 +215,8 @@ public class WalletFragment extends Fragment implements TransactionInfoAdapter.O
         if (isExchanging) return; // wait for exchange to finish - it will fire this itself then.
         // at this point selection is LOKI in case of error
         String displayB;
-        double amountA = Double.parseDouble(Wallet.getDisplayAmount(unlockedBalance)); // crash if this fails!
-        if (!Wallet.LOKI_SYMBOL.equals(balanceCurrency)) { // not LOKI
+        double amountA = Helper.getDecimalAmount(unlockedBalance).doubleValue();
+        if (!Helper.BASE_CRYPTO.equals(balanceCurrency)) { // not LOKI
             double amountB = amountA * balanceRate;
             displayB = Helper.getFormattedAmount(amountB, false);
         } else { // LOKI
@@ -224,17 +226,17 @@ public class WalletFragment extends Fragment implements TransactionInfoAdapter.O
     }
 
     void refreshBalance() {
-        double unconfirmedXmr = Double.parseDouble(Helper.getDisplayAmount(balance - unlockedBalance));
+        double unconfirmedXmr = Helper.getDecimalAmount(balance - unlockedBalance).doubleValue();
         showUnconfirmed(unconfirmedXmr);
         if (sCurrency.getSelectedItemPosition() == 0) { // XMR
-            double amountXmr = Double.parseDouble(Wallet.getDisplayAmount(unlockedBalance)); // assume this cannot fail!
+            double amountXmr = Helper.getDecimalAmount(unlockedBalance).doubleValue();
             showBalance(Helper.getFormattedAmount(amountXmr, true));
         } else { // not XMR
             String currency = (String) sCurrency.getSelectedItem();
             Timber.d(currency);
             if (!currency.equals(balanceCurrency) || (balanceRate <= 0)) {
                 showExchanging();
-                exchangeApi.queryExchangeRate(Wallet.LOKI_SYMBOL, currency,
+                exchangeApi.queryExchangeRate(Helper.BASE_CRYPTO, currency,
                         new ExchangeCallback() {
                             @Override
                             public void onSuccess(final ExchangeRate exchangeRate) {
@@ -272,18 +274,18 @@ public class WalletFragment extends Fragment implements TransactionInfoAdapter.O
     }
 
     public void exchangeFailed() {
-        sCurrency.setSelection(0, true); // default to LOKI
-        double amountXmr = Double.parseDouble(Wallet.getDisplayAmount(unlockedBalance)); // assume this cannot fail!
+        sCurrency.setSelection(0, true); // default to XMR
+        double amountXmr = Helper.getDecimalAmount(unlockedBalance).doubleValue();
         showBalance(Helper.getFormattedAmount(amountXmr, true));
         hideExchanging();
     }
 
     public void exchange(final ExchangeRate exchangeRate) {
         hideExchanging();
-        if (!Wallet.LOKI_SYMBOL.equals(exchangeRate.getBaseCurrency())) {
+        if (!Helper.BASE_CRYPTO.equals(exchangeRate.getBaseCurrency())) {
             Timber.e("Not LOKI");
             sCurrency.setSelection(0, true);
-            balanceCurrency = Wallet.LOKI_SYMBOL;
+            balanceCurrency = Helper.BASE_CRYPTO;
             balanceRate = 1.0;
         } else {
             int spinnerPosition = ((ArrayAdapter) sCurrency.getAdapter()).getPosition(exchangeRate.getQuoteCurrency());

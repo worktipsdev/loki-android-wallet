@@ -55,6 +55,8 @@ import com.m2049r.xmrwallet.util.KeyStoreHelper;
 import com.m2049r.xmrwallet.util.MoneroThreadPoolExecutor;
 import com.m2049r.xmrwallet.widget.Toolbar;
 
+import java.text.NumberFormat;
+
 import timber.log.Timber;
 
 public class GenerateReviewFragment extends Fragment {
@@ -72,6 +74,7 @@ public class GenerateReviewFragment extends Fragment {
     private TextView tvWalletPassword;
     private TextView tvWalletAddress;
     private TextView tvWalletMnemonic;
+    private TextView tvWalletHeight;
     private TextView tvWalletViewKey;
     private TextView tvWalletSpendKey;
     private ImageButton bCopyAddress;
@@ -99,6 +102,7 @@ public class GenerateReviewFragment extends Fragment {
         tvWalletViewKey = view.findViewById(R.id.tvWalletViewKey);
         tvWalletSpendKey = view.findViewById(R.id.tvWalletSpendKey);
         tvWalletMnemonic = view.findViewById(R.id.tvWalletMnemonic);
+        tvWalletHeight = view.findViewById(R.id.tvWalletHeight);
         bCopyAddress = view.findViewById(R.id.bCopyAddress);
         bAdvancedInfo = view.findViewById(R.id.bAdvancedInfo);
         llAdvancedInfo = view.findViewById(R.id.llAdvancedInfo);
@@ -114,11 +118,31 @@ public class GenerateReviewFragment extends Fragment {
         tvWalletSpendKey.setTextIsSelectable(allowCopy);
         tvWalletPassword.setTextIsSelectable(allowCopy);
 
-        bAccept.setOnClickListener(v -> acceptWallet());
-        view.findViewById(R.id.bCopyViewKey).setOnClickListener(v -> copyViewKey());
-        bCopyAddress.setOnClickListener(v -> copyAddress());
+        bAccept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                acceptWallet();
+            }
+        });
+        view.findViewById(R.id.bCopyViewKey).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                copyViewKey();
+            }
+        });
+        bCopyAddress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                copyAddress();
+            }
+        });
         bCopyAddress.setClickable(false);
-        view.findViewById(R.id.bAdvancedInfo).setOnClickListener(v -> showAdvancedInfo());
+        view.findViewById(R.id.bAdvancedInfo).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAdvancedInfo();
+            }
+        });
 
         Bundle args = getArguments();
         type = args.getString(REQUEST_TYPE);
@@ -150,7 +174,12 @@ public class GenerateReviewFragment extends Fragment {
     void showAdvancedInfo() {
         llAdvancedInfo.setVisibility(View.VISIBLE);
         bAdvancedInfo.setVisibility(View.GONE);
-        scrollview.post(() -> scrollview.fullScroll(ScrollView.FOCUS_DOWN));
+        scrollview.post(new Runnable() {
+            @Override
+            public void run() {
+                scrollview.fullScroll(ScrollView.FOCUS_DOWN);
+            }
+        });
     }
 
     String type;
@@ -163,6 +192,7 @@ public class GenerateReviewFragment extends Fragment {
     private class AsyncShow extends AsyncTask<String, Void, Boolean> {
         String name;
         String address;
+        long height;
         String seed;
         String viewKey;
         String spendKey;
@@ -207,6 +237,7 @@ public class GenerateReviewFragment extends Fragment {
             }
 
             address = wallet.getAddress();
+            height = wallet.getRestoreHeight();
             seed = wallet.getSeed();
             switch (wallet.getDeviceType()) {
                 case Device_Ledger:
@@ -239,6 +270,7 @@ public class GenerateReviewFragment extends Fragment {
                 llPassword.setVisibility(View.VISIBLE);
                 tvWalletPassword.setText(getPassword());
                 tvWalletAddress.setText(address);
+                tvWalletHeight.setText(NumberFormat.getInstance().format(height));
                 if (!seed.isEmpty()) {
                     llMnemonic.setVisibility(View.VISIBLE);
                     tvWalletMnemonic.setText(seed);
@@ -263,6 +295,7 @@ public class GenerateReviewFragment extends Fragment {
             } else {
                 // TODO show proper error message and/or end the fragment?
                 tvWalletAddress.setText(walletStatus.toString());
+                tvWalletHeight.setText(walletStatus.toString());
                 tvWalletMnemonic.setText(walletStatus.toString());
                 tvWalletViewKey.setText(walletStatus.toString());
                 tvWalletSpendKey.setText(walletStatus.toString());
@@ -367,7 +400,7 @@ public class GenerateReviewFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        String type = getArguments().getString(REQUEST_TYPE); // instance variable <type> not set yet
+        String type = getArguments().getString(REQUEST_TYPE); // intance variable <type> not set yet
         if (GenerateReviewFragment.VIEW_TYPE_ACCEPT.equals(type)) {
             inflater.inflate(R.menu.wallet_details_help_menu, menu);
             super.onCreateOptionsMenu(menu, inflater);
@@ -469,16 +502,23 @@ public class GenerateReviewFragment extends Fragment {
         if (FingerprintHelper.isDeviceSupported(getActivity())) {
             llFingerprintAuth.setVisibility(View.VISIBLE);
 
-            swFingerprintAllowed.setOnClickListener(view -> {
-                if (!swFingerprintAllowed.isChecked()) return;
+            swFingerprintAllowed.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (!swFingerprintAllowed.isChecked()) return;
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setMessage(Html.fromHtml(getString(R.string.generate_fingerprint_warn)))
-                        .setCancelable(false)
-                        .setPositiveButton(getString(R.string.label_ok), null)
-                        .setNegativeButton(getString(R.string.label_cancel),
-                                (dialogInterface, i) -> swFingerprintAllowed.setChecked(false))
-                        .show();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setMessage(Html.fromHtml(getString(R.string.generate_fingerprint_warn)))
+                            .setCancelable(false)
+                            .setPositiveButton(getString(R.string.label_ok), null)
+                            .setNegativeButton(getString(R.string.label_cancel), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    swFingerprintAllowed.setChecked(false);
+                                }
+                            })
+                            .show();
+                }
             });
 
             swFingerprintAllowed.setChecked(FingerprintHelper.isFingerPassValid(getActivity(), walletName));
@@ -496,11 +536,13 @@ public class GenerateReviewFragment extends Fragment {
             }
 
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
             }
         });
 
@@ -516,11 +558,13 @@ public class GenerateReviewFragment extends Fragment {
             }
 
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
             }
         });
 
@@ -528,30 +572,39 @@ public class GenerateReviewFragment extends Fragment {
         alertDialogBuilder
                 .setCancelable(false)
                 .setPositiveButton(getString(R.string.label_ok), null)
-                .setNegativeButton(getString(R.string.label_cancel), (dialog, id) -> {
-                    Helper.hideKeyboardAlways(getActivity());
-                    dialog.cancel();
-                    openDialog = null;
-                });
+                .setNegativeButton(getString(R.string.label_cancel),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                Helper.hideKeyboardAlways(getActivity());
+                                dialog.cancel();
+                                openDialog = null;
+                            }
+                        });
 
         openDialog = alertDialogBuilder.create();
-        openDialog.setOnShowListener(dialog -> {
-            Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
-            button.setOnClickListener(view -> {
-                String newPasswordA = etPasswordA.getEditText().getText().toString();
-                String newPasswordB = etPasswordB.getEditText().getText().toString();
-                // disallow empty passwords
-                if (newPasswordA.isEmpty()) {
-                    etPasswordA.setError(getString(R.string.generate_empty_passwordB));
-                } else if (!newPasswordA.equals(newPasswordB)) {
-                    etPasswordB.setError(getString(R.string.generate_bad_passwordB));
-                } else if (newPasswordA.equals(newPasswordB)) {
-                    new AsyncChangePassword().execute(newPasswordA, Boolean.toString(swFingerprintAllowed.isChecked()));
-                    Helper.hideKeyboardAlways(getActivity());
-                    openDialog.dismiss();
-                    openDialog = null;
-                }
-            });
+        openDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(final DialogInterface dialog) {
+                Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        String newPasswordA = etPasswordA.getEditText().getText().toString();
+                        String newPasswordB = etPasswordB.getEditText().getText().toString();
+                        // disallow empty passwords
+                        if (newPasswordA.isEmpty()) {
+                            etPasswordA.setError(getString(R.string.generate_empty_passwordB));
+                        } else if (!newPasswordA.equals(newPasswordB)) {
+                            etPasswordB.setError(getString(R.string.generate_bad_passwordB));
+                        } else if (newPasswordA.equals(newPasswordB)) {
+                            new AsyncChangePassword().execute(newPasswordA, Boolean.toString(swFingerprintAllowed.isChecked()));
+                            Helper.hideKeyboardAlways(getActivity());
+                            openDialog.dismiss();
+                            openDialog = null;
+                        }
+                    }
+                });
+            }
         });
 
         // accept keyboard "ok"
@@ -577,8 +630,8 @@ public class GenerateReviewFragment extends Fragment {
                 return false;
             }
         });
-        // set FLAG_SECURE to prevent screenshots in Release Mode
-        if (!(BuildConfig.DEBUG && BuildConfig.FLAVOR_type.equals("alpha"))) {
+
+        if (Helper.preventScreenshot()) {
             openDialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
         }
 
