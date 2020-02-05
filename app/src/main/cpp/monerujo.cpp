@@ -921,10 +921,9 @@ Java_com_m2049r_xmrwallet_model_Wallet_createTransactionJ(JNIEnv *env, jobject i
 
     const char *_dst_addr = env->GetStringUTFChars(dst_addr, NULL);
     const char *_payment_id = env->GetStringUTFChars(payment_id, NULL);
-    Bitmonero::PendingTransaction::Priority _priority =
-            static_cast<Bitmonero::PendingTransaction::Priority>(priority);
     Bitmonero::Wallet *wallet = getHandle<Bitmonero::Wallet>(env, instance);
 
+    uint32_t _priority = (uint32_t)priority;
     Bitmonero::PendingTransaction *tx = wallet->createTransaction(_dst_addr, _payment_id,
                                                                   amount, (uint32_t) mixin_count,
                                                                   _priority,
@@ -944,8 +943,7 @@ Java_com_m2049r_xmrwallet_model_Wallet_createSweepTransaction(JNIEnv *env, jobje
 
     const char *_dst_addr = env->GetStringUTFChars(dst_addr, NULL);
     const char *_payment_id = env->GetStringUTFChars(payment_id, NULL);
-    Bitmonero::PendingTransaction::Priority _priority =
-            static_cast<Bitmonero::PendingTransaction::Priority>(priority);
+    uint32_t _priority = (uint32_t)priority;
     Bitmonero::Wallet *wallet = getHandle<Bitmonero::Wallet>(env, instance);
 
     Monero::optional<uint64_t> empty;
