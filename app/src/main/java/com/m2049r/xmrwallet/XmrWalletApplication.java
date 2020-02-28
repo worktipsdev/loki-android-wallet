@@ -53,8 +53,9 @@ public class XmrWalletApplication extends Application {
             case "mainnet":
                 return NetworkType.NetworkType_Mainnet;
             case "stagenet":
-                return NetworkType.NetworkType_Stagenet;
             case "testnet":
+                // We can't use `test` in product flavours, so we just map stagenet to testnet here
+                // return NetworkType.NetworkType_Stagenet;
                 return NetworkType.NetworkType_Testnet;
             default:
                 throw new IllegalStateException("unknown net flavor " + BuildConfig.FLAVOR_net);

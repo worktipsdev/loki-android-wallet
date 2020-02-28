@@ -71,7 +71,6 @@ public class TxFragment extends Fragment {
     private TextView tvTxFee;
     private TextView tvTxTransfers;
     private TextView etTxNotes;
-    private Button bTxNotes;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -91,17 +90,8 @@ public class TxFragment extends Fragment {
         tvTxFee = view.findViewById(R.id.tvTxFee);
         tvTxTransfers = view.findViewById(R.id.tvTxTransfers);
         etTxNotes = view.findViewById(R.id.etTxNotes);
-        bTxNotes = view.findViewById(R.id.bTxNotes);
 
         etTxNotes.setRawInputType(InputType.TYPE_CLASS_TEXT);
-
-        bTxNotes.setOnClickListener(v -> {
-            info.notes = null; // force reload on next view
-            bTxNotes.setEnabled(false);
-            etTxNotes.setEnabled(false);
-            userNotes.setNote(etTxNotes.getText().toString());
-            activityCallback.onSetNote(info.hash, userNotes.txNotes);
-        });
 
         Bundle args = getArguments();
         TransactionInfo info = args.getParcelable(ARG_INFO);
@@ -109,17 +99,9 @@ public class TxFragment extends Fragment {
         return view;
     }
 
-    public void onNotesSet(boolean reload) {
-        bTxNotes.setEnabled(true);
-        etTxNotes.setEnabled(true);
-        if (reload) {
-            loadNotes(this.info);
-        }
-    }
-
     void shareTxInfo() {
         if (this.info == null) return;
-        StringBuilder sb = new StringBuilder();
+        StringBuffer sb = new StringBuffer();
 
         sb.append(getString(R.string.tx_timestamp)).append(":\n");
         sb.append(TS_FORMATTER.format(new Date(info.timestamp * 1000))).append("\n\n");
@@ -246,8 +228,8 @@ public class TxFragment extends Fragment {
             setTxColour(ContextCompat.getColor(getContext(), R.color.tx_red));
         }
         Set<String> destinations = new HashSet<>();
-        StringBuilder sb = new StringBuilder();
-        StringBuilder dstSb = new StringBuilder();
+        StringBuffer sb = new StringBuffer();
+        StringBuffer dstSb = new StringBuffer();
         if (info.transfers != null) {
             boolean newline = false;
             for (Transfer transfer : info.transfers) {
@@ -302,9 +284,9 @@ public class TxFragment extends Fragment {
 
         String getTxNotes(String hash);
 
-        String getTxAddress(int major, int minor);
+        boolean setTxNotes(String txId, String txNotes);
 
-        void onSetNote(String txId, String notes);
+        String getTxAddress(int major, int minor);
 
         void setToolbarButton(int type);
 
@@ -318,7 +300,20 @@ public class TxFragment extends Fragment {
         if (context instanceof TxFragment.Listener) {
             this.activityCallback = (TxFragment.Listener) context;
         } else {
-            throw new ClassCastException(context.toString() + " must implement Listener");
+            throw new ClassCastException(context.toString()
+                    + " must implement Listener");
         }
+    }
+
+    @Override
+    public void onPause() {
+        if (!etTxNotes.getText().toString().equals(userNotes.note)) { // notes have changed
+            // save them
+            userNotes.setNote(etTxNotes.getText().toString());
+            info.notes = userNotes.txNotes;
+            activityCallback.setTxNotes(info.hash, info.notes);
+        }
+        Helper.hideKeyboard(getActivity());
+        super.onPause();
     }
 }

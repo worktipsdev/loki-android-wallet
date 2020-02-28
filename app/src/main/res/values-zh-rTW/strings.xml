@@ -34,7 +34,7 @@
     <string name="info_ledger_enabled">Ledger已啟用, 點選了解更多</string>
 
 
-    <string name="info_paymentid_intergrated">已加入付款 ID</string>
+    <string name="info_paymentid_integrated">&#x2714; 已加入付款 ID</string>
     <string name="info_prepare_tx">正在準備你的交易</string>
 
     <string name="label_send_settings_advanced">進階：</string>
@@ -212,7 +212,7 @@
 
     <string name="receive_amount_hint">金額</string>
     <string name="receive_cannot_open">無法開啟錢包！</string>
-    <string name="receive_paymentid_invalid">16 或 64 Hex 字元 (0&#8211;9,a&#8211;f)</string>
+    <string name="receive_paymentid_invalid">16 Hex 字元 (0&#8211;9,a&#8211;f)</string>
     <string name="receive_integrated_paymentid_invalid">使用整合地址時必須為空白</string>
 
     <string name="receive_amount_too_big">最大值 %1$s</string>
@@ -316,4 +316,8 @@
     <string name="prompt_ledger_phrase">Ledger 密碼 (選填)</string>
     <string name="bad_ledger_seed">無效的 Ledger 種子碼！</string>
     <string name="prompt_ledger_seed_warn">在此輸入 Ledger 種子碼可能存在嚴重的安全風險！</string>
+
+    <string name="label_restoreheight">Restore Height</string>
+
+    <string name="toast_ledger_start_app">Start Monero App on %1$s</string>
 </resources>

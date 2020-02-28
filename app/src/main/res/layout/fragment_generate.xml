@@ -10,50 +10,43 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <LinearLayout
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/etWalletName"
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="2">
+            android:layout_marginBottom="@dimen/header_top_first"
+            app:errorEnabled="true">
 
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/etWalletName"
-                android:layout_width="0dp"
+            <android.support.design.widget.TextInputEditText
+                style="@style/MoneroEdit"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                app:counterEnabled="true"
-                app:counterMaxLength="20"
-                app:errorEnabled="true">
+                android:hint="@string/generate_name_hint"
+                android:imeOptions="actionNext"
+                android:inputType="text"
+                android:maxLines="1"
+                android:textAlignment="textStart" />
+        </android.support.design.widget.TextInputLayout>
 
-                <android.support.design.widget.TextInputEditText
-                    style="@style/MoneroEdit"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/generate_name_hint"
-                    android:imeOptions="actionNext"
-                    android:inputType="text"
-                    android:maxLines="1"
-                    android:textAlignment="textStart" />
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/etWalletPassword"
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/header_top_first"
+            app:errorEnabled="true">
 
-            </android.support.design.widget.TextInputLayout>
+            <android.support.design.widget.TextInputEditText
+                style="@style/MoneroEdit"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/generate_password_hint"
+                android:imeOptions="actionNext"
+                android:inputType="textVisiblePassword"
+                android:textAlignment="textStart" />
 
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/etWalletPassword"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1">
-
-                <android.support.design.widget.TextInputEditText
-                    style="@style/MoneroEdit"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:hint="@string/generate_password_hint"
-                    android:imeOptions="actionNext"
-                    android:inputType="textVisiblePassword"
-                    android:textAlignment="textStart" />
-
-            </android.support.design.widget.TextInputLayout>
-        </LinearLayout>
+        </android.support.design.widget.TextInputLayout>
 
         <LinearLayout
             android:id="@+id/llFingerprintAuth"
@@ -78,8 +71,10 @@
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/etWalletMnemonic"
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/header_top_first"
             android:visibility="gone"
             app:errorEnabled="true">
 
@@ -95,10 +90,11 @@
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/etWalletAddress"
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/header_top_first"
             android:visibility="gone"
-
             app:counterEnabled="true"
             app:counterMaxLength="95"
             app:errorEnabled="true">
@@ -115,8 +111,10 @@
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/etWalletViewKey"
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/header_top_first"
             android:visibility="gone"
             app:counterEnabled="true"
             app:counterMaxLength="64"
@@ -134,8 +132,10 @@
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/etWalletSpendKey"
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/header_top_first"
             android:visibility="gone"
             app:counterEnabled="true"
             app:counterMaxLength="64"
@@ -153,8 +153,10 @@
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/etWalletRestoreHeight"
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/header_top_first"
             android:visibility="gone"
             app:errorEnabled="true">
 

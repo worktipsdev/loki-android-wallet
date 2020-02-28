@@ -46,7 +46,6 @@ import com.m2049r.xmrwallet.model.WalletManager;
 import com.m2049r.xmrwallet.util.FingerprintHelper;
 import com.m2049r.xmrwallet.util.Helper;
 import com.m2049r.xmrwallet.util.KeyStoreHelper;
-import com.m2049r.xmrwallet.util.PulsatingHelpIcon;
 import com.m2049r.xmrwallet.util.RestoreHeight;
 import com.m2049r.xmrwallet.util.ledger.Monero;
 import com.m2049r.xmrwallet.widget.Toolbar;
@@ -77,9 +76,25 @@ public class GenerateFragment extends Fragment {
     private TextInputLayout etWalletSpendKey;
     private TextInputLayout etWalletRestoreHeight;
     private Button bGenerate;
-    private PulsatingHelpIcon mHelpIcon;
 
     private String type = null;
+
+    private void clearErrorOnTextEntry(final TextInputLayout textInputLayout) {
+        textInputLayout.getEditText().addTextChangedListener(new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable editable) {
+                textInputLayout.setError(null);
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+        });
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -104,31 +119,70 @@ public class GenerateFragment extends Fragment {
         etWalletViewKey.getEditText().setRawInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
         etWalletSpendKey.getEditText().setRawInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
 
-        etWalletName.getEditText().setOnFocusChangeListener((v, hasFocus) -> {
-            if (!hasFocus) {
-                checkName();
+        etWalletName.getEditText().setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    checkName();
+                }
             }
         });
-        etWalletMnemonic.getEditText().setOnFocusChangeListener((v, hasFocus) -> {
-            if (!hasFocus) {
-                checkMnemonic();
+        clearErrorOnTextEntry(etWalletName);
+
+        etWalletPassword.getEditText().addTextChangedListener(new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable editable) {
+                checkPassword();
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
         });
-        etWalletAddress.getEditText().setOnFocusChangeListener((v, hasFocus) -> {
-            if (!hasFocus) {
-                checkAddress();
+
+        etWalletMnemonic.getEditText().setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    checkMnemonic();
+                }
             }
         });
-        etWalletViewKey.getEditText().setOnFocusChangeListener((v, hasFocus) -> {
-            if (!hasFocus) {
-                checkViewKey();
+        clearErrorOnTextEntry(etWalletMnemonic);
+
+        etWalletAddress.getEditText().setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    checkAddress();
+                }
             }
         });
-        etWalletSpendKey.getEditText().setOnFocusChangeListener((v, hasFocus) -> {
-            if (!hasFocus) {
-                checkSpendKey();
+        clearErrorOnTextEntry(etWalletAddress);
+
+        etWalletViewKey.getEditText().setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    checkViewKey();
+                }
             }
         });
+        clearErrorOnTextEntry(etWalletViewKey);
+
+        etWalletSpendKey.getEditText().setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    checkSpendKey();
+                }
+            }
+        });
+        clearErrorOnTextEntry(etWalletSpendKey);
 
         Helper.showKeyboard(getActivity());
 
@@ -149,16 +203,23 @@ public class GenerateFragment extends Fragment {
             llFingerprintAuth.setVisibility(View.VISIBLE);
 
             final Switch swFingerprintAllowed = (Switch) llFingerprintAuth.getChildAt(0);
-            swFingerprintAllowed.setOnClickListener(view1 -> {
-                if (!swFingerprintAllowed.isChecked()) return;
+            swFingerprintAllowed.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (!swFingerprintAllowed.isChecked()) return;
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setMessage(Html.fromHtml(getString(R.string.generate_fingerprint_warn)))
-                        .setCancelable(false)
-                        .setPositiveButton(getString(R.string.label_ok), null)
-                        .setNegativeButton(getString(R.string.label_cancel),
-                                (dialogInterface, i) -> swFingerprintAllowed.setChecked(false))
-                        .show();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setMessage(Html.fromHtml(getString(R.string.generate_fingerprint_warn)))
+                            .setCancelable(false)
+                            .setPositiveButton(getString(R.string.label_ok), null)
+                            .setNegativeButton(getString(R.string.label_cancel), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    swFingerprintAllowed.setChecked(false);
+                                }
+                            })
+                            .show();
+                }
             });
         }
 
@@ -282,23 +343,11 @@ public class GenerateFragment extends Fragment {
                 }
             });
         }
-        bGenerate.setOnClickListener(v -> {
-            Helper.hideKeyboard(getActivity());
-            generateWallet();
-        });
-
-        etWalletPassword.getEditText().addTextChangedListener(new TextWatcher() {
+        bGenerate.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void afterTextChanged(Editable editable) {
-                checkPassword();
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            public void onClick(View v) {
+                Helper.hideKeyboard(getActivity());
+                generateWallet();
             }
         });
 
@@ -312,7 +361,12 @@ public class GenerateFragment extends Fragment {
 
     // initialize zxcvbn engine in background thread
     private void initZxcvbn() {
-        new Thread(() -> zxcvbn.measure("")).start();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                zxcvbn.measure("");
+            }
+        }).start();
     }
 
     private void checkPassword() {
@@ -374,12 +428,9 @@ public class GenerateFragment extends Fragment {
 
     private long getHeight() {
         long height = 0;
+
         String restoreHeight = etWalletRestoreHeight.getEditText().getText().toString().trim();
-
-        if (restoreHeight.isEmpty()) {
-            return height; // blank restoreHeight means 0
-        }
-
+        if (restoreHeight.isEmpty()) return -1;
         try {
             // is it a date?
             SimpleDateFormat parser = new SimpleDateFormat("yyyy-MM-dd");
@@ -512,14 +563,6 @@ public class GenerateFragment extends Fragment {
         activityCallback.setTitle(getString(R.string.generate_title) + " - " + getType());
         activityCallback.setToolbarButton(Toolbar.BUTTON_BACK);
 
-        mHelpIcon.startAnimation();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-
-        mHelpIcon.stopAnimation();
     }
 
     String getType() {
@@ -563,7 +606,8 @@ public class GenerateFragment extends Fragment {
         if (context instanceof GenerateFragment.Listener) {
             this.activityCallback = (GenerateFragment.Listener) context;
         } else {
-            throw new ClassCastException(context.toString() + " must implement Listener");
+            throw new ClassCastException(context.toString()
+                    + " must implement Listener");
         }
     }
 
@@ -571,7 +615,6 @@ public class GenerateFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        mHelpIcon = new PulsatingHelpIcon(getContext());
     }
 
     @Override
@@ -579,26 +622,21 @@ public class GenerateFragment extends Fragment {
         switch (type) {
             case TYPE_KEY:
                 inflater.inflate(R.menu.create_wallet_keys, menu);
-                mHelpIcon.init(menu, R.id.action_create_help_keys);
                 break;
             case TYPE_NEW:
                 inflater.inflate(R.menu.create_wallet_new, menu);
-                mHelpIcon.init(menu, R.id.action_create_help_new);
                 break;
             case TYPE_SEED:
                 inflater.inflate(R.menu.create_wallet_seed, menu);
-                mHelpIcon.init(menu, R.id.action_create_help_seed);
                 break;
             case TYPE_LEDGER:
                 inflater.inflate(R.menu.create_wallet_ledger, menu);
                 break;
             case TYPE_VIEWONLY:
                 inflater.inflate(R.menu.create_wallet_view, menu);
-                mHelpIcon.init(menu, R.id.action_create_help_view);
                 break;
             default:
         }
-
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -670,8 +708,7 @@ public class GenerateFragment extends Fragment {
             }
         });
 
-        // set FLAG_SECURE to prevent screenshots in Release Mode
-        if (!(BuildConfig.DEBUG && BuildConfig.FLAVOR_type.equals("alpha"))) {
+        if (Helper.preventScreenshot()) {
             ledgerDialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
         }
 

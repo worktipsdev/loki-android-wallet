@@ -32,7 +32,9 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.m2049r.xmrwallet.R;
 import com.m2049r.xmrwallet.data.BarcodeData;
@@ -78,6 +80,9 @@ public class SendAddressWizardFragment extends SendWizardFragment {
     private CardView cvScan;
     private View tvPaymentIdIntegrated;
     private View llPaymentId;
+    private TextView tvXmrTo;
+    private View llXmrTo;
+    private ImageButton bPasteAddress;
 
     private boolean resolvingOA = false;
 
@@ -128,6 +133,7 @@ public class SendAddressWizardFragment extends SendWizardFragment {
                     Timber.d("isIntegratedAddress");
                     etPaymentId.getEditText().getText().clear();
                     llPaymentId.setVisibility(View.INVISIBLE);
+                    etAddress.setError(getString(R.string.info_paymentid_integrated));
                     tvPaymentIdIntegrated.setVisibility(View.VISIBLE);
                 } else {
                     Timber.d("isStandardAddress");
@@ -142,6 +148,25 @@ public class SendAddressWizardFragment extends SendWizardFragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+        });
+
+        bPasteAddress = view.findViewById(R.id.bPasteAddress);
+        bPasteAddress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final String clip = Helper.getClipBoardText(getActivity());
+                if (clip == null) return;
+                // clean it up
+                final String address = clip.replaceAll("[^0-9A-Z-a-z]", "");
+                if (Wallet.isAddressValid(address)) {
+                    final EditText et = etAddress.getEditText();
+                    et.setText(address);
+                    et.setSelection(et.getText().length());
+                    etAddress.requestFocus();
+                } else {
+                    Toast.makeText(getActivity(), getString(R.string.send_address_invalid), Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -178,7 +203,10 @@ public class SendAddressWizardFragment extends SendWizardFragment {
         bPaymentId.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                etPaymentId.getEditText().setText((Wallet.generatePaymentId()));
+                final EditText et = etPaymentId.getEditText();
+                et.setText((Wallet.generatePaymentId()));
+                et.setSelection(et.getText().length());
+                etPaymentId.requestFocus();
             }
         });
 
@@ -189,7 +217,6 @@ public class SendAddressWizardFragment extends SendWizardFragment {
                 if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN))
                         || (actionId == EditorInfo.IME_ACTION_DONE)) {
                     etDummy.requestFocus();
-                    Helper.hideKeyboard(getActivity());
                     return true;
                 }
                 return false;
@@ -208,7 +235,6 @@ public class SendAddressWizardFragment extends SendWizardFragment {
         etDummy = view.findViewById(R.id.etDummy);
         etDummy.setRawInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
         etDummy.requestFocus();
-        Helper.hideKeyboard(getActivity());
 
         View tvNfc = view.findViewById(R.id.tvNfc);
         NfcManager manager = (NfcManager) getContext().getSystemService(Context.NFC_SERVICE);
@@ -311,7 +337,7 @@ public class SendAddressWizardFragment extends SendWizardFragment {
             txData.setDestinationAddress(etAddress.getEditText().getText().toString());
             txData.setPaymentId(etPaymentId.getEditText().getText().toString());
             txData.setUserNotes(new UserNotes(etNotes.getEditText().getText().toString()));
-            txData.setPriority(PendingTransaction.Priority.Priority_Default);
+            txData.setPriority(PendingTransaction.Priority.Slow);
             txData.setMixin(SendFragment.MIXIN);
         }
         return true;
@@ -382,7 +408,6 @@ public class SendAddressWizardFragment extends SendWizardFragment {
     public void onResumeFragment() {
         super.onResumeFragment();
         Timber.d("onResumeFragment()");
-        Helper.hideKeyboard(getActivity());
         etDummy.requestFocus();
     }
 

@@ -277,7 +277,7 @@ public class ReceiveFragment extends Fragment {
         File imagePath = new File(getActivity().getCacheDir(), "images");
         File png = new File(imagePath, "QR.png");
         Uri contentUri = FileProvider.getUriForFile(getActivity(),
-                "com.m2049r.xmrwallet.fileprovider", png);
+                BuildConfig.APPLICATION_ID + ".fileprovider", png);
         if (contentUri != null) {
             Intent shareIntent = new Intent();
             shareIntent.setAction(Intent.ACTION_SEND);
@@ -465,7 +465,7 @@ public class ReceiveFragment extends Fragment {
     }
 
     public Bitmap generate(String text, int width, int height) {
-        if ((width <= 0) || (height <= 0)) return null;
+        if ((width <= 0) || (height <= 0) || text.isEmpty()) return null;
         Map<EncodeHintType, Object> hints = new HashMap<>();
         hints.put(EncodeHintType.CHARACTER_SET, "utf-8");
         hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.M);
@@ -549,6 +549,7 @@ public class ReceiveFragment extends Fragment {
     @Override
     public void onPause() {
         Timber.d("onPause()");
+        Helper.hideKeyboard(getActivity());
         super.onPause();
     }
 

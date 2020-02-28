@@ -22,9 +22,11 @@ public class PendingTransaction {
     }
 
     public long handle;
+    public boolean blink;
 
-    PendingTransaction(long handle) {
+    PendingTransaction(long handle, boolean blink) {
         this.handle = handle;
+        this.blink = blink;
     }
 
     public enum Status {
@@ -34,24 +36,20 @@ public class PendingTransaction {
     }
 
     public enum Priority {
-        Priority_Default(0),
-        Priority_Low(1),
-        Priority_Medium(2),
-        Priority_High(3),
-        Priority_Last(4);
+        Slow(1),
+        Blink(0x626c6e6b);
 
         public static Priority fromInteger(int n) {
-            switch (n) {
-                case 0:
-                    return Priority_Default;
-                case 1:
-                    return Priority_Low;
-                case 2:
-                    return Priority_Medium;
-                case 3:
-                    return Priority_High;
+            if (n == Blink.getValue()) return Priority.Blink;
+            return Priority.Slow;
+        }
+
+        public static Priority fromString(String string) {
+            try {
+                return Priority.valueOf(string);
+            } catch (Exception e) {
+                return Priority.Slow;
             }
-            return null;
         }
 
         public int getValue() {
@@ -75,7 +73,7 @@ public class PendingTransaction {
     public native String getErrorString();
 
     // commit transaction or save to file if filename is provided.
-    public native boolean commit(String filename, boolean overwrite);
+    public native boolean commit(String filename, boolean overwrite, boolean blink);
 
     public native long getAmount();
 

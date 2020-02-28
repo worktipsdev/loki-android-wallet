@@ -47,7 +47,6 @@ import android.widget.Toast;
 
 import com.m2049r.xmrwallet.data.BarcodeData;
 import com.m2049r.xmrwallet.data.TxData;
-import com.m2049r.xmrwallet.util.UserNotes;
 import com.m2049r.xmrwallet.dialog.CreditsFragment;
 import com.m2049r.xmrwallet.dialog.HelpFragment;
 import com.m2049r.xmrwallet.fragment.send.SendAddressWizardFragment;
@@ -60,6 +59,7 @@ import com.m2049r.xmrwallet.model.WalletManager;
 import com.m2049r.xmrwallet.service.WalletService;
 import com.m2049r.xmrwallet.util.Helper;
 import com.m2049r.xmrwallet.util.MoneroThreadPoolExecutor;
+import com.m2049r.xmrwallet.util.UserNotes;
 import com.m2049r.xmrwallet.widget.Toolbar;
 
 import java.util.ArrayList;
@@ -150,8 +150,13 @@ public class WalletActivity extends BaseActivity implements WalletFragment.Liste
         final WalletFragment walletFragment = (WalletFragment)
                 getSupportFragmentManager().findFragmentByTag(WalletFragment.class.getName());
         if (walletFragment != null) walletFragment.resetDismissedTransactions();
-        updateAccountsBalance();
         forceUpdate();
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                updateAccountsBalance();
+            }
+        });
     }
 
     @Override
@@ -172,6 +177,11 @@ public class WalletActivity extends BaseActivity implements WalletFragment.Liste
     @Override
     public String getTxNotes(String txId) {
         return getWallet().getUserNote(txId);
+    }
+
+    @Override
+    public boolean setTxNotes(String txId, String txNotes) {
+        return getWallet().setUserNote(txId, txNotes);
     }
 
     @Override
@@ -569,10 +579,18 @@ public class WalletActivity extends BaseActivity implements WalletFragment.Liste
                     onProgress(-1);
                     saveWallet(); // save on first sync
                     synced = true;
-                    runOnUiThread(walletFragment::onSynced);
+                    runOnUiThread(new Runnable() {
+                        public void run() {
+                            walletFragment.onSynced();
+                        }
+                    });
                 }
             }
-            runOnUiThread(() -> walletFragment.onRefreshed(wallet, full));
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    walletFragment.onRefreshed(wallet, full);
+                }
+            });
             return true;
         } catch (ClassCastException ex) {
             // not in wallet fragment (probably send monero)
@@ -584,11 +602,13 @@ public class WalletActivity extends BaseActivity implements WalletFragment.Liste
 
     @Override
     public void onWalletStored(final boolean success) {
-        runOnUiThread(() -> {
-            if (success) {
-                Toast.makeText(WalletActivity.this, getString(R.string.status_wallet_unloaded), Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(WalletActivity.this, getString(R.string.status_wallet_unload_failed), Toast.LENGTH_LONG).show();
+        runOnUiThread(new Runnable() {
+            public void run() {
+                if (success) {
+                    Toast.makeText(WalletActivity.this, getString(R.string.status_wallet_unloaded), Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(WalletActivity.this, getString(R.string.status_wallet_unload_failed), Toast.LENGTH_LONG).show();
+                }
             }
         });
     }
@@ -608,23 +628,22 @@ public class WalletActivity extends BaseActivity implements WalletFragment.Liste
     }
 
     @Override
-    public void onWalletStarted(final Wallet.ConnectionStatus connStatus) {
+    public void onWalletStarted(final Wallet.Status walletStatus) {
         runOnUiThread(new Runnable() {
             public void run() {
                 dismissProgressDialog();
-                switch (connStatus) {
-                    case ConnectionStatus_Disconnected:
-                        Toast.makeText(WalletActivity.this, getString(R.string.status_wallet_connect_failed), Toast.LENGTH_LONG).show();
-                        break;
-                    case ConnectionStatus_WrongVersion:
+                if (walletStatus == null) {
+                    // guess what went wrong
+                    Toast.makeText(WalletActivity.this, getString(R.string.status_wallet_connect_failed), Toast.LENGTH_LONG).show();
+                } else {
+                    if (Wallet.ConnectionStatus.ConnectionStatus_WrongVersion == walletStatus.getConnectionStatus())
                         Toast.makeText(WalletActivity.this, getString(R.string.status_wallet_connect_wrongversion), Toast.LENGTH_LONG).show();
-                        break;
-                    case ConnectionStatus_Connected:
-                        break;
+                    else if (!walletStatus.isOk())
+                        Toast.makeText(WalletActivity.this, walletStatus.getErrorString(), Toast.LENGTH_LONG).show();
                 }
             }
         });
-        if (connStatus != Wallet.ConnectionStatus.ConnectionStatus_Connected) {
+        if ((walletStatus == null) || (Wallet.ConnectionStatus.ConnectionStatus_Connected != walletStatus.getConnectionStatus())) {
             finish();
         } else {
             haveWallet = true;
@@ -676,7 +695,11 @@ public class WalletActivity extends BaseActivity implements WalletFragment.Liste
         try {
             final SendFragment sendFragment = (SendFragment)
                     getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-            runOnUiThread(() -> sendFragment.onSendTransactionFailed(error));
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    sendFragment.onSendTransactionFailed(error);
+                }
+            });
         } catch (ClassCastException ex) {
             // not in spend fragment
             Timber.d(ex.getLocalizedMessage());
@@ -688,28 +711,14 @@ public class WalletActivity extends BaseActivity implements WalletFragment.Liste
         try {
             final SendFragment sendFragment = (SendFragment)
                     getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-            runOnUiThread(() -> sendFragment.onTransactionSent(txId));
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    sendFragment.onTransactionSent(txId);
+                }
+            });
         } catch (ClassCastException ex) {
             // not in spend fragment
             Timber.d(ex.getLocalizedMessage());
-        }
-    }
-
-    @Override
-    public void onSetNotes(final boolean success) {
-        try {
-            final TxFragment txFragment = (TxFragment)
-                    getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-            runOnUiThread(() -> {
-                if (!success) {
-                    Toast.makeText(WalletActivity.this, getString(R.string.tx_notes_set_failed), Toast.LENGTH_LONG).show();
-                }
-                txFragment.onNotesSet(success);
-            });
-        } catch (ClassCastException ex) {
-            // not in tx fragment
-            Timber.d(ex.getLocalizedMessage());
-            // never mind
         }
     }
 
@@ -718,7 +727,11 @@ public class WalletActivity extends BaseActivity implements WalletFragment.Liste
         try {
             final WalletFragment walletFragment = (WalletFragment)
                     getSupportFragmentManager().findFragmentByTag(WalletFragment.class.getName());
-            runOnUiThread(() -> walletFragment.setProgress(text));
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    walletFragment.setProgress(text);
+                }
+            });
         } catch (ClassCastException ex) {
             // not in wallet fragment (probably send monero)
             Timber.d(ex.getLocalizedMessage());
@@ -728,16 +741,18 @@ public class WalletActivity extends BaseActivity implements WalletFragment.Liste
 
     @Override
     public void onProgress(final int n) {
-        runOnUiThread(() -> {
-            try {
-                WalletFragment walletFragment = (WalletFragment)
-                        getSupportFragmentManager().findFragmentByTag(WalletFragment.class.getName());
-                if (walletFragment != null)
-                    walletFragment.setProgress(n);
-            } catch (ClassCastException ex) {
-                // not in wallet fragment (probably send monero)
-                Timber.d(ex.getLocalizedMessage());
-                // keep calm and carry on
+        runOnUiThread(new Runnable() {
+            public void run() {
+                try {
+                    WalletFragment walletFragment = (WalletFragment)
+                            getSupportFragmentManager().findFragmentByTag(WalletFragment.class.getName());
+                    if (walletFragment != null)
+                        walletFragment.setProgress(n);
+                } catch (ClassCastException ex) {
+                    // not in wallet fragment (probably send monero)
+                    Timber.d(ex.getLocalizedMessage());
+                    // keep calm and carry on
+                }
             }
         });
     }
@@ -762,21 +777,6 @@ public class WalletActivity extends BaseActivity implements WalletFragment.Liste
             intent.putExtra(WalletService.REQUEST_CMD_SEND_NOTES, notes.txNotes);
             startService(intent);
             Timber.d("SEND TX request sent");
-        } else {
-            Timber.e("Service not bound");
-        }
-
-    }
-
-    @Override
-    public void onSetNote(String txId, String notes) {
-        if (mIsBound) { // no point in talking to unbound service
-            Intent intent = new Intent(getApplicationContext(), WalletService.class);
-            intent.putExtra(WalletService.REQUEST, WalletService.REQUEST_CMD_SETNOTE);
-            intent.putExtra(WalletService.REQUEST_CMD_SETNOTE_TX, txId);
-            intent.putExtra(WalletService.REQUEST_CMD_SETNOTE_NOTES, notes);
-            startService(intent);
-            Timber.d("SET NOTE request sent");
         } else {
             Timber.e("Service not bound");
         }
@@ -827,26 +827,31 @@ public class WalletActivity extends BaseActivity implements WalletFragment.Liste
     }
 
     private void onWalletDetails() {
-        DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
-            switch (which) {
-                case DialogInterface.BUTTON_POSITIVE:
-                    final Bundle extras = new Bundle();
-                    extras.putString(GenerateReviewFragment.REQUEST_TYPE, GenerateReviewFragment.VIEW_TYPE_WALLET);
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case DialogInterface.BUTTON_POSITIVE:
+                        final Bundle extras = new Bundle();
+                        extras.putString(GenerateReviewFragment.REQUEST_TYPE, GenerateReviewFragment.VIEW_TYPE_WALLET);
 
-                    if (needVerifyIdentity) {
-                        Helper.promptPassword(WalletActivity.this, getWallet().getName(), true,
-                                (walletName, password, fingerprintUsed) -> {
+                        if (needVerifyIdentity) {
+                            Helper.promptPassword(WalletActivity.this, getWallet().getName(), true, new Helper.PasswordAction() {
+                                @Override
+                                public void action(String walletName, String password, boolean fingerprintUsed) {
                                     replaceFragment(new GenerateReviewFragment(), null, extras);
                                     needVerifyIdentity = false;
-                                });
-                    } else {
-                        replaceFragment(new GenerateReviewFragment(), null, extras);
-                    }
+                                }
+                            });
+                        } else {
+                            replaceFragment(new GenerateReviewFragment(), null, extras);
+                        }
 
-                    break;
-                case DialogInterface.BUTTON_NEGATIVE:
-                    // do nothing
-                    break;
+                        break;
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        // do nothing
+                        break;
+                }
             }
         };
 
@@ -932,8 +937,6 @@ public class WalletActivity extends BaseActivity implements WalletFragment.Liste
         }
         if (!processed || (onUriScannedListener == null)) {
             Toast.makeText(this, getString(R.string.nfc_tag_read_what), Toast.LENGTH_LONG).show();
-        } else {
-            Toast.makeText(this, getString(R.string.nfc_tag_read_success), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -1033,6 +1036,7 @@ public class WalletActivity extends BaseActivity implements WalletFragment.Liste
         } else {
             tvBalance.setText(null);
         }
+        updateAccountsList();
     }
 
     void updateAccountsHeader() {
@@ -1046,8 +1050,11 @@ public class WalletActivity extends BaseActivity implements WalletFragment.Liste
         Menu menu = accountsView.getMenu();
         menu.removeGroup(R.id.accounts_list);
         final int n = wallet.getNumAccounts();
+        final boolean showBalances = (n > 1) && !isStreetMode();
         for (int i = 0; i < n; i++) {
-            final String label = wallet.getAccountLabel(i);
+            final String label = (showBalances ?
+                    getString(R.string.label_account, wallet.getAccountLabel(i), Helper.getDisplayAmount(wallet.getBalance(i), 2))
+                    : wallet.getAccountLabel(i));
             final MenuItem item = menu.add(R.id.accounts_list, getAccountId(i), 2 * i, label);
             item.setIcon(R.drawable.ic_account_balance_wallet_black_24dp);
             if (i == wallet.getAccountIndex())
